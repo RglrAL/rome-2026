@@ -241,6 +241,16 @@ html.maplock{overflow:hidden}
 .ref dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;font-size:.92rem}
 .ref dt{color:var(--muted)}
 .ref dd{margin:0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.subh{font-size:1rem;font-weight:600;margin:24px 0 10px}
+.subh span{font-weight:400;color:var(--muted);margin-left:6px}
+.ref select{font:inherit;font-size:1rem;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px 8px;max-width:100%}
+.ref dl{align-items:baseline}
+#booklist dd{font-variant-numeric:normal}
+.refnote{margin:10px 0 0;font-size:.88rem;color:var(--muted);max-width:62ch}
+.pillbtn{display:inline-block;border:1px solid var(--ink);background:none;border-radius:999px;padding:9px 18px;font-size:.9rem;font-weight:600;cursor:pointer;margin-top:18px}
+.bkline{margin:6px 0 0;font-size:.9rem;max-width:62ch}
+.bkline b{font-weight:600}
+.bkline .textbtn{margin:0 0 0 8px;font-size:.88rem}
 .priv{display:block;width:100%;font:inherit;font-size:1rem;color:inherit;background:transparent;border:0;border-bottom:1px dashed var(--line);border-radius:0;padding:1px 0 2px;margin:0 0 2px}
 .priv::placeholder{color:var(--muted);opacity:1;font-size:.92rem}
 .foot{padding:26px 0 44px;color:var(--muted);font-size:.85rem;max-width:70ch}
@@ -323,10 +333,15 @@ html.maplock{overflow:hidden}
   </div>
 </section>
 
-<section class="lower">
+<section class="lower" id="bookings">
   <div class="wrap">
     <h2>Bookings and numbers</h2>
     <p>Everything you might be asked for at a desk. Booking references aren’t published with this page. Type them in once and they’re saved on this device only.</p>
+    <h3 class="subh">Tickets and tables <span id="bookcount"></span></h3>
+    <div class="refs" id="booklist"></div>
+    <button type="button" class="pillbtn" id="icsbtn">Add the fixed items to your calendar</button>
+    <p class="refnote" id="icsmsg" role="status">Makes a calendar file of the flights, hotels, awards sessions, booked slots and the Sunday taxi, with addresses.</p>
+    <h3 class="subh">Flights, hotels and the venue</h3>
     <div class="refs">
       <div class="ref" style="--c:var(--travel)">
         <h3>Flight out, Wed 18 Nov</h3>
@@ -450,7 +465,7 @@ var DAYS = [
   sum:"A travel day. You land at 17:00 Rome time, so the evening is dinner in Prati and live music if you still have the energy.",
   items:[
    {t:"11:00",ti:1,c:"travel",title:"Be at Dublin Airport",note:"Irish time. Ryanair bag drop closes 40 minutes before departure and the gate closes 30 minutes before, so two hours gives you room for security."},
-   {t:"13:00",ti:1,e:"17:00",fix:1,lv:"12:30",lvl:"Gate closes at",c:"travel",title:"Flight FR9611 to Rome Fiumicino",note:"Rome is one hour ahead of Dublin, so the flight is about three hours."},
+   {t:"13:00",ti:1,e:"17:00",fix:1,lv:"12:30",lvl:"Gate closes at",loc:"Dublin Airport, Ireland",c:"travel",title:"Flight FR9611 to Rome Fiumicino",note:"Rome is one hour ahead of Dublin, so the flight is about three hours."},
    {t:"17:30",c:"travel",title:"Fiumicino to Hotel Isa",note:"A white licensed taxi from the rank takes 45 to 60 minutes at this hour. The fixed fare is €55 to anywhere inside the Aurelian Walls. Prati sits right at the edge of that zone, so agree the fare before you set off.",
     alts:[A("Train and metro","Leonardo Express to Termini (32 minutes, €14), then Metro A four stops to Lepanto and a six-minute walk. Cheaper, and about the same time in bad traffic.",0,"Lepanto metro, Roma")]},
    {t:"18:45",c:"stay",p:"isa",title:"Check in at Hotel Isa",note:"Both rooms are under your name, so give that at the desk. Breakfast is included."},
@@ -582,9 +597,9 @@ var DAYS = [
    {t:"07:00",c:"free",p:"pan",opt:1,title:"Piazza della Rotonda with nobody in it",note:"Step outside before the crowds. The Pantheon doesn’t open until 09:00, but the square at this hour is worth ten minutes."},
    {t:"07:15",c:"free",p:"tazza",opt:1,title:"Coffee at Tazza d’Oro",note:"One minute from the hotel, if it’s open this early on a Sunday. Otherwise there’s coffee at the airport."},
    {t:"07:40",c:"stay",p:"abr",title:"Check out of Albergo Abruzzi",note:"City tax is paid at the desk."},
-   {t:"08:00",fix:1,lv:"08:00",lvl:"Taxi leaves at",c:"travel",title:"Taxi to Fiumicino",note:"The Pantheon is inside the Aurelian Walls, so the fixed €55 fare applies. Allow 45 minutes. Ask the hotel on Saturday to book the car."},
+   {t:"08:00",fix:1,lv:"08:00",lvl:"Taxi leaves at",loc:"Albergo Abruzzi, Piazza della Rotonda 69, Roma",c:"travel",title:"Taxi to Fiumicino",note:"The Pantheon is inside the Aurelian Walls, so the fixed €55 fare applies. Allow 45 minutes. Ask the hotel on Saturday to book the car."},
    {t:"08:45",c:"travel",title:"At the airport",note:"Bag drop closes 40 minutes before departure and the gate closes at 10:35. Your boarding pass shows the terminal."},
-   {t:"11:05",e:"13:20",ei:1,fix:1,lv:"10:35",lvl:"Gate closes at",c:"travel",title:"Flight FR9612 to Dublin",note:"Lands 13:20 Irish time."}
+   {t:"11:05",e:"13:20",ei:1,fix:1,lv:"10:35",lvl:"Gate closes at",loc:"Aeroporto di Roma Fiumicino, Italy",c:"travel",title:"Flight FR9612 to Dublin",note:"Lands 13:20 Irish time."}
   ]}
 ];
 
@@ -601,6 +616,24 @@ var CHECKS = [
  ["pack","Pack for the ceremony, the stairs and the rain","Something smart for Thursday night, proper walking shoes for the dome and Saturday, covered shoulders and knees for churches, and an umbrella. Late November in Rome is usually 8 to 17°C with showers."],
  ["taxi","On Saturday, ask Albergo Abruzzi to book Sunday’s 08:00 taxi",""]
 ];
+
+/* ---------- things to book. day + p (or title) ties each to its step. Status, time and confirmation stay on this device.
+   stay:1 = booking it doesn't move the step's time. Links were checked on 13 November 2026. */
+var BOOK=[
+ {k:"dome",day:"thu",p:"stp",stay:1,c:"free",n:"St Peter’s dome",when:"Thursday morning",slot:"",note:"Only needed if you want a guaranteed slot. You can also pay at the kiosk on the day.",url:"https://www.basilicasanpietro.va/en/",site:"basilicasanpietro.va, the basilica’s official site"},
+ {k:"col",day:"sat",p:"col",c:"free",n:"Colosseum, Full Experience Attic ticket",when:"Saturday 09:00",slot:"09:00",note:"Fall back to a standard timed ticket if the attic slots have gone.",url:"https://colosseo.it/en/",site:"colosseo.it, the park’s official site"},
+ {k:"clem",day:"sat",p:"clem",c:"free",n:"San Clemente excavations",when:"Saturday 10:45",slot:"10:45",note:"The basilica’s site says the excavations need an online booking.",url:"https://basilicasanclemente.com/eng/opening-hours-and-info/",site:"basilicasanclemente.com, the basilica’s own site"},
+ {k:"pan",day:"sat",p:"pan",c:"free",n:"Pantheon",when:"Saturday 18:00",slot:"18:00",note:"Tickets are also sold on site.",url:"https://www.museiitaliani.it/",site:"museiitaliani.it, the state museums’ ticket site"},
+ {k:"fri",day:"fri",p:"gensola",c:"free",n:"Friday dinner in Trastevere",when:"Friday 19:45",slot:"19:45",note:"La Gensola or Le Mani in Pasta. I haven’t checked either restaurant’s booking page, so use the phone number in Maps."},
+ {k:"sat",day:"sat",p:"monti",c:"free",n:"Saturday dinner",when:"Saturday 19:45",slot:"19:45",note:"A table in Monti, or Armando al Pantheon if you’d rather stay by the hotel."},
+ {k:"kong",day:"sat",p:"kong",c:"free",n:"Drink Kong",when:"Saturday 21:30",slot:"21:30",note:"Optional.",url:"https://www.drinkkong.com/",site:"drinkkong.com"},
+ {k:"taxi",day:"sun",title:"Taxi to Fiumicino",stay:1,c:"travel",n:"Sunday taxi to the airport",when:"Sunday 08:00",slot:"08:00",note:"Ask Albergo Abruzzi on Saturday to book the car."}
+];
+function bookFor(dayId,orig){
+  for(var i=0;i<BOOK.length;i++){ var b=BOOK[i]; if(b.day===dayId && (b.p?orig.p===b.p:orig.title===b.title)) return b; }
+  return null;
+}
+function bookState(b){ var v=load("bk:"+b.k,null)||{}; return {s:v.s||"todo",slot:v.slot===undefined?b.slot:v.slot,ref:v.ref||""}; }
 
 /* ---------- pins: [name, type, note, maps query, lat, lon, approx] ----------
    Coordinates looked up in OpenStreetMap on 13 November 2026. approx = 1 means placed by street
@@ -773,6 +806,15 @@ function visibleItems(d){
       it.title=a.n; it.note=a.d; it.q=a.q; it.p=altPlace(a)||undefined; it.swapped=orig.title; it.pick=pick;
       if(!ALT_KEEP[a.n]){ it.fix=0; it.lv=it.lvl=it.lvd=it.sb=it.sbl=undefined; }
     }
+    var b=bookFor(d.id,orig);
+    if(b){
+      var bs=bookState(b); it.bk=b; it.bks=bs;
+      if(bs.s==="done" && /^\d\d:\d\d$/.test(bs.slot) && !b.stay){
+        var delta=mins(bs.slot)-mins(it.t);
+        if(delta){ it.t=bs.slot; if(it.e) it.e=hm(mins(it.e)+delta); if(it.lv) it.lv=hm(mins(it.lv)+delta); }
+        it.fix=1;
+      }
+    }
     out.push(it);
   });
   return applyLate(d,out);
@@ -865,6 +907,7 @@ function render(id){
       where+
       (it.swapped?'<p class="instead">Instead of: '+esc(it.swapped)+'.<button type="button" class="textbtn" data-swap="-1" data-idx="'+it.idx+'">Back to the original</button></p>':'')+
       (it.lv && it.lv!==it.t?'<p class="leave">'+esc(it.lvl||"Leave by")+' '+it.lv+(it.ti?' Irish time':'')+'.'+(it.lvd?' '+esc(it.lvd):'')+'</p>':'')+
+      bookLine(it)+
       (it.warn?'<p class="warn"><span class="wflag">Check</span>'+esc(it.warn)+'</p>':'')+
       (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+altsHtml(it)+'</div></li>';
   }).join("");
@@ -941,6 +984,11 @@ function tick(){
 setInterval(tick,30000);
 document.addEventListener("visibilitychange",function(){ if(!document.hidden) tick(); });
 
+function bookLine(it){
+  if(!it.bk || it.bks.s==="skip") return "";
+  if(it.bks.s==="done") return '<p class="bkline"><b>Booked'+(it.bks.slot?' for '+esc(it.bks.slot):'')+'.</b>'+(it.bks.ref?' Confirmation '+esc(it.bks.ref)+'.':'')+'</p>';
+  return '<p class="bkline">Not booked yet.<button type="button" class="textbtn" data-goto="bookings">Bookings</button></p>';
+}
 function altsHtml(it){
   if(!it.alts||!it.alts.length) return "";
   var orig=current.items[it.idx], rows=[];
@@ -1317,6 +1365,7 @@ tl.addEventListener("click",function(e){
     var row=tl.querySelector('[data-idx="'+idx+'"]'); if(row) row.scrollIntoView({block:"nearest"});
     return;
   }
+  if(e.target.closest("button[data-goto]")){ document.getElementById("bookings").scrollIntoView({block:"start"}); return; }
   var sb=e.target.closest("button[data-show]");
   if(sb){ setHot(sb.getAttribute("data-show"),false); mapbox.scrollIntoView({block:"start"}); return; }
   if(e.target.closest("a")||e.target.closest("details")) return; var li=e.target.closest(".item"); if(li) setHot(li.getAttribute("data-p")===hot?null:li.getAttribute("data-p"),false); });
@@ -1356,6 +1405,75 @@ var privEls=document.querySelectorAll("input[data-priv]");
   });
 });
 
+/* ---------- bookings tracker ---------- */
+var bookEl=document.getElementById("booklist");
+function bookCount(){
+  var n=0, of=0; BOOK.forEach(function(b){ var s=bookState(b).s; if(s!=="skip"){ of++; if(s==="done") n++; } });
+  document.getElementById("bookcount").textContent=n+" of "+of+" booked";
+}
+function renderBooks(){
+  bookEl.innerHTML=BOOK.map(function(b){
+    var v=bookState(b);
+    function opt(val,txt){ return '<option value="'+val+'"'+(v.s===val?" selected":"")+'>'+txt+'</option>'; }
+    return '<div class="ref" style="--c:var(--'+b.c+')" data-bk="'+b.k+'"><h3>'+esc(b.n)+'</h3><dl>'+
+      '<dt>Planned</dt><dd>'+esc(b.when)+'</dd>'+
+      '<dt>Status</dt><dd><select data-f="s" aria-label="Status of '+esc(b.n)+'">'+opt("todo","To book")+opt("done","Booked")+opt("skip","Not booking")+'</select></dd>'+
+      '<dt>Time</dt><dd><input class="priv" type="time" data-f="slot" aria-label="Booked time for '+esc(b.n)+'" value="'+esc(v.slot)+'"></dd>'+
+      '<dt>Confirmation</dt><dd><input class="priv" data-f="ref" aria-label="Confirmation number for '+esc(b.n)+'" placeholder="Add on this device" autocomplete="off" spellcheck="false" value="'+esc(v.ref)+'"></dd>'+
+      (b.url?'<dt>Book at</dt><dd><a target="_blank" rel="noopener" href="'+b.url+'">'+esc(b.site)+'</a></dd>':'')+
+      '</dl>'+(b.note?'<p class="refnote">'+esc(b.note)+'</p>':'')+'</div>';
+  }).join("");
+  bookCount();
+}
+function bookEdit(e,redraw){
+  var card=e.target.closest("[data-bk]"), fld=e.target.getAttribute("data-f"); if(!card||!fld) return;
+  var b=BOOK.filter(function(x){ return x.k===card.getAttribute("data-bk"); })[0], v=bookState(b);
+  v[fld]=e.target.value; save("bk:"+b.k,v); bookCount();
+  if(redraw && current) render(current.id);
+}
+bookEl.addEventListener("input",function(e){ bookEdit(e,false); });
+bookEl.addEventListener("change",function(e){ bookEdit(e,true); });
+
+/* ---------- calendar file of the fixed items. Times are written in UTC: Rome is UTC+1 on these dates ---------- */
+function icsText(){
+  var keep=lateInfo, ev=[];
+  function z(date,m){ m-=60; return date.replace(/-/g,"")+"T"+("0"+Math.floor(m/60)).slice(-2)+("0"+(m%60)).slice(-2)+"00Z"; }
+  function tx(t){ return String(t).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n"); }
+  function add(uid,start,end,sum,loc,desc){ ev.push(["BEGIN:VEVENT","UID:"+uid+"@rome-2026","DTSTAMP:"+stamp,start,end,"SUMMARY:"+tx(sum)].concat(loc?["LOCATION:"+tx(loc)]:[],desc?["DESCRIPTION:"+tx(desc)]:[],["END:VEVENT"])); }
+  var n=new Date(), stamp=n.toISOString().replace(/[-:]/g,"").slice(0,15)+"Z";
+  add("hotel-isa","DTSTART;VALUE=DATE:20261118","DTEND;VALUE=DATE:20261121","Hotel Isa",P.isa.q,"Check-in from 15:00 on Wednesday 18. Check-out by 11:00 on Saturday 21.");
+  add("albergo-abruzzi","DTSTART;VALUE=DATE:20261121","DTEND;VALUE=DATE:20261122","Albergo Abruzzi",P.abr.q,"Check-in from 14:00 on Saturday 21. Check-out by 12:00 on Sunday 22.");
+  DAYS.forEach(function(d){
+    var items=visibleItems(d), i=0;
+    while(i<items.length){
+      var it=items[i], j=i;
+      if(it.c==="work" && it.p==="venue"){                       // one event for a run of sessions at the venue
+        while(j+1<items.length && items[j+1].c==="work" && items[j+1].p==="venue") j++;
+        add(d.id+"-awards","DTSTART:"+z(d.date,st(it)),"DTEND:"+z(d.date,en(items[j],null)),"European Social Services Awards",P.venue.q,
+          items.slice(i,j+1).map(function(x){ return x.t+" "+x.title; }).join("\n"));
+      } else if(it.fix || it.c==="work"){
+        var desc=(it.lv && it.lv!==it.t?(it.lvl||"Leave by")+" "+it.lv+(it.ti?" Irish time":"")+". ":"")+(it.note||"")+(it.bks&&it.bks.ref?"\nConfirmation: "+it.bks.ref:"");
+        add(d.id+"-"+it.idx,"DTSTART:"+z(d.date,st(it)),"DTEND:"+z(d.date,en(it,null)),it.title,it.p?P[it.p].q:(it.loc||""),desc);
+      }
+      i=j+1;
+    }
+  });
+  lateInfo=keep;
+  var lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//rome-2026//itinerary//EN","CALSCALE:GREGORIAN","X-WR-CALNAME:Rome, 18 to 22 November"];
+  ev.forEach(function(e){ lines=lines.concat(e); });
+  lines.push("END:VCALENDAR");
+  return {n:ev.length,text:lines.map(function(l){ var out=[]; while(l.length>60){ out.push(l.slice(0,60)); l=" "+l.slice(60); } out.push(l); return out.join("\r\n"); }).join("\r\n")+"\r\n"};
+}
+document.getElementById("icsbtn").addEventListener("click",function(){
+  var ics=icsText(), msg=document.getElementById("icsmsg");
+  try{
+    var url=URL.createObjectURL(new Blob([ics.text],{type:"text/calendar;charset=utf-8"})), a=document.createElement("a");
+    a.href=url; a.download="rome-18-22-november.ics"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); },10000);
+    msg.textContent="Made a calendar file with "+ics.n+" events. Open it to add them to your calendar. It reflects your study-visit choices and booked times as they are now.";
+  }catch(e){ msg.textContent="This browser couldn’t make the calendar file."; }
+});
+
 /* ---------- routing ---------- */
 function route(){
   var h=(location.hash||"").replace("#","");
@@ -1376,7 +1494,7 @@ if(todayId && !FAKE && load("lastday","")!==now.date){
   save("lastday",now.date);
   if(location.hash!=="#"+todayId){ try{ history.replaceState(null,"","#"+todayId); }catch(e){ location.hash="#"+todayId; } }
 }
-renderChecks(); route();
+renderChecks(); renderBooks(); route();
 
 /* ---------- offline: the service worker saves the app, and map tiles as they are viewed ---------- */
 if("serviceWorker" in navigator && (location.protocol==="https:" || location.hostname==="localhost" || location.hostname==="127.0.0.1")){
