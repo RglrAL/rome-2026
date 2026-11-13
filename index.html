@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <style>
 :root{
   --bg:#ECEBE7; --surface:#F8F7F4; --ink:#1F2226; --muted:#5A5E64; --line:#D3D1CA;
@@ -103,7 +104,7 @@ button{font:inherit;color:inherit}
 
 /* map */
 .mapbox{background:var(--map-bg);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.mapbox svg{display:block;width:100%;height:auto;touch-action:manipulation}
+#map{display:block;width:100%;height:auto;touch-action:manipulation}
 .mapbox figcaption{font-size:.8rem;color:var(--muted);padding:8px 12px 10px;border-top:1px solid var(--line);background:var(--surface)}
 figure{margin:0}
 .pin{cursor:pointer}
@@ -111,6 +112,46 @@ figure{margin:0}
 .lbl{font-family:var(--body);font-size:11.5px;font-weight:500;fill:var(--ink);paint-order:stroke;stroke:var(--map-bg);stroke-width:3px;stroke-linejoin:round}
 .rv{font-family:var(--display);font-size:13px;fill:var(--muted);font-style:italic}
 .pin.hot circle{stroke:var(--ink);stroke-width:3}
+#mapcap,#mapmsg{display:block}
+#mapmsg{font-weight:600;color:var(--ink)}
+#mapmsg:empty{display:none}
+
+/* street map */
+#lmap{height:clamp(280px,48vh,440px);z-index:0;isolation:isolate;background:var(--map-bg);font-family:var(--body)}
+@media (min-width:900px){ #lmap{height:min(560px,calc(100vh - 200px))} }
+.mapbox.mapfull{position:fixed;inset:0;z-index:30;border:0;border-radius:0;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.mapbox.mapfull #lmap{flex:1 1 auto;height:auto}
+html.maplock{overflow:hidden}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.92) contrast(.88) saturate(.6)}
+}
+:root[data-theme="dark"] .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.92) contrast(.88) saturate(.6)}
+.mkw{display:flex;align-items:center;justify-content:center;background:none;border:0}
+.mk{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--c);color:var(--bg);font:700 12px/1 var(--body);border:2px solid var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.mk.h{border-radius:7px}
+.mk.hot{box-shadow:0 0 0 3px var(--ink),0 1px 3px rgba(0,0,0,.4)}
+.pk{width:12px;height:12px;border-radius:50%;background:var(--ink);border:2px solid var(--bg);box-shadow:0 1px 2px rgba(0,0,0,.35)}
+.me{width:16px;height:16px;border-radius:50%;background:#1a73e8;border:3px solid #fff;box-shadow:0 0 0 2px rgba(26,115,232,.4)}
+.mering{stroke:#1a73e8;stroke-opacity:.45;stroke-width:1;fill:#1a73e8;fill-opacity:.12}
+.routeline{stroke:var(--ink);stroke-opacity:.75}
+.mapbtns{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
+.mapbtns button{min-height:36px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 13px;font:600 .82rem/1.2 var(--body);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.mapbtns button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.leaflet-bar a,.leaflet-bar a:hover,.leaflet-bar a.leaflet-disabled{background:var(--surface);color:var(--ink);border-bottom-color:var(--line)}
+.leaflet-bar a.leaflet-disabled{color:var(--muted)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface);color:var(--ink)}
+.leaflet-popup-content{margin:12px 14px;font-size:.88rem;line-height:1.4}
+.leaflet-popup-content a{color:inherit;text-decoration:underline}
+.leaflet-container a.leaflet-popup-close-button{color:var(--muted)}
+.leaflet-container .leaflet-control-attribution{background:var(--surface);color:var(--muted);opacity:.9}
+.leaflet-container .leaflet-control-attribution a{color:inherit}
+.pop{list-style:none;margin:6px 0 0;padding:0}
+.pop li{margin:2px 0}
+.pop span{font-weight:600;font-variant-numeric:tabular-nums;margin-right:4px}
+.popty{color:var(--muted);font-size:.8rem}
+.popact{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;margin-top:8px}
+.popact .textbtn{margin:0;font-size:.88rem;font-weight:600;color:inherit}
+.where .textbtn{margin:0 0 0 10px;font-size:.88rem}
 
 
 .opt{display:inline-block;font-size:.74rem;font-weight:600;border:1px solid var(--line);color:var(--muted);padding:0 8px;border-radius:999px;margin-right:6px;vertical-align:1px}
@@ -196,9 +237,10 @@ figure{margin:0}
   </div>
   <div class="day" id="dayview">
     <div class="mapcol">
-      <figure class="mapbox">
+      <figure class="mapbox" id="mapbox">
+        <div id="lmap" hidden></div>
         <svg id="map" role="img" aria-label="Sketch map of the day’s stops"></svg>
-        <figcaption id="mapcap"></figcaption>
+        <figcaption><span id="mapcap"></span><span id="mapmsg" role="status"></span></figcaption>
       </figure>
     </div>
     <section aria-live="polite">
@@ -288,39 +330,41 @@ figure{margin:0}
   </div>
 </section>
 
+<script src="vendor/leaflet/leaflet.js"></script>
 <script>
 (function(){
 "use strict";
 
-/* ---------- places ---------- */
+/* ---------- places ----------
+   Coordinates looked up in OpenStreetMap on 13 November 2026. approx:1 = placed within the complex, entrance not confirmed. */
 var P = {
-  isa:{n:"Hotel Isa",lat:41.9070,lon:12.4697,q:"Hotel Isa, Via Cicerone 39, Roma",hotel:1},
-  abr:{n:"Albergo Abruzzi",lat:41.8991,lon:12.4766,q:"Albergo Abruzzi, Piazza della Rotonda 69, Roma",hotel:1},
-  venue:{n:"Corsie Sistine",lat:41.9012,lon:12.4628,q:"Corsie Sistine Complesso Monumentale di Santo Spirito in Sassia, Roma"},
-  zanzara:{n:"La Zanzara",lat:41.9066,lon:12.4622,q:"La Zanzara, Via Crescenzio 84, Roma"},
-  fonclea:{n:"Fonclea",lat:41.9069,lon:12.4634,q:"Fonclea, Via Crescenzio 82a, Roma"},
-  stp:{n:"St Peter’s",lat:41.9022,lon:12.4568,q:"Basilica di San Pietro, Città del Vaticano"},
-  poli:{n:"Policlinico Umberto I",lat:41.9070,lon:12.5125,q:"Policlinico Umberto I, Roma"},
-  csa:{n:"Castel Sant’Angelo",lat:41.9031,lon:12.4663,q:"Castel Sant'Angelo, Roma"},
-  romolo:{n:"Da Romolo",lat:41.9046,lon:12.4640,q:"Da Romolo alla Mole Adriana, Roma"},
-  gian:{n:"Gianicolo terrace",lat:41.8914,lon:12.4613,q:"Piazzale Giuseppe Garibaldi, Gianicolo, Roma"},
-  paola:{n:"Fontana dell’Acqua Paola",lat:41.8887,lon:12.4640,q:"Fontana dell'Acqua Paola, Roma"},
-  smt:{n:"Santa Maria in Trastevere",lat:41.8895,lon:12.4697,q:"Basilica di Santa Maria in Trastevere, Roma"},
-  calisto:{n:"Bar San Calisto",lat:41.8886,lon:12.4706,q:"Bar San Calisto, Piazza di San Calisto, Roma"},
-  gensola:{n:"La Gensola",lat:41.8893,lon:12.4767,q:"Osteria La Gensola, Piazza della Gensola 15, Roma"},
-  alcazar:{n:"Alcazar Live",lat:41.8858,lon:12.4722,q:"Alcazar Live, Via Cardinale Merry del Val 14, Roma"},
-  col:{n:"Colosseum",lat:41.8902,lon:12.4922,q:"Colosseo, Roma"},
-  clem:{n:"San Clemente",lat:41.8893,lon:12.4976,q:"Basilica di San Clemente al Laterano, Roma"},
-  piazzetta:{n:"Lunch in Monti",lat:41.8938,lon:12.4895,q:"La Nuova Piazzetta, Monti, Roma"},
-  forum:{n:"Roman Forum",lat:41.8922,lon:12.4862,q:"Foro Romano, Roma"},
-  camp:{n:"Capitoline Hill",lat:41.8933,lon:12.4828,q:"Piazza del Campidoglio, Roma"},
-  marc:{n:"Theatre of Marcellus",lat:41.8919,lon:12.4797,q:"Teatro di Marcello, Roma"},
-  circo:{n:"Circus Maximus",lat:41.8861,lon:12.4853,q:"Circo Massimo, Roma"},
-  aranci:{n:"Orange Garden",lat:41.8847,lon:12.4804,q:"Giardino degli Aranci, Roma"},
-  pan:{n:"Pantheon",lat:41.8986,lon:12.4769,q:"Pantheon, Roma"},
-  monti:{n:"Monti, evening",lat:41.8953,lon:12.4905,q:"Piazza della Madonna dei Monti, Roma"},
-  kong:{n:"Drink Kong",lat:41.8955,lon:12.4990,q:"Drink Kong, Piazza di San Martino ai Monti 8, Roma"},
-  tazza:{n:"Tazza d’Oro",lat:41.8996,lon:12.4774,q:"La Casa del Caffè Tazza d'Oro, Via degli Orfani 84, Roma"}
+  isa:{n:"Hotel Isa",lat:41.90691,lon:12.46892,q:"Hotel Isa, Via Cicerone 39, Roma",hotel:1},
+  abr:{n:"Albergo Abruzzi",lat:41.89937,lon:12.47711,q:"Albergo Abruzzi, Piazza della Rotonda 69, Roma",hotel:1},
+  venue:{n:"Corsie Sistine",lat:41.90120,lon:12.46260,approx:1,q:"Corsie Sistine Complesso Monumentale di Santo Spirito in Sassia, Roma"},
+  zanzara:{n:"La Zanzara",lat:41.90611,lon:12.46010,q:"La Zanzara, Via Crescenzio 84, Roma"},
+  fonclea:{n:"Fonclea",lat:41.90611,lon:12.46042,q:"Fonclea, Via Crescenzio 82a, Roma"},
+  stp:{n:"St Peter’s",lat:41.90216,lon:12.45371,q:"Basilica di San Pietro, Città del Vaticano"},
+  poli:{n:"Policlinico Umberto I",lat:41.90646,lon:12.51213,q:"Policlinico Umberto I, Roma"},
+  csa:{n:"Castel Sant’Angelo",lat:41.90312,lon:12.46634,q:"Castel Sant'Angelo, Roma"},
+  romolo:{n:"Da Romolo",lat:41.90343,lon:12.46206,q:"Da Romolo alla Mole Adriana, Roma"},
+  gian:{n:"Gianicolo terrace",lat:41.89150,lon:12.46090,q:"Piazzale Giuseppe Garibaldi, Gianicolo, Roma"},
+  paola:{n:"Fontana dell’Acqua Paola",lat:41.88881,lon:12.46429,q:"Fontana dell'Acqua Paola, Roma"},
+  smt:{n:"Santa Maria in Trastevere",lat:41.88942,lon:12.46950,q:"Basilica di Santa Maria in Trastevere, Roma"},
+  calisto:{n:"Bar San Calisto",lat:41.88905,lon:12.47074,q:"Bar San Calisto, Piazza di San Calisto, Roma"},
+  gensola:{n:"La Gensola",lat:41.88939,lon:12.47638,q:"Osteria La Gensola, Piazza della Gensola 15, Roma"},
+  alcazar:{n:"Alcazar Live",lat:41.88727,lon:12.47208,q:"Alcazar Live, Via Cardinale Merry del Val 14, Roma"},
+  col:{n:"Colosseum",lat:41.89026,lon:12.49238,q:"Colosseo, Roma"},
+  clem:{n:"San Clemente",lat:41.88931,lon:12.49747,q:"Basilica di San Clemente al Laterano, Roma"},
+  piazzetta:{n:"Lunch in Monti",lat:41.89336,lon:12.48917,q:"La Nuova Piazzetta, Monti, Roma"},
+  forum:{n:"Roman Forum",lat:41.89164,lon:12.48673,q:"Foro Romano, Roma"},
+  camp:{n:"Capitoline Hill",lat:41.89325,lon:12.48299,q:"Piazza del Campidoglio, Roma"},
+  marc:{n:"Theatre of Marcellus",lat:41.89194,lon:12.47976,q:"Teatro di Marcello, Roma"},
+  circo:{n:"Circus Maximus",lat:41.88616,lon:12.48531,q:"Circo Massimo, Roma"},
+  aranci:{n:"Orange Garden",lat:41.88493,lon:12.48045,q:"Giardino degli Aranci, Roma"},
+  pan:{n:"Pantheon",lat:41.89862,lon:12.47683,q:"Pantheon, Roma"},
+  monti:{n:"Monti, evening",lat:41.89490,lon:12.49088,q:"Piazza della Madonna dei Monti, Roma"},
+  kong:{n:"Drink Kong",lat:41.89514,lon:12.49787,q:"Drink Kong, Piazza di San Martino ai Monti 8, Roma"},
+  tazza:{n:"Tazza d’Oro",lat:41.89959,lon:12.47749,q:"La Casa del Caffè Tazza d'Oro, Via degli Orfani 84, Roma"}
 };
 var RIVER = [[41.9200,12.4672],[41.9160,12.4683],[41.9115,12.4739],[41.9082,12.4762],[41.9052,12.4753],[41.9024,12.4720],[41.9017,12.4664],[41.9009,12.4641],[41.8985,12.4626],[41.8953,12.4650],[41.8924,12.4708],[41.8905,12.4747],[41.8900,12.4777],[41.8880,12.4797],[41.8838,12.4762],[41.8790,12.4740]];
 
@@ -485,91 +529,93 @@ var CHECKS = [
  ["taxi","On Saturday, ask Albergo Abruzzi to book Sunday’s 08:00 taxi",""]
 ];
 
-/* ---------- pins: [name, type, note, maps query] ---------- */
-var TYPES = {sight:"Sights",eat:"Restaurants",quick:"Quick bites",sweet:"Coffee and sweet",drink:"Bars",music:"Live music",other:"Not sure yet"};
+/* ---------- pins: [name, type, note, maps query, lat, lon, approx] ----------
+   Coordinates looked up in OpenStreetMap on 13 November 2026. approx = 1 means placed by street
+   address rather than a named map entry. Pins with no coordinates could not be found. */
+var TYPES = {sight:"Sights",eat:"Restaurants",quick:"Quick bites",sweet:"Coffee and sweet",drink:"Bars",music:"Live music"};
 var AREAS = [
  {n:"Prati and the Vatican",w:"Around Hotel Isa. Closest on Wednesday and Thursday.",pins:[
-  ["Saint Peter’s Basilica","sight","Thursday’s main plan.","Basilica di San Pietro"],
-  ["Sistine Chapel","sight","Inside the Vatican Museums; Thursday’s alternative.","Cappella Sistina"],
-  ["Vatican City","sight","",""],
-  ["La Zanzara","eat","Wednesday’s dinner pick.",""],
-  ["Il Sorpasso","eat","All-day bistro and wine bar.",""],
-  ["L’Arcangelo","eat","Serious Roman cooking. Book.","L'Arcangelo, Via Giuseppe Gioachino Belli"],
-  ["Osteria Ragno d’Oro","eat","Traditional trattoria.","Osteria Ragno d'Oro"],
-  ["Da Romolo alla Mole Adriana","eat","Thursday’s lunch pick, behind Castel Sant’Angelo.",""],
-  ["Be.Re. + Trapizzino","quick","Craft beer and stuffed pizza pockets.",""],
-  ["Vuliò","quick","Puglian street food.",""],
-  ["L’angolo della pizza","quick","","L'angolo della pizza, Prati"],
-  ["Argot Prati","drink","Cocktail bar.",""],
-  ["The Basement","drink","Pub and cocktail bar with events.","The Basement Pub Cocktail Bar Events"],
-  ["T’SaBaR bar","drink","","T'SaBaR bar"],
-  ["Saxophone Live Pub","music","Live music pub.",""],
-  ["MiVà","other","",""],
-  ["VIDA Prati","other","",""]]},
+  ["Saint Peter’s Basilica","sight","Thursday’s main plan.","Basilica di San Pietro",41.90216,12.45371],
+  ["Sistine Chapel","sight","Inside the Vatican Museums; Thursday’s alternative.","Cappella Sistina",41.90293,12.45440],
+  ["Vatican City","sight","","",41.90349,12.45283],
+  ["La Zanzara","eat","Wednesday’s dinner pick.","",41.90611,12.46010],
+  ["Il Sorpasso","eat","All-day bistro and wine bar.","",41.90549,12.46130],
+  ["L’Arcangelo","eat","Serious Roman cooking. Book.","L'Arcangelo, Via Giuseppe Gioachino Belli",41.90659,12.46864],
+  ["Osteria Ragno d’Oro","eat","Traditional trattoria.","Osteria Ragno d'Oro",41.90865,12.45965,1],
+  ["Da Romolo alla Mole Adriana","eat","Thursday’s lunch pick, behind Castel Sant’Angelo.","",41.90343,12.46206],
+  ["Be.Re. + Trapizzino","quick","Craft beer and stuffed pizza pockets.","",41.90670,12.45655],
+  ["Vuliò","quick","Puglian street food.","",41.90839,12.45727],
+  ["L’angolo della pizza","quick","","L'angolo della pizza, Prati",41.90675,12.46906],
+  ["Argot Prati","drink","Cocktail bar.","",41.90910,12.46893,1],
+  ["The Basement","drink","Pub and cocktail bar with events.","The Basement Pub Cocktail Bar Events",41.90620,12.46130,1],
+  ["T’SaBaR bar","drink","","T'SaBaR bar",41.90651,12.46157],
+  ["Paparazzo Bar & Rooftop","drink","Hotel rooftop bar on Via Federico Cesi.","",41.90753,12.47094],
+  ["Saxophone Live Pub","music","Live music pub.","",41.90749,12.45633],
+  ["MiVà","eat","Restaurant on Via Ezio.","",41.90924,12.46632],
+  ["VIDA Prati","eat","Restaurant and bar on Via Belli, a minute from Hotel Isa.","",41.90682,12.46939]]},
  {n:"Trastevere",w:"Friday evening’s neighbourhood.",pins:[
-  ["Bar San Calisto","drink","Friday’s drink pick.",""],
-  ["Samovar","drink","",""],
-  ["Lettere Caffè","drink","Bookish café-bar.",""],
-  ["Alcazar Live","music","Friday’s late option, in a converted cinema.",""],
-  ["Otello","eat","Roman classics in a courtyard.","Otello in Trastevere"],
-  ["Tonnarello","eat","Very popular. Expect a queue.",""],
-  ["La Canonica","eat","Italian, on Vicolo del Piede.",""],
-  ["Bacco in Trastevere","eat","",""],
-  ["Il Botticelli","eat","Roman.","Il Botticelli Trastevere"],
-  ["Antica Pesa","eat","Upmarket Roman. Book.",""],
-  ["Ivo a Trastevere","eat","Old-school pizzeria.",""],
-  ["Trapizzino Trastevere","quick","Stuffed pizza pockets by Piazza Trilussa.",""],
-  ["Supplì Roma","quick","Fried rice supplì and pizza by the slice.","Supplì Roma i supplì di Giacomo"],
-  ["Giselda","sweet","Bakery and café on Viale Trastevere.",""],
-  ["Sora Mirella","sweet","Shaved-ice kiosk by the river. It may be shut in November.",""],
-  ["Church of St Callixtus","sight","On the square beside Bar San Calisto.","Chiesa di San Callisto"]]},
+  ["Bar San Calisto","drink","Friday’s drink pick.","",41.88905,12.47074],
+  ["Samovar","drink","","",41.88869,12.47055],
+  ["Lettere Caffè","drink","Bookish café-bar.","",41.88581,12.47257],
+  ["Alcazar Live","music","Friday’s late option, in a converted cinema.","",41.88727,12.47208],
+  ["Otello","eat","Roman classics in a courtyard.","Otello in Trastevere",41.89040,12.46911],
+  ["Tonnarello","eat","Very popular. Expect a queue.","",41.88894,12.46791],
+  ["La Canonica","eat","Italian, on Vicolo del Piede.","",41.89002,12.47009],
+  ["Bacco in Trastevere","eat","","",41.89204,12.46884],
+  ["Il Botticelli","eat","Roman.","Il Botticelli Trastevere",41.89048,12.46796,1],
+  ["Antica Pesa","eat","Upmarket Roman. Book.","",41.89054,12.46648],
+  ["Ivo a Trastevere","eat","Old-school pizzeria.","",41.88813,12.47109],
+  ["Trapizzino Trastevere","quick","Stuffed pizza pockets by Piazza Trilussa.","",41.89146,12.46991],
+  ["Supplì Roma","quick","Fried rice supplì and pizza by the slice.","Supplì Roma i supplì di Giacomo",41.88714,12.47174],
+  ["Giselda","sweet","Bakery and café on Viale Trastevere.","",41.88680,12.47195],
+  ["Sora Mirella","sweet","Shaved-ice kiosk by the river. It may be shut in November.","",41.88979,12.47677],
+  ["Church of St Callixtus","sight","On the square beside Bar San Calisto.","Chiesa di San Callisto",41.88902,12.47032]]},
  {n:"Tiber Island, the Ghetto and the Capitoline",w:"On Saturday afternoon’s route.",pins:[
-  ["Theatre of Marcellus","sight","On Saturday’s main route.","Teatro di Marcello"],
-  ["Ponte Fabricio","sight","Rome’s oldest working bridge, 62 BC.",""],
-  ["Altar of the Fatherland","sight","Free terraces; paid lift to the top.","Altare della Patria"],
-  ["Pizza Florida","quick","Pizza by the slice at Largo Argentina.",""],
-  ["Saporizzo","other","",""]]},
+  ["Theatre of Marcellus","sight","On Saturday’s main route.","Teatro di Marcello",41.89194,12.47976],
+  ["Ponte Fabricio","sight","Rome’s oldest working bridge, 62 BC.","",41.89106,12.47824],
+  ["Altar of the Fatherland","sight","Free terraces; paid lift to the top.","Altare della Patria",41.89469,12.48307],
+  ["Pizza Florida","quick","Pizza by the slice at Largo Argentina.","",41.89478,12.47672],
+  ["Saporizzo","quick","Takeaway on Piazza d’Aracoeli, below the Capitoline.","",41.89434,12.48094]]},
  {n:"The Colosseum and Monti",w:"Saturday morning, and Saturday night.",pins:[
-  ["Colosseum","sight","Saturday 09:00.","Colosseo"],
-  ["Roman Forum","sight","Saturday 13:15, on the same ticket.","Foro Romano"],
-  ["La Nuova Piazzetta","eat","Saturday’s lunch pick.",""],
-  ["Drink Kong","drink","Saturday’s late option. Book.",""],
-  ["Papal Basilica of Saint Mary Major","sight","Fifth-century mosaics, ten minutes north of Monti.","Basilica Papale di Santa Maria Maggiore"]]},
+  ["Colosseum","sight","Saturday 09:00.","Colosseo",41.89026,12.49238],
+  ["Roman Forum","sight","Saturday 13:15, on the same ticket.","Foro Romano",41.89164,12.48673],
+  ["La Nuova Piazzetta","eat","Saturday’s lunch pick.","",41.89336,12.48917],
+  ["Drink Kong","drink","Saturday’s late option. Book.","",41.89514,12.49787],
+  ["Papal Basilica of Saint Mary Major","sight","Fifth-century mosaics, ten minutes north of Monti.","Basilica Papale di Santa Maria Maggiore",41.89763,12.49847]]},
  {n:"Campo de’ Fiori and Piazza Navona",w:"Five to ten minutes from Albergo Abruzzi. Good for Saturday night if you stay local.",pins:[
-  ["Piazza Navona","sight","",""],
-  ["Chiesa di Sant’Agnese in Agone","sight","Borromini’s church on Piazza Navona.","Chiesa di Sant'Agnese in Agone"],
-  ["Church of Saint Louis of the French","sight","Three Caravaggios. Shut over lunch.","San Luigi dei Francesi"],
-  ["Campo de’ Fiori","sight","Market square in the morning, bars at night.","Campo de' Fiori"],
-  ["Ristorante Pancrazio dal 1922","eat","Built into the remains of the Theatre of Pompey.",""],
-  ["Saltimbocca ristorante","eat","Roman, just off Navona.",""],
-  ["Il Corallo","eat","Pizza and Roman dishes.","Il Corallo, Via del Corallo"],
-  ["Vivi Bistrot","eat","Bistro on Piazza Navona.","Vivi Bistrot Piazza Navona"],
-  ["Antico Forno Roscioli","quick","Bakery; pizza by the slice.",""],
-  ["Forno Campo de’ Fiori","quick","Pizza bianca straight from the oven.","Forno Campo de' Fiori"],
-  ["Norcineria Viola","quick","Cured-meat shop on the Campo.",""],
-  ["Frigidarium","sweet","Gelato.",""],
-  ["Jerry Thomas Speakeasy","drink","Reservation and password needed.",""],
-  ["La Botticella of Poggi Giovanni","drink","Small pub near Navona.",""],
-  ["FIORE","other","","FIORE Campo de' Fiori"]]},
+  ["Piazza Navona","sight","","",41.89893,12.47312],
+  ["Chiesa di Sant’Agnese in Agone","sight","Borromini’s church on Piazza Navona.","Chiesa di Sant'Agnese in Agone",41.89876,12.47256],
+  ["Church of Saint Louis of the French","sight","Three Caravaggios. Shut over lunch.","San Luigi dei Francesi",41.89959,12.47454],
+  ["Campo de’ Fiori","sight","Market square in the morning, bars at night.","Campo de' Fiori",41.89558,12.47216],
+  ["Ristorante Pancrazio dal 1922","eat","Built into the remains of the Theatre of Pompey.","",41.89538,12.47309],
+  ["Saltimbocca ristorante","eat","Roman, just off Navona.","",41.89922,12.47173],
+  ["Il Corallo","eat","Pizza and Roman dishes.","Il Corallo, Via del Corallo",41.89898,12.46982],
+  ["Vivi Bistrot","eat","Bistro on Piazza Navona.","Vivi Bistrot Piazza Navona",41.89769,12.47299],
+  ["Antico Forno Roscioli","quick","Bakery; pizza by the slice.","",41.89466,12.47443],
+  ["Forno Campo de’ Fiori","quick","Pizza bianca straight from the oven.","Forno Campo de' Fiori",41.89580,12.47152],
+  ["Norcineria Viola","quick","Cured-meat shop on the Campo.","",41.89558,12.47255],
+  ["Frigidarium","sweet","Gelato.","",41.89825,12.47045],
+  ["Jerry Thomas Speakeasy","drink","Reservation and password needed.","",41.89785,12.46792],
+  ["La Botticella of Poggi Giovanni","drink","Small pub near Navona.","",41.89917,12.47178],
+  ["FIORE","quick","Neapolitan pizza and street food on Piazza Pollarola.","FIORE Campo de' Fiori",41.89583,12.47310]]},
  {n:"The Pantheon and Trevi",w:"On the doorstep of Albergo Abruzzi.",pins:[
-  ["Chiesa di Sant’Ignazio di Loyola","sight","Pozzo’s painted false dome. Free.","Chiesa di Sant'Ignazio di Loyola"],
-  ["Via dei Pastini","sight","The lane from the Pantheon towards Piazza di Pietra.",""],
-  ["Trevi Fountain","sight","Eight minutes’ walk from the hotel.","Fontana di Trevi"],
-  ["La Casa del Caffè Tazza d’Oro","sweet","Coffee, one minute from the hotel.","La Casa del Caffè Tazza d'Oro"],
-  ["Venchi","sweet","Chocolate and gelato. You’ve pinned three branches.",""],
-  ["All’Antico Vinaio","quick","Florentine schiacciata sandwiches. You’ve pinned two branches.","All'Antico Vinaio"],
-  ["Pane e Salame","quick","Sandwiches and boards near Trevi. Queues.",""],
-  ["Orient Express La Minerva","drink","Hotel rooftop bar behind the Pantheon.",""],
-  ["Trinity College Pub","drink","Irish pub.",""]]},
+  ["Chiesa di Sant’Ignazio di Loyola","sight","Pozzo’s painted false dome. Free.","Chiesa di Sant'Ignazio di Loyola",41.89875,12.47981],
+  ["Via dei Pastini","sight","The lane from the Pantheon towards Piazza di Pietra.","",41.89950,12.47821],
+  ["Trevi Fountain","sight","Eight minutes’ walk from the hotel.","Fontana di Trevi",41.90098,12.48328],
+  ["La Casa del Caffè Tazza d’Oro","sweet","Coffee, one minute from the hotel.","La Casa del Caffè Tazza d'Oro",41.89959,12.47749],
+  ["Venchi","sweet","Chocolate and gelato. You’ve pinned three branches.","",41.89957,12.47740,1],
+  ["All’Antico Vinaio","quick","Florentine schiacciata sandwiches. You’ve pinned two branches.","All'Antico Vinaio",41.89994,12.47639],
+  ["Pane e Salame","quick","Sandwiches and boards near Trevi. Queues.","",41.90062,12.48178],
+  ["Orient Express La Minerva","drink","Hotel rooftop bar behind the Pantheon.","",41.89768,12.47760],
+  ["Trinity College Pub","drink","Irish pub.","",41.89884,12.48081]]},
  {n:"Spanish Steps, Piazza del Popolo and Villa Borghese",w:"Not on the main plan. Fifteen minutes’ walk north of Albergo Abruzzi.",pins:[
-  ["Spanish Steps","sight","","Scalinata di Trinità dei Monti"],
-  ["Piazza di Spagna","sight","",""],
-  ["Piazza del Popolo","sight","",""],
-  ["Villa Borghese","sight","The park. The Pincio terrace on its edge is a sunset spot.",""],
-  ["Pastificio Guerra","quick","Cheap fresh pasta at lunchtime.",""],
-  ["Gregory’s Jazz Club","music","Live jazz near the Spanish Steps.","Gregory's Jazz Club"],
-  ["Il Bar della Musa","drink","",""],
-  ["Paparazzo Bar & Rooftop","drink","",""]]}
+  ["Spanish Steps","sight","","Scalinata di Trinità dei Monti",41.90639,12.48308],
+  ["Piazza di Spagna","sight","","",41.90564,12.48236],
+  ["Piazza del Popolo","sight","","",41.91075,12.47636],
+  ["Villa Borghese","sight","The park. The Pincio terrace on its edge is a sunset spot.","",41.91441,12.48484],
+  ["Pastificio Guerra","quick","Cheap fresh pasta at lunchtime.","",41.90639,12.48089],
+  ["Gregory’s Jazz Club","music","Live jazz near the Spanish Steps.","Gregory's Jazz Club",41.90427,12.48511],
+  ["Il Bar della Musa","drink","","",41.90286,12.48357]]}
 ];
 
 /* ---------- storage ---------- */
@@ -669,7 +715,7 @@ function render(id){
   tl.innerHTML=items.map(function(it,i){
     var pl = it.p?P[it.p]:null;
     var where = pl ? '<p class="where">'+(nums[it.p]?'<span class="num">'+nums[it.p]+'</span>':'')+
-      '<a target="_blank" rel="noopener" href="'+mapsUrl(pl.q)+'">'+esc(pl.n)+', open in Maps</a></p>' : "";
+      '<a target="_blank" rel="noopener" href="'+mapsUrl(pl.q)+'">'+esc(pl.n)+', open in Maps</a>'+(useL?'<button type="button" class="textbtn" data-show="'+it.p+'">Show on map</button>':'')+'</p>' : "";
     return '<li class="item" data-c="'+it.c+'"'+(it.p?' data-p="'+it.p+'"':'')+'>'+
       '<div class="time">'+it.t+(it.e?'<small>to '+it.e+'</small>':'')+'</div>'+
       '<div class="body"><h3>'+(i===flagIdx?'<span class="flag">'+flag+'</span>':'')+'<span class="kind">'+KIND[it.c]+'</span>'+(it.opt?'<span class="opt">Optional</span>':'')+esc(it.title)+'</h3>'+
@@ -717,8 +763,143 @@ document.getElementById("chips").addEventListener("click",function(e){
   pinFilter=b.getAttribute("data-f"); renderPins();
 });
 
-/* ---------- map ---------- */
+/* ---------- street map (Leaflet). The sketch below is the fallback if the library is missing ---------- */
+var lmapEl=document.getElementById("lmap"), mapbox=document.getElementById("mapbox"), mapmsg=document.getElementById("mapmsg");
+var lmap=null, stopLayer=null, pinLayer=null, lmarks={}, showPins=load("showpins",true);
+var ROME=[[41.76,12.20],[41.98,12.62]];
+var PINLIST=[];
+AREAS.forEach(function(ar){ ar.pins.forEach(function(p){ if(typeof p[4]==="number") PINLIST.push({n:p[0],ty:p[1],d:p[2],q:(p[3]||p[0])+", Roma",lat:p[4],lon:p[5]}); }); });
+function metres(a,b,c,d){ var k=Math.cos(41.9*Math.PI/180), y=(a-c)*111320, x=(b-d)*111320*k; return Math.sqrt(x*x+y*y); }
+function say(t){ mapmsg.textContent=t||""; }
+function ll(id){ return [P[id].lat,P[id].lon]; }
+function dot(html,size,anchorY){ return L.divIcon({className:"mkw",html:html,iconSize:[size,size],iconAnchor:[size/2,size/2],popupAnchor:[0,anchorY]}); }
+
+function initL(){
+  map.setAttribute("hidden",""); lmapEl.hidden=false;
+  lmap=L.map(lmapEl,{zoomControl:false,minZoom:12,maxZoom:19,maxBounds:ROME,maxBoundsViscosity:0.8});
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a target="_blank" rel="noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(lmap);
+  L.control.zoom({position:"bottomleft"}).addTo(lmap);
+  lmap.attributionControl.setPrefix(false);
+  pinLayer=L.layerGroup(); stopLayer=L.layerGroup().addTo(lmap);
+  if(showPins) pinLayer.addTo(lmap);
+  var Ctl=L.Control.extend({options:{position:"topright"},onAdd:function(){
+    var d=L.DomUtil.create("div","mapbtns");
+    d.innerHTML='<button type="button" data-a="me" aria-pressed="false">Locate me</button>'+
+      '<button type="button" data-a="pins" aria-pressed="'+showPins+'">Pins</button>'+
+      '<button type="button" data-a="full" aria-pressed="false">Full screen</button>';
+    L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d);
+    d.addEventListener("click",onMapBtn);
+    return d;
+  }});
+  lmap.addControl(new Ctl());
+  lmapEl.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("button[data-plan]"); if(!b) return;
+    if(mapbox.classList.contains("mapfull")) setFull(false);
+    lmap.closePopup(); setHot(b.getAttribute("data-plan"),true,true);
+  });
+  if(load("locate",false) && navigator.permissions && navigator.permissions.query){
+    navigator.permissions.query({name:"geolocation"}).then(function(r){ if(r.state==="granted" && watchId===null) startLocate(false); }).catch(function(){});
+  }
+}
+
+function drawLeaflet(items,nums){
+  if(!lmap) initL();
+  lmap.invalidateSize(false);
+  lmap.closePopup(); stopLayer.clearLayers(); pinLayer.clearLayers(); lmarks={};
+  var seq=[], byP={};
+  items.forEach(function(it){ if(it.p){ if(seq[seq.length-1]!==it.p) seq.push(it.p); (byP[it.p]=byP[it.p]||[]).push(it); } });
+  var ids=Object.keys(byP), shown=ids.slice();
+  ["isa","abr"].forEach(function(h){ if(shown.indexOf(h)<0) shown.push(h); });
+  if(seq.length>1) L.polyline(seq.map(ll),{className:"routeline",weight:3,dashArray:"1 8",lineCap:"round",interactive:false}).addTo(stopLayer);
+  shown.forEach(function(id){
+    var pl=P[id], its=byP[id]||[], c=pl.hotel?"stay":its[its.length-1].c;
+    var m=L.marker(ll(id),{icon:dot('<span class="mk'+(pl.hotel?" h":"")+'" style="--c:var(--'+c+')">'+(pl.hotel?"H":nums[id])+'</span>',30,-12),zIndexOffset:pl.hotel?400:600,title:pl.n,alt:pl.n});
+    m.bindPopup('<b>'+esc(pl.n)+'</b>'+
+      (its.length?'<ul class="pop">'+its.map(function(it){ return '<li><span>'+it.t+'</span>'+esc(it.title)+'</li>'; }).join("")+'</ul>':'<br><span class="popty">Not on this day’s plan</span>')+
+      '<div class="popact">'+(its.length?'<button type="button" class="textbtn" data-plan="'+id+'">Show in plan</button>':'')+
+      '<a target="_blank" rel="noopener" href="'+mapsUrl(pl.q)+'">Open in Maps</a></div>',{maxWidth:240,autoPanPaddingTopLeft:[8,54],autoPanPaddingBottomRight:[8,8]});
+    m.on("click",function(){ setHot(id,false,true); });
+    m.addTo(stopLayer); lmarks[id]=m;
+  });
+  PINLIST.forEach(function(p){
+    if(shown.some(function(id){ return metres(p.lat,p.lon,P[id].lat,P[id].lon)<20; })) return;
+    L.marker([p.lat,p.lon],{icon:dot('<span class="pk"></span>',24,-6),title:p.n,alt:p.n})
+      .bindPopup('<b>'+esc(p.n)+'</b><br><span class="popty">Your pin · '+TYPES[p.ty]+'</span>'+(p.d?'<br>'+esc(p.d):'')+
+        '<div class="popact"><a target="_blank" rel="noopener" href="'+mapsUrl(p.q)+'">Open in Maps</a></div>',{maxWidth:240,autoPanPaddingTopLeft:[8,54],autoPanPaddingBottomRight:[8,8]})
+      .addTo(pinLayer);
+  });
+  lmap.fitBounds(L.latLngBounds((ids.length?ids:shown).map(ll)).pad(0.2),{maxZoom:17,animate:false});
+  document.getElementById("mapcap").textContent="Numbers match the plan, H marks your hotels and the small dots are your pins. The dotted line joins the stops in order; it isn’t a walking route.";
+}
+
+function setFull(on){
+  var c=lmap.getCenter();
+  mapbox.classList.toggle("mapfull",on); document.documentElement.classList.toggle("maplock",on);
+  var b=lmapEl.querySelector('button[data-a="full"]');
+  if(b){ b.setAttribute("aria-pressed",on); b.textContent=on?"Close map":"Full screen"; }
+  lmap.invalidateSize({pan:false}); lmap.setView(c,lmap.getZoom(),{animate:false});
+}
+document.addEventListener("keydown",function(e){ if(e.key==="Escape" && mapbox.classList.contains("mapfull")) setFull(false); });
+
+function onMapBtn(e){
+  var b=e.target.closest("button[data-a]"); if(!b) return;
+  var a=b.getAttribute("data-a");
+  if(a==="pins"){
+    showPins=!showPins; save("showpins",showPins); b.setAttribute("aria-pressed",showPins);
+    if(showPins) pinLayer.addTo(lmap); else lmap.removeLayer(pinLayer);
+  } else if(a==="full"){
+    setFull(!mapbox.classList.contains("mapfull"));
+  } else if(a==="me"){
+    // on and already in view: switch off. on but off-screen: bring it back. off: switch on.
+    if(watchId===null) startLocate(true);
+    else if(meMark && inRome(meMark.getLatLng()) && !lmap.getBounds().contains(meMark.getLatLng())) lmap.setView(meMark.getLatLng(),Math.max(lmap.getZoom(),16));
+    else stopLocate();
+  }
+}
+
+/* live location: only starts when asked, never leaves the device */
+var watchId=null, meMark=null, meRing=null, meCentre=false;
+function inRome(p){ return p.lat>ROME[0][0] && p.lat<ROME[1][0] && p.lng>ROME[0][1] && p.lng<ROME[1][1]; }
+function meBtn(on){ var b=lmapEl.querySelector('button[data-a="me"]'); if(b) b.setAttribute("aria-pressed",on); }
+function startLocate(centre){
+  if(!navigator.geolocation){ say("This browser can’t share your location."); return; }
+  meCentre=centre; save("locate",true); meBtn(true);
+  if(centre) say("Finding you…");
+  watchId=navigator.geolocation.watchPosition(onPos,onPosErr,{enableHighAccuracy:true,maximumAge:15000,timeout:30000});
+}
+function stopLocate(){
+  if(watchId!==null) navigator.geolocation.clearWatch(watchId);
+  watchId=null; save("locate",false); meBtn(false); say("");
+  if(meMark){ lmap.removeLayer(meMark); lmap.removeLayer(meRing); meMark=meRing=null; }
+}
+function onPos(pos){
+  var p=L.latLng(pos.coords.latitude,pos.coords.longitude), acc=pos.coords.accuracy||0;
+  if(!meMark){
+    meRing=L.circle(p,{radius:acc,className:"mering",interactive:false}).addTo(lmap);
+    meMark=L.marker(p,{icon:dot('<span class="me"></span>',24,-8),zIndexOffset:1000,interactive:false,keyboard:false,alt:"You are here"}).addTo(lmap);
+  } else { meMark.setLatLng(p); meRing.setLatLng(p); meRing.setRadius(acc); }
+  if(meCentre){
+    meCentre=false;
+    if(inRome(p)){ lmap.setView(p,Math.max(lmap.getZoom(),16)); say(""); }
+    else say("You’re not in Rome yet, so the map stays on the plan.");
+  } else if(inRome(p)) say("");
+}
+function onPosErr(err){
+  if(err.code===1){ stopLocate(); say("Location is switched off for this page. Allow it in your browser settings to see where you are."); }
+  else if(!meMark) say("No location fix yet. Still trying.");
+}
+
+var useL = !!(window.L && L.map && L.divIcon);
 function drawMap(items,nums){
+  if(useL){
+    try{ drawLeaflet(items,nums); return; }
+    catch(e){ useL=false; lmapEl.hidden=true; map.removeAttribute("hidden"); }
+  }
+  drawSketch(items,nums);
+}
+
+/* ---------- sketch map (fallback) ---------- */
+function drawSketch(items,nums){
   var W=Math.max(280,Math.round(map.parentNode.clientWidth)), H=Math.round(Math.min(380,Math.max(230,W*0.72)));
   map.setAttribute("viewBox","0 0 "+W+" "+H);
   var seq=[], seen={};
@@ -789,8 +970,15 @@ function drawMap(items,nums){
   cap.textContent="A sketch of where the day’s stops sit, not a street map. Numbers match the plan; H marks your hotel. Tap a marker to find it in the list.";
 }
 
-function setHot(p,scroll){
+function setHot(p,scroll,fromMap){
   hot=p;
+  if(lmap){
+    Object.keys(lmarks).forEach(function(id){ var el=lmarks[id].getElement(); if(el) el.firstChild.classList.toggle("hot",id===p); });
+    if(!fromMap){
+      if(p && lmarks[p]){ lmap.panTo(lmarks[p].getLatLng()); lmarks[p].openPopup(); }
+      else lmap.closePopup();
+    }
+  }
   [].forEach.call(tl.children,function(li){ li.classList.toggle("hot", !!p && li.getAttribute("data-p")===p); });
   [].forEach.call(map.querySelectorAll(".pin"),function(g){ g.classList.toggle("hot", !!p && g.getAttribute("data-p")===p); });
   if(scroll && p){
@@ -800,7 +988,10 @@ function setHot(p,scroll){
 }
 map.addEventListener("click",function(e){ var g=e.target.closest&&e.target.closest(".pin"); if(g) setHot(g.getAttribute("data-p"),true); });
 map.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ var g=e.target.closest&&e.target.closest(".pin"); if(g){ e.preventDefault(); setHot(g.getAttribute("data-p"),true); } } });
-tl.addEventListener("click",function(e){ if(e.target.closest("a")||e.target.closest("details")) return; var li=e.target.closest(".item"); if(li) setHot(li.getAttribute("data-p")===hot?null:li.getAttribute("data-p"),false); });
+tl.addEventListener("click",function(e){
+  var sb=e.target.closest("button[data-show]");
+  if(sb){ setHot(sb.getAttribute("data-show"),false); mapbox.scrollIntoView({block:"start"}); return; }
+  if(e.target.closest("a")||e.target.closest("details")) return; var li=e.target.closest(".item"); if(li) setHot(li.getAttribute("data-p")===hot?null:li.getAttribute("data-p"),false); });
 
 document.getElementById("choice").addEventListener("click",function(e){
   var b=e.target.closest("button[data-m]"); if(!b||!current||!current.choice) return;
@@ -845,7 +1036,13 @@ function route(){
   render(ok?h:(todayId||"wed"));
 }
 window.addEventListener("hashchange",route);
-var rz; window.addEventListener("resize",function(){ clearTimeout(rz); rz=setTimeout(function(){ if(current){ var keep=hot; render(current.id); if(keep) setHot(keep,false);} },150); });
+var rz, lastW=window.innerWidth;
+window.addEventListener("resize",function(){ clearTimeout(rz); rz=setTimeout(function(){
+  if(lmap) lmap.invalidateSize();
+  if(window.innerWidth===lastW) return;
+  lastW=window.innerWidth;
+  if(current && !useL){ var keep=hot; render(current.id); if(keep) setHot(keep,false); }
+},150); });
 renderChecks(); route();
 })();
 </script>
