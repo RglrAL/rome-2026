@@ -286,6 +286,10 @@ html.maplock{overflow:hidden}
 .phr .acts{display:flex;gap:8px;margin-top:8px}
 .phr .acts button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:.84rem;font-weight:600;cursor:pointer;min-height:36px}
 .namerow{max-width:420px}
+.gloss{list-style:none;margin:0;padding:0;max-width:640px}
+.gloss li{padding:9px 0;border-top:1px solid var(--line)}
+.gloss b{font-weight:600;font-size:1.02rem}
+.gloss span{display:block;font-size:.93rem;margin-top:1px}
 .namerow label{display:block;font-size:.88rem;color:var(--muted)}
 .useful{margin:6px 0 0}
 .useful .textbtn,.where .textbtn.uh{margin:0;font-size:.88rem}
@@ -364,6 +368,13 @@ html.maplock{overflow:hidden}
     <p>Every live music place among your pins. Pick a night to see what each one had listed and how far it is from that night’s hotel. Listings were read from each place’s own site on 13 November and can change, so check the link on the day.</p>
     <div class="seg pinseg" id="musicnights" role="group" aria-label="Night"></div>
     <div id="musiclist"></div>
+  </div>
+  <div class="pinsview" id="menuview" hidden>
+    <h2>Menu decoder</h2>
+    <p>Roman dishes and the words you’ll meet on a menu. Type to search in Italian or English.</p>
+    <p class="namerow"><label for="menuq">Search</label><input class="priv" id="menuq" type="search" placeholder="For example: orata, fried, pecorino" autocomplete="off" autocapitalize="none" spellcheck="false"></p>
+    <div id="menulist"></div>
+    <p class="refnote">Dish descriptions were checked against Wikipedia on 13 November 2026. Single-word entries are plain translations.</p>
   </div>
   <div class="pinsview" id="phrasesview" hidden>
     <h2>Italian phrases</h2>
@@ -893,9 +904,9 @@ function renderMusic(){
   document.getElementById("musiclist").innerHTML=musicRows(d,0);
 }
 function showView(id){
-  ["dayview","pinsview","musicview","phrasesview"].forEach(function(v){ document.getElementById(v).hidden = v!==id; });
+  ["dayview","pinsview","musicview","phrasesview","menuview"].forEach(function(v){ document.getElementById(v).hidden = v!==id; });
   DAYS.forEach(function(x){ document.getElementById("tab-"+x.id).removeAttribute("aria-current"); });
-  ["pins","music","phrases"].forEach(function(t){ var el=document.getElementById("tab-"+t); if(t+"view"===id) el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current"); });
+  ["pins","music","phrases","menu"].forEach(function(t){ var el=document.getElementById("tab-"+t); if(t+"view"===id) el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current"); });
 }
 function pinLook(n){ var t=LOOKPIN[n]; if(!t) return ""; return t.charAt(0)==="@" ? (LOOK[t.slice(1)]||LOOKPIN[t.slice(1)]||"") : t; }
 function lookText(k){ return LOOK[k] || (P[k] ? pinLook(P[k].n) : ""); }
@@ -1157,7 +1168,7 @@ DAYS.forEach(function(d){
 
 (function(){
   var a=document.createElement("a");
-  [["pins","Pins"],["music","Music"],["phrases","Phrases"]].forEach(function(t){
+  [["pins","Pins"],["music","Music"],["phrases","Phrases"],["menu","Menu"]].forEach(function(t){
     a=document.createElement("a");
     a.className="subtab"; a.href="#"+t[0]; a.id="tab-"+t[0]; a.textContent=t[1];
     document.getElementById("tabs2").appendChild(a);
@@ -1907,6 +1918,7 @@ function phrHtml(ctx,o){
       '<span class="acts">'+(p.hear?'':'<button type="button" data-showphr="'+i+'">Show</button>')+(speak?'<button type="button" data-hear="'+i+'"'+(itVoice?'':' hidden')+'>Hear it</button>':'')+'</span></li>';
   }
   var top=(o&&o.drv&&o.drv.length)?'<p class="useful">'+o.drv.map(function(k){ var di=driverInfo(k); return di?'<button type="button" class="pick" style="--c:var(--ink)" data-drv="'+k+'">Show the driver: '+esc(di.name)+'</button> ':''; }).join("")+'</p>':'';
+  if(ctx==="eat"||ctx==="quick"||ctx==="sweet"||ctx==="drink") top+='<p class="useful"><button type="button" class="pick" style="--c:var(--ink)" id="tomenu">Menu decoder</button></p>';
   return top+phrItems(ctx).map(function(g,gi){
     var say=g.l.filter(function(p){ return !p.hear; }), hear=g.l.filter(function(p){ return p.hear; });
     return (gi?'<h3 class="phrsec">'+esc(PHR.contexts[g.c]||g.c)+'</h3>':'')+
@@ -1934,6 +1946,7 @@ function openPhrases(ctx,o){
 }
 function closePhrases(){ phrPanel.hidden=true; if(!mapbox.classList.contains("mapfull")) document.documentElement.classList.remove("maplock"); }
 document.getElementById("phrclose").addEventListener("click",closePhrases);
+document.addEventListener("click",function(e){ if(e.target.id==="tomenu"){ if(!phrPanel.hidden) closePhrases(); location.hash="#menu"; window.scrollTo(0,document.querySelector(".tabs").offsetTop); } });
 document.getElementById("phrchips").addEventListener("click",function(e){
   var b=e.target.closest("button[data-ctx]"); if(!b) return; phrCtx=b.getAttribute("data-ctx"); renderPhrases();
 });
@@ -1956,6 +1969,26 @@ document.addEventListener("click",function(e){
   }catch(err){}
 });
 document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !phrPanel.hidden && driverEl.hidden) closePhrases(); });
+
+/* ---------- menu decoder, from menu.json ---------- */
+var MENU=null;
+function plain(t){ t=String(t).toLowerCase(); try{ t=t.normalize("NFD").replace(/[\u0300-\u036f]/g,""); }catch(e){} return t.replace(/[’']/g," "); }
+function menuPaint(){
+  var box=document.getElementById("menulist");
+  if(!MENU){ box.innerHTML='<p class="daynote">The menu words couldn’t be loaded. They need one visit with signal to be saved on this device.</p>'; return; }
+  var q=plain(document.getElementById("menuq").value.trim()), html="";
+  Object.keys(MENU.groups).forEach(function(g){
+    var l=MENU.entries.filter(function(e){ return e.g===g && (!q || plain(e.t+" "+e.d).indexOf(q)>=0); });
+    if(l.length) html+='<h3 class="phrsec">'+esc(MENU.groups[g])+'</h3><ul class="gloss">'+l.map(function(e){ return '<li><b lang="it">'+esc(e.t)+'</b><span>'+esc(e.d)+'</span></li>'; }).join("")+'</ul>';
+  });
+  box.innerHTML=html||'<p class="daynote">Nothing matches that. Try a shorter word.</p>';
+}
+function renderMenu(){
+  showView("menuview"); current=null;
+  if(MENU){ menuPaint(); return; }
+  fetch("menu.json").then(function(r){ return r.json(); }).then(function(j){ MENU=j; menuPaint(); }).catch(function(){ menuPaint(); });
+}
+document.getElementById("menuq").addEventListener("input",menuPaint);
 
 /* ---------- bookings tracker ---------- */
 var bookEl=document.getElementById("booklist");
@@ -2068,6 +2101,7 @@ function route(){
   if(h==="pins"){ renderPins(); return; }
   if(h==="music"){ renderMusic(); return; }
   if(h==="phrases"){ renderPhrases(); return; }
+  if(h==="menu"){ renderMenu(); return; }
   var ok=DAYS.some(function(d){return d.id===h;});
   render(ok?h:(todayId||"wed"));
 }

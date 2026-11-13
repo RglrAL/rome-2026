@@ -1,0 +1,498 @@
+{
+ "note": "v:1 means the description was checked against the dish's English Wikipedia article on 13 November 2026. Entries without it are plain translations of menu words.",
+ "groups": {
+  "read": "Reading the menu",
+  "pasta": "Roman pasta and soups",
+  "mains": "Roman mains",
+  "veg": "Vegetables and sides",
+  "street": "Street food and bakery",
+  "fish": "Fish and seafood",
+  "cook": "How it’s cooked",
+  "sweet": "Sweets and drinks"
+ },
+ "entries": [
+  {
+   "g": "read",
+   "t": "Antipasti",
+   "d": "Starters."
+  },
+  {
+   "g": "read",
+   "t": "Primi",
+   "d": "First courses: mostly pasta, with soup or rice."
+  },
+  {
+   "g": "read",
+   "t": "Secondi",
+   "d": "Main courses of meat or fish. They usually come on their own, without sides."
+  },
+  {
+   "g": "read",
+   "t": "Contorni",
+   "d": "Side dishes, ordered separately."
+  },
+  {
+   "g": "read",
+   "t": "Dolci",
+   "d": "Desserts."
+  },
+  {
+   "g": "read",
+   "t": "Coperto",
+   "d": "A cover charge per person. Sometimes written as pane e coperto, bread and cover."
+  },
+  {
+   "g": "read",
+   "t": "Servizio",
+   "d": "Service charge. Servizio incluso means it is already in the prices."
+  },
+  {
+   "g": "read",
+   "t": "Del giorno",
+   "d": "Of the day, as in piatto del giorno or pesce del giorno."
+  },
+  {
+   "g": "read",
+   "t": "Della casa",
+   "d": "Of the house: the house wine, or the house speciality."
+  },
+  {
+   "g": "read",
+   "t": "Fuori menù",
+   "d": "Off the menu: the day’s specials, often told to you rather than written."
+  },
+  {
+   "g": "read",
+   "t": "All’etto",
+   "d": "Per 100 grams. Fish sold by weight is often priced this way, so ask how big the fish is."
+  },
+  {
+   "g": "read",
+   "t": "Surgelato / congelato",
+   "d": "Frozen. Menus may flag frozen ingredients with an asterisk."
+  },
+  {
+   "g": "read",
+   "t": "Un quarto / mezzo litro",
+   "d": "A quarter or half litre: how house wine is ordered by the carafe."
+  },
+  {
+   "g": "pasta",
+   "t": "Cacio e pepe",
+   "d": "Pasta with grated pecorino romano and black pepper, usually on tonnarelli or spaghetti.",
+   "v": 1
+  },
+  {
+   "g": "pasta",
+   "t": "Gricia",
+   "d": "Pasta with guanciale, pecorino romano and black pepper.",
+   "v": 1
+  },
+  {
+   "g": "pasta",
+   "t": "Amatriciana",
+   "d": "Tomato sauce with guanciale, pecorino and chilli. It comes from the town of Amatrice, and in Roman dialect is written matriciana.",
+   "v": 1
+  },
+  {
+   "g": "pasta",
+   "t": "Carbonara",
+   "d": "Pasta with cured pork, eggs, hard cheese (usually pecorino romano) and black pepper.",
+   "v": 1
+  },
+  {
+   "g": "pasta",
+   "t": "Tonnarelli",
+   "d": "Square-cut egg pasta from Lazio, like thick spaghetti. The usual pasta for cacio e pepe.",
+   "v": 1
+  },
+  {
+   "g": "pasta",
+   "t": "Bucatini",
+   "d": "Thick spaghetti with a hole running through the middle.",
+   "v": 1
+  },
+  {
+   "g": "pasta",
+   "t": "Rigatoni con la pajata",
+   "d": "Pasta with the intestines of a milk-fed calf. Written pagliata outside Rome.",
+   "v": 1
+  },
+  {
+   "g": "pasta",
+   "t": "Gnocchi alla romana",
+   "d": "Gnocchi made from semolina, milk, butter and Parmesan, not potato.",
+   "v": 1
+  },
+  {
+   "g": "pasta",
+   "t": "Stracciatella",
+   "d": "On a Roman menu, a soup: meat broth with shreds of egg stirred in.",
+   "v": 1
+  },
+  {
+   "g": "pasta",
+   "t": "Guanciale",
+   "d": "Salt-cured pork cheek, the meat in gricia, amatriciana and carbonara.",
+   "v": 1
+  },
+  {
+   "g": "pasta",
+   "t": "Pecorino romano",
+   "d": "A hard, salty sheep’s milk cheese, grated over pasta.",
+   "v": 1
+  },
+  {
+   "g": "mains",
+   "t": "Saltimbocca alla romana",
+   "d": "Veal with prosciutto and sage, cooked in white wine and butter.",
+   "v": 1
+  },
+  {
+   "g": "mains",
+   "t": "Abbacchio",
+   "d": "Lamb, cooked the Roman way.",
+   "v": 1
+  },
+  {
+   "g": "mains",
+   "t": "Coda alla vaccinara",
+   "d": "Oxtail stew with vegetables, notably celery.",
+   "v": 1
+  },
+  {
+   "g": "mains",
+   "t": "Trippa alla romana",
+   "d": "Beef tripe in tomato sauce.",
+   "v": 1
+  },
+  {
+   "g": "mains",
+   "t": "Quinto quarto",
+   "d": "Offal, literally the fifth quarter: tripe, oxtail, pajata and the like.",
+   "v": 1
+  },
+  {
+   "g": "mains",
+   "t": "Porchetta",
+   "d": "Boneless roast pork, fatty and with the skin left on.",
+   "v": 1
+  },
+  {
+   "g": "mains",
+   "t": "Polpette",
+   "d": "Meatballs. Al sugo means in tomato sauce."
+  },
+  {
+   "g": "mains",
+   "t": "Baccalà",
+   "d": "Dried, salted cod.",
+   "v": 1
+  },
+  {
+   "g": "mains",
+   "t": "Filetti di baccalà",
+   "d": "Fillets of salt cod, usually fried."
+  },
+  {
+   "g": "veg",
+   "t": "Puntarelle",
+   "d": "Chicory shoots, curled in cold water and dressed with anchovy, garlic and vinegar.",
+   "v": 1
+  },
+  {
+   "g": "veg",
+   "t": "Carciofi alla romana",
+   "d": "Artichokes braised in the pan. A springtime dish in Rome, so in November ask whether they are fresh.",
+   "v": 1
+  },
+  {
+   "g": "veg",
+   "t": "Carciofi alla giudia",
+   "d": "Deep-fried whole artichokes, from Rome’s Jewish cooking.",
+   "v": 1
+  },
+  {
+   "g": "veg",
+   "t": "Cicoria",
+   "d": "Chicory greens. Ripassata means tossed in the pan afterwards, usually with garlic and oil."
+  },
+  {
+   "g": "veg",
+   "t": "Broccolo romanesco",
+   "d": "The pale green, spiky Roman cauliflower.",
+   "v": 1
+  },
+  {
+   "g": "veg",
+   "t": "Fiori di zucca",
+   "d": "Courgette flowers."
+  },
+  {
+   "g": "veg",
+   "t": "Patate al forno",
+   "d": "Roast potatoes."
+  },
+  {
+   "g": "veg",
+   "t": "Insalata mista",
+   "d": "Mixed salad."
+  },
+  {
+   "g": "veg",
+   "t": "Funghi",
+   "d": "Mushrooms."
+  },
+  {
+   "g": "veg",
+   "t": "Fagioli",
+   "d": "Beans."
+  },
+  {
+   "g": "street",
+   "t": "Supplì",
+   "d": "A fried ball of rice in tomato sauce with mozzarella in the middle. Supplì al telefono is named for the strings of cheese.",
+   "v": 1
+  },
+  {
+   "g": "street",
+   "t": "Pizza al taglio",
+   "d": "Pizza baked in rectangular trays and sold in slices by weight.",
+   "v": 1
+  },
+  {
+   "g": "street",
+   "t": "Pizza bianca",
+   "d": "Plain pizza bread with oil and salt, eaten on its own or filled."
+  },
+  {
+   "g": "street",
+   "t": "Pinsa",
+   "d": "An oval flatbread sold as a lighter kind of pizza. It is a modern product; the ancient Roman origin story was marketing.",
+   "v": 1
+  },
+  {
+   "g": "street",
+   "t": "Trapizzino",
+   "d": "A pocket of pizza bread with a filling, invented in Rome by Stefano Callegari.",
+   "v": 1
+  },
+  {
+   "g": "street",
+   "t": "Schiacciata",
+   "d": "A Tuscan flatbread, used for filled sandwiches."
+  },
+  {
+   "g": "street",
+   "t": "Bruschetta",
+   "d": "Grilled bread with garlic, olive oil and salt, often topped with tomato.",
+   "v": 1
+  },
+  {
+   "g": "fish",
+   "t": "Pesce del giorno",
+   "d": "Fish of the day. Pescato del giorno means the day’s catch."
+  },
+  {
+   "g": "fish",
+   "t": "Spigola / branzino",
+   "d": "Sea bass."
+  },
+  {
+   "g": "fish",
+   "t": "Orata",
+   "d": "Gilthead bream."
+  },
+  {
+   "g": "fish",
+   "t": "Rombo",
+   "d": "Turbot."
+  },
+  {
+   "g": "fish",
+   "t": "Sogliola",
+   "d": "Sole."
+  },
+  {
+   "g": "fish",
+   "t": "Ricciola",
+   "d": "Amberjack."
+  },
+  {
+   "g": "fish",
+   "t": "Tonno",
+   "d": "Tuna."
+  },
+  {
+   "g": "fish",
+   "t": "Pesce spada",
+   "d": "Swordfish."
+  },
+  {
+   "g": "fish",
+   "t": "Triglia",
+   "d": "Red mullet."
+  },
+  {
+   "g": "fish",
+   "t": "Alici / acciughe",
+   "d": "Anchovies."
+  },
+  {
+   "g": "fish",
+   "t": "Calamari",
+   "d": "Squid."
+  },
+  {
+   "g": "fish",
+   "t": "Seppie",
+   "d": "Cuttlefish."
+  },
+  {
+   "g": "fish",
+   "t": "Polpo",
+   "d": "Octopus. Moscardini are baby octopus."
+  },
+  {
+   "g": "fish",
+   "t": "Gamberi",
+   "d": "Prawns."
+  },
+  {
+   "g": "fish",
+   "t": "Scampi",
+   "d": "Langoustines."
+  },
+  {
+   "g": "fish",
+   "t": "Cozze",
+   "d": "Mussels."
+  },
+  {
+   "g": "fish",
+   "t": "Vongole",
+   "d": "Clams."
+  },
+  {
+   "g": "fish",
+   "t": "Ostriche",
+   "d": "Oysters."
+  },
+  {
+   "g": "fish",
+   "t": "Crudo / crudi di mare",
+   "d": "Raw fish or raw seafood."
+  },
+  {
+   "g": "fish",
+   "t": "Tartare / carpaccio",
+   "d": "Raw fish, chopped or sliced thin."
+  },
+  {
+   "g": "fish",
+   "t": "Fritto misto / frittura",
+   "d": "A mixed fry: small pieces deep-fried in oil.",
+   "v": 1
+  },
+  {
+   "g": "fish",
+   "t": "All’acqua pazza",
+   "d": "White fish poached in a light, herbed broth, sometimes with tomato.",
+   "v": 1
+  },
+  {
+   "g": "fish",
+   "t": "Zuppa di pesce",
+   "d": "Fish soup or stew."
+  },
+  {
+   "g": "cook",
+   "t": "Alla griglia",
+   "d": "Grilled."
+  },
+  {
+   "g": "cook",
+   "t": "Al forno",
+   "d": "Baked or roasted in the oven."
+  },
+  {
+   "g": "cook",
+   "t": "Fritto",
+   "d": "Fried."
+  },
+  {
+   "g": "cook",
+   "t": "In umido",
+   "d": "Stewed."
+  },
+  {
+   "g": "cook",
+   "t": "Al cartoccio",
+   "d": "Baked in a paper parcel."
+  },
+  {
+   "g": "cook",
+   "t": "Al sale",
+   "d": "Baked in a crust of salt."
+  },
+  {
+   "g": "cook",
+   "t": "Ripieno",
+   "d": "Stuffed."
+  },
+  {
+   "g": "cook",
+   "t": "Affumicato",
+   "d": "Smoked."
+  },
+  {
+   "g": "cook",
+   "t": "Piccante",
+   "d": "Spicy."
+  },
+  {
+   "g": "cook",
+   "t": "In bianco",
+   "d": "Without tomato."
+  },
+  {
+   "g": "cook",
+   "t": "Al sugo / al pomodoro",
+   "d": "In tomato sauce."
+  },
+  {
+   "g": "sweet",
+   "t": "Maritozzo",
+   "d": "A sweet bun split and filled with whipped cream.",
+   "v": 1
+  },
+  {
+   "g": "sweet",
+   "t": "Cornetto",
+   "d": "The Italian croissant, eaten at breakfast."
+  },
+  {
+   "g": "sweet",
+   "t": "Crostata",
+   "d": "A baked tart, often with jam.",
+   "v": 1
+  },
+  {
+   "g": "sweet",
+   "t": "Tiramisù",
+   "d": "Coffee-soaked sponge fingers under a cream of egg yolks, sugar and mascarpone, dusted with cocoa.",
+   "v": 1
+  },
+  {
+   "g": "sweet",
+   "t": "Grattachecca",
+   "d": "Shaved ice with sweet syrup, sold from kiosks.",
+   "v": 1
+  },
+  {
+   "g": "sweet",
+   "t": "Amaro",
+   "d": "A bitter herbal liqueur, drunk after the meal."
+  }
+ ]
+}
