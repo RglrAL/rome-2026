@@ -383,6 +383,10 @@ html.maplock{overflow:hidden}
 .bkline{margin:6px 0 0;font-size:.9rem;max-width:62ch}
 .bkline b{font-weight:600}
 .bkline .textbtn{margin:0 0 0 8px;font-size:.88rem}
+.bigtel{display:block;font-size:1.7rem;font-weight:700;line-height:1.2}
+.telgo{display:inline-block;margin:4px 0 2px;padding:7px 16px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-weight:600;font-size:.9rem;text-decoration:none}
+#help .ref a[href^="tel:"]:not(.bigtel){white-space:nowrap;display:inline-block;padding:6px 0}
+#help .ref dd{font-variant-numeric:normal}
 .priv{display:block;width:100%;font:inherit;font-size:1rem;color:inherit;background:transparent;border:0;border-bottom:1px dashed var(--line);border-radius:0;padding:1px 0 2px;margin:0 0 2px}
 .priv::placeholder{color:var(--muted);opacity:1;font-size:.92rem}
 .foot{padding:26px 0 44px;color:var(--muted);font-size:.85rem;max-width:70ch}
@@ -539,6 +543,53 @@ main.wrap{padding-bottom:84px}
     <p class="progress" id="progress"></p>
     <ul class="checks" id="checks"></ul>
     <button class="textbtn" id="reset" type="button">Clear all ticks</button>
+  </div>
+</section>
+
+<section class="lower" id="help">
+  <div class="wrap">
+    <h2>If something goes wrong</h2>
+    <p>Works without signal, apart from the calls themselves. Your own numbers aren’t published with this page. Type them in once and they’re saved on this device only.</p>
+    <div class="refs">
+      <div class="ref" style="--c:var(--work)">
+        <h3>Emergency</h3>
+        <dl>
+          <dt>Any emergency</dt><dd><a class="bigtel" href="tel:112">112</a>Police, ambulance and fire. Free from any phone.</dd>
+          <dt>Direct lines</dt><dd>Police <a href="tel:113">113</a> · Ambulance <a href="tel:118">118</a> · Fire <a href="tel:115">115</a></dd>
+          <dt>Nearest help</dt><dd>Your hotel’s desk is often the quickest.<br>Hotel Isa <a href="tel:+39063212610">+39 06 321 2610</a><br>Albergo Abruzzi <a href="tel:+390697841369">+39 06 9784 1369</a></dd>
+        </dl>
+        <p class="refnote"><button type="button" class="chipbtn" data-phr="trouble">Phrases for when something goes wrong</button></p>
+      </div>
+      <div class="ref" style="--c:var(--stay)">
+        <h3>Embassy of Ireland</h3>
+        <dl>
+          <dt>Phone</dt><dd><a href="tel:+39065852381">+39 06 5852 381</a></dd>
+          <dt>If closed</dt><dd>Ring the same number and leave a message on the duty officer’s voicemail. The embassy says it is checked regularly.</dd>
+          <dt>Open</dt><dd>Monday to Friday, 9:15 to 13:00 and 14:15 to 17:30. Visits are by appointment only.</dd>
+          <dt>Address</dt><dd><a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Embassy%20of%20Ireland%2C%20Villa%20Spada%2C%20Via%20Giacomo%20Medici%201%2C%20Roma">Villa Spada, Via Giacomo Medici 1, 00153 Rome</a>, on the Gianicolo</dd>
+          <dt>Passport</dt><dd>If yours is lost or stolen, this is who to ring.</dd>
+        </dl>
+      </div>
+      <div class="ref" style="--c:var(--free)">
+        <h3>If you need a doctor</h3>
+        <dl>
+          <dt>Health card</dt><dd>Your European Health Insurance Card covers public healthcare only. Show it when you’re treated. You may still be asked to pay a share, which isn’t refunded.</dd>
+          <dt>Insurance</dt><dd>The card doesn’t replace travel insurance. Ring your insurer before agreeing to anything costly.</dd>
+          <dt>Insurer</dt><dd><input class="priv" data-priv="insphone" data-tel="1" type="tel" aria-label="Travel insurer’s emergency number" placeholder="Add their emergency number" autocomplete="off"><a class="telgo" hidden>Call</a></dd>
+          <dt>Policy</dt><dd><input class="priv" data-priv="inspolicy" aria-label="Travel insurance policy number" placeholder="Add policy number" autocomplete="off" autocapitalize="characters" spellcheck="false"></dd>
+          <dt>Health service</dt><dd>HSE Live from abroad: <a href="tel:+35312408787">+353 1 240 8787</a></dd>
+        </dl>
+      </div>
+      <div class="ref" style="--c:var(--travel)">
+        <h3>Lost card, phone or bag</h3>
+        <dl>
+          <dt>Bank</dt><dd><input class="priv" data-priv="cardphone" data-tel="1" type="tel" aria-label="Your bank’s lost card number" placeholder="Add the lost-card number" autocomplete="off"><a class="telgo" hidden>Call</a></dd>
+          <dt>Stolen</dt><dd>Ask the police for a written report, and check what your insurer needs from you.</dd>
+          <dt>Watch for</dt><dd>Ireland’s travel advice says pickpocketing and bag snatching are common on public transport and in tourist areas, and names Termini station.</dd>
+        </dl>
+      </div>
+    </div>
+    <p class="foot">Embassy details, emergency numbers and the pickpocket warning are from Ireland’s travel advice for Italy and the embassy’s own pages on ireland.ie. Health card details are from hse.ie. All read on 13 November 2026.</p>
   </div>
 </section>
 
@@ -873,6 +924,7 @@ var CHECKS = [
  ["fri","Book Friday dinner in Trastevere","La Gensola or Le Mani in Pasta."],
  ["sat","Book Saturday night","A table in Monti and Drink Kong, or Armando al Pantheon if you’d rather stay by the hotel."],
  ["abr","Find your Albergo Abruzzi confirmation","It isn’t in this itinerary yet. Have the booking number to hand for Saturday."],
+ ["help","Add your insurer’s and bank’s emergency numbers","Under “If something goes wrong” on this tab. Pack your European Health Insurance Card too."],
  ["id","Passport and photo ID","Needed for the flight and for named tickets."],
  ["pack","Pack for the ceremony, the stairs and the rain","Something smart for Thursday night, proper walking shoes for the dome and Saturday, covered shoulders and knees for churches, and an umbrella. Late November in Rome is usually 8 to 17°C with showers."],
  ["taxi","On Saturday, ask Albergo Abruzzi to book Sunday’s 08:00 taxi",""],
@@ -2077,6 +2129,13 @@ var privEls=document.querySelectorAll("input[data-priv]");
     save("priv:"+k,el.value);
     [].forEach.call(privEls,function(o){ if(o!==el && o.getAttribute("data-priv")===k) o.value=el.value; });
   });
+});
+
+/* a typed-in phone number gets a Call link beside it */
+[].forEach.call(document.querySelectorAll("input[data-tel]"),function(el){
+  var a=el.parentNode.querySelector(".telgo");
+  function sync(){ var n=el.value.replace(/[^\d+]/g,""); a.hidden=n.length<5; if(!a.hidden) a.href="tel:"+n; }
+  el.addEventListener("input",sync); sync();
 });
 
 /* ---------- show the driver: destination in Italian, large, full screen ---------- */
