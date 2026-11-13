@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rome, 18–22 November</title>
-<script>try{var t=JSON.parse(localStorage.getItem("rome26:theme"));if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script>try{var t=JSON.parse(localStorage.getItem("rome26:theme"));if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}
+try{if(!localStorage.getItem("rome26:seen"))document.documentElement.className+=" showcover";}catch(e){}</script>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#ECEBE7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#16181B" media="(prefers-color-scheme: dark)">
@@ -384,6 +385,32 @@ html.maplock{overflow:hidden}
 .bkline b{font-weight:600}
 .bkline .textbtn{margin:0 0 0 8px;font-size:.88rem}
 .fstat a{display:block;padding:5px 0}
+#cover{display:none;position:fixed;inset:0;z-index:5000;background:#07080c;color:#fff;flex-direction:column;justify-content:space-between;height:100vh;height:100dvh;overflow:hidden}
+.showcover #cover{display:flex}
+.showcover body{overflow:hidden}
+#cover picture,#cover img{position:absolute;inset:0;width:100%;height:100%}
+#cover img{object-fit:cover;object-position:50% 45%;animation:covin 1.2s ease both}
+#cover::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(7,8,12,.55) 0,rgba(7,8,12,0) 30%,rgba(7,8,12,0) 62%,rgba(7,8,12,.82) 100%)}
+.covtop,.covfoot{position:relative;z-index:2;text-align:center;padding:0 24px}
+.covtop{padding-top:calc(env(safe-area-inset-top,0px) + 9vh)}
+.covfoot{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 28px)}
+.covkick{margin:0;font-size:.8rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;opacity:.85}
+#cover h1{margin:6px 0 4px;font-family:var(--display);font-weight:400;font-size:clamp(4rem,22vw,7.5rem);line-height:1;letter-spacing:.04em;color:#fff;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.covdate{margin:0;font-family:var(--display);font-size:1.12rem;opacity:.95;text-shadow:0 1px 12px rgba(0,0,0,.6)}
+#coveropen{font:inherit;font-weight:600;font-size:1.05rem;color:#14151a;background:#fff;border:0;border-radius:999px;padding:15px 38px;min-height:52px;cursor:pointer;box-shadow:0 6px 30px rgba(0,0,0,.45)}
+#coveropen:focus-visible{outline:3px solid #f2c26b;outline-offset:3px}
+.covcred{margin:14px 0 0;font-size:.74rem;opacity:.7}
+@media (max-aspect-ratio: 1/1){
+  #cover{background:#0c0a10}
+  #cover picture{top:auto;bottom:0;height:80%}
+  #cover img{object-position:50% 100%;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%);mask-image:linear-gradient(180deg,transparent 0,#000 16%)}
+  #cover::before{background:linear-gradient(180deg,rgba(7,8,12,0) 0,rgba(7,8,12,0) 64%,rgba(7,8,12,.82) 100%)}
+  .covtop{padding-top:calc(env(safe-area-inset-top,0px) + 6vh)}
+  #cover h1{font-size:clamp(3.6rem,20vw,6rem)}
+}
+@keyframes covin{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
+#cover.going{opacity:0;transition:opacity .35s ease}
+@media (prefers-reduced-motion: reduce){#cover img{animation:none}#cover.going{transition:none}}
 .bkbox{display:block;width:100%;max-width:560px;box-sizing:border-box;min-height:120px;margin:8px 0;padding:10px 12px;font:inherit;font-size:.85rem;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
 #bkrestore{margin-top:10px}
 .bigtel{display:block;font-size:1.7rem;font-weight:700;line-height:1.2}
@@ -440,6 +467,21 @@ main.wrap{padding-bottom:84px}
 </style>
 </head>
 <body>
+<div id="cover" role="dialog" aria-modal="true" aria-label="Rome, 18 to 22 November 2026">
+  <picture>
+    <source media="(min-aspect-ratio: 1/1)" srcset="cover/wide.jpg">
+    <img src="cover/tall.jpg" alt="St Peter’s dome lit at night above the Tiber, with a stone bridge and its reflections in the water" loading="lazy" decoding="async">
+  </picture>
+  <div class="covtop">
+    <p class="covkick">Dublin to Rome</p>
+    <h1>Rome</h1>
+    <p class="covdate">18 to 22 November 2026</p>
+  </div>
+  <div class="covfoot">
+    <button type="button" id="coveropen">Open the plan</button>
+    <p class="covcred">Photo: Jebulon, Wikimedia Commons. Public domain.</p>
+  </div>
+</div>
 
 <header class="wrap mast">
   <h1>Rome <span>Wednesday 18 to Sunday 22 November 2026</span></h1>
@@ -678,6 +720,7 @@ main.wrap{padding-bottom:84px}
       <p class="refnote" id="bkinmsg" role="status"></p>
     </details>
     <p class="refnote" id="bkkeep"></p>
+    <p class="refnote"><button type="button" class="chipbtn" id="coveragain">Show the cover again</button></p>
     <p class="foot">Flight, hotel and programme times come from your confirmations and the ESN programme page. The status links need signal: Flightradar24 opens straight on your flight, Ryanair’s page asks for the flight number and date and is the one to trust if they disagree. Opening hours, ticket prices and taxi fares were checked on 13 November 2026 and can change, so confirm when you book. Restaurants and bars, including your pins, haven’t been checked for this week’s opening hours. Walking times are estimates. Sun times are calculated for central Rome and are good to a minute or two; golden hour here means the sun is less than 6° above the horizon. The forecast comes from <a target="_blank" rel="noopener" href="https://open-meteo.com/">Open-Meteo</a> when you have signal, and the last one loaded is kept on this device. The “What to look at” notes were checked against Wikipedia on 13 November 2026. Notes about restaurants, bars and music venues repeat only what each place’s own website said on that date; places with no working site of their own have none.</p>
   </div>
 </section>
@@ -2203,6 +2246,19 @@ if(navigator.storage && navigator.storage.persist){
   navigator.storage.persisted().then(function(p){ return p || navigator.storage.persist(); }).then(function(p){ keepNote.kept=!!p; keepNote(); },function(){});
 }
 keepNote();
+
+/* ---------- cover: shown the first time the app is opened on a device ---------- */
+(function(){
+  var cov=document.getElementById("cover"), root=document.documentElement, btn=document.getElementById("coveropen");
+  function shut(){
+    save("seen",1); cov.classList.add("going");
+    setTimeout(function(){ root.classList.remove("showcover"); cov.classList.remove("going"); },360);
+  }
+  btn.addEventListener("click",shut);
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape" && root.classList.contains("showcover")) shut(); });
+  if(root.classList.contains("showcover")) btn.focus();
+  document.getElementById("coveragain").addEventListener("click",function(){ root.classList.add("showcover"); window.scrollTo(0,0); btn.focus(); });
+})();
 
 /* a typed-in phone number gets a Call link beside it */
 [].forEach.call(document.querySelectorAll("input[data-tel]"),function(el){
