@@ -399,15 +399,14 @@ html.maplock{overflow:hidden}
 .covdate{margin:0;font-family:var(--display);font-size:1.12rem;opacity:.95;text-shadow:0 1px 12px rgba(0,0,0,.6)}
 #coveropen{font:inherit;font-weight:600;font-size:1.05rem;color:#14151a;background:#fff;border:0;border-radius:999px;padding:15px 38px;min-height:52px;cursor:pointer;box-shadow:0 6px 30px rgba(0,0,0,.45)}
 #coveropen:focus-visible{outline:3px solid #f2c26b;outline-offset:3px}
-.covcred{margin:14px 0 0;font-size:.74rem;opacity:.7}
-@media (max-aspect-ratio: 1/1){
-  #cover{background:#0c0a10}
-  #cover picture{top:auto;bottom:0;height:80%}
-  #cover img{object-position:50% 100%;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%);mask-image:linear-gradient(180deg,transparent 0,#000 16%)}
-  #cover::before{background:linear-gradient(180deg,rgba(7,8,12,0) 0,rgba(7,8,12,0) 64%,rgba(7,8,12,.82) 100%)}
-  .covtop{padding-top:calc(env(safe-area-inset-top,0px) + 6vh)}
-  #cover h1{font-size:clamp(3.6rem,20vw,6rem)}
-}
+.covcred{margin:14px 0 0;font-size:.74rem;opacity:.8}
+.covcred a{color:inherit}
+#cover{justify-content:flex-end;background:#071560}
+#cover img{object-position:50% 0}
+#cover::before{background:linear-gradient(180deg,rgba(4,8,30,0) 0,rgba(4,8,30,0) 42%,rgba(4,8,30,.62) 68%,rgba(4,8,30,.93) 100%)}
+.covtop{padding-top:0;margin-bottom:26px}
+#cover h1{font-size:clamp(3.6rem,20vw,6.5rem)}
+@media (max-height: 420px){#cover h1{font-size:3.2rem}.covtop{margin-bottom:14px}.covfoot{padding-bottom:14px}}
 @keyframes covin{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
 #cover.going{opacity:0;transition:opacity .35s ease}
 @media (prefers-reduced-motion: reduce){#cover img{animation:none}#cover.going{transition:none}}
@@ -469,8 +468,8 @@ main.wrap{padding-bottom:84px}
 <body>
 <div id="cover" role="dialog" aria-modal="true" aria-label="Rome, 18 to 22 November 2026">
   <picture>
-    <source media="(min-aspect-ratio: 1/1)" srcset="cover/wide.jpg">
-    <img src="cover/tall.jpg" alt="St Peter’s dome lit at night above the Tiber, with a stone bridge and its reflections in the water" loading="lazy" decoding="async">
+    <source media="(min-aspect-ratio: 1/1)" srcset="cover/colosseum-wide.jpg">
+    <img src="cover/colosseum-tall.jpg" alt="The Colosseum at dusk, its arches lit gold against a deep blue sky" loading="lazy" decoding="async">
   </picture>
   <div class="covtop">
     <p class="covkick">Dublin to Rome</p>
@@ -479,7 +478,7 @@ main.wrap{padding-bottom:84px}
   </div>
   <div class="covfoot">
     <button type="button" id="coveropen">Open the plan</button>
-    <p class="covcred">Photo: Jebulon, Wikimedia Commons. Public domain.</p>
+    <p class="covcred">Photo: <a target="_blank" rel="noopener" href="https://commons.wikimedia.org/wiki/File:Colosseum_in_Rome-April_2007-1-_copie_2B.jpg">Diliff, Wikimedia Commons</a>, <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-sa/2.5/">CC BY-SA 2.5</a>, cropped.</p>
   </div>
 </div>
 
