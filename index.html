@@ -45,7 +45,7 @@
   --map-bg:#1B1E21; --river:#2B414A; --focus:#ECEBE7;
 }
 *,*::before,*::after{box-sizing:inherit}
-html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 84px)}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 124px)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 a{color:inherit;text-underline-offset:3px}
@@ -73,11 +73,14 @@ button{font:inherit;color:inherit}
 .tab .today{font-size:.7rem;font-weight:700;margin-left:6px;vertical-align:2px}
 
 /* day layout */
+.tabs nav.sub{padding:0 0 8px;gap:6px}
+.subtab{flex:0 0 auto;text-decoration:none;padding:4px 13px;border:1px solid var(--line);border-radius:999px;font-size:.86rem;font-weight:600;background:var(--surface)}
+.subtab[aria-current="page"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .day{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;padding:26px 0 40px}
 @media (min-width:900px){
   .day{grid-template-columns:minmax(0,1fr) 430px;gap:40px}
   .mapcol{order:2}
-  .mapbox{position:sticky;top:calc(env(safe-area-inset-top,0px) + 92px)}
+  .mapbox{position:sticky;top:calc(env(safe-area-inset-top,0px) + 130px)}
 }
 .dayhead h2{font-family:var(--display);font-weight:400;font-size:clamp(1.7rem,4.5vw,2.3rem);line-height:1.1;margin:0}
 .dayhead p{margin:8px 0 0;color:var(--muted);max-width:62ch}
@@ -121,6 +124,7 @@ button{font:inherit;color:inherit}
 .look summary{cursor:pointer;font-size:.9rem;font-weight:600;color:var(--c);width:max-content;max-width:100%;padding:2px 0}
 .look p{margin:6px 0 2px;font-size:.92rem}
 .pinlist .ds>.textbtn{margin:2px 0 0;font-size:.88rem;font-weight:600;color:inherit}
+.pinlist .ds.macts>.textbtn{margin:0}
 .pinlist .ds.macts{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:baseline;margin-top:6px}
 .macts a{font-weight:600}
 .macts .textbtn{margin:0;font-size:inherit;font-weight:600;color:inherit}
@@ -268,6 +272,26 @@ html.maplock{overflow:hidden}
 .ref dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;font-size:.92rem}
 .ref dt{color:var(--muted)}
 .ref dd{margin:0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#phrpanel{position:fixed;inset:0;z-index:38;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 0 calc(env(safe-area-inset-bottom,0px) + 24px)}
+.phrhead{display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;background:var(--bg);padding:6px 0 10px}
+.phrhead h2{font-family:var(--display);font-weight:400;font-size:1.6rem;margin:0}
+.phrhead .pillbtn{margin:0}
+.phrsec{font-size:.82rem;font-weight:600;color:var(--muted);margin:22px 0 2px}
+.phr{list-style:none;margin:0;padding:0;max-width:640px}
+.phr li{padding:12px 0;border-top:1px solid var(--line)}
+.phr .it{display:block;font-size:1.12rem;font-weight:600;line-height:1.3}
+.phr .en{display:block;margin-top:2px}
+.phr .say{display:block;margin-top:2px;font-size:.88rem;color:var(--muted)}
+.phr .tip{display:block;margin-top:4px;font-size:.9rem}
+.phr .acts{display:flex;gap:8px;margin-top:8px}
+.phr .acts button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:.84rem;font-weight:600;cursor:pointer;min-height:36px}
+.namerow{max-width:420px}
+.namerow label{display:block;font-size:.88rem;color:var(--muted)}
+.useful{margin:6px 0 0}
+.useful .textbtn,.where .textbtn.uh{margin:0;font-size:.88rem}
+.strikebox{margin:12px 0 0;padding:12px 14px;border:1px solid var(--ink);border-radius:12px;font-size:.93rem;max-width:66ch}
+.strikebox b{font-weight:600}
+.strikebox small{display:block;margin-top:6px;color:var(--muted);font-size:.84rem}
 #driver{position:fixed;inset:0;z-index:40;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 22px) 22px calc(env(safe-area-inset-bottom,0px) + 20px)}
 .dmain{margin:auto 0}
 .dsay{margin:0 0 14px;font-size:1.2rem;color:var(--muted)}
@@ -316,7 +340,7 @@ html.maplock{overflow:hidden}
   <div class="status" id="offpill" hidden>Saved for offline use</div>
 </header>
 
-<div class="tabs"><div class="wrap"><nav id="tabs" aria-label="Days"></nav></div></div>
+<div class="tabs"><div class="wrap"><nav id="tabs" aria-label="Days"></nav><nav id="tabs2" class="sub" aria-label="More"></nav></div></div>
 
 <main class="wrap">
   <div class="pinsview" id="pinsview" hidden>
@@ -341,6 +365,13 @@ html.maplock{overflow:hidden}
     <div class="seg pinseg" id="musicnights" role="group" aria-label="Night"></div>
     <div id="musiclist"></div>
   </div>
+  <div class="pinsview" id="phrasesview" hidden>
+    <h2>Italian phrases</h2>
+    <p>Short phrases for the places on this trip. “Show” fills the screen with the Italian, to hold up to someone. “Hear it” uses your phone’s own Italian voice, where it has one.</p>
+    <p class="namerow"><label for="phrname">Your surname, for the booking phrases</label><input class="priv" id="phrname" data-priv="surname" placeholder="Add on this device" autocomplete="off" spellcheck="false"></p>
+    <div class="chips" id="phrchips" role="group" aria-label="Situation"></div>
+    <div id="phrlist"></div>
+  </div>
   <div class="day" id="dayview">
     <div id="today"></div>
     <div class="mapcol">
@@ -357,6 +388,7 @@ html.maplock{overflow:hidden}
         <p class="sunline" id="sunline"></p>
         <p class="sunline" id="wxline"></p>
         <div id="wxrain"></div>
+        <div id="strike"></div>
       </div>
       <div id="choice"></div>
       <ul class="legend" aria-label="Colour key">
@@ -451,9 +483,16 @@ html.maplock{overflow:hidden}
   </div>
 </section>
 
+<div id="phrpanel" hidden role="dialog" aria-modal="true" aria-label="Useful phrases here">
+  <div class="wrap">
+    <div class="phrhead"><h2 id="phrtitle"></h2><button type="button" class="pillbtn" id="phrclose">Close</button></div>
+    <div id="phrpanellist"></div>
+  </div>
+</div>
+
 <div id="driver" hidden role="dialog" aria-modal="true" aria-label="Destination to show a taxi driver">
   <div class="dmain" lang="it">
-    <p class="dsay">Vorrei andare a:</p>
+    <p class="dsay" id="dsay">Vorrei andare a:</p>
     <p class="dname" id="dname"></p>
     <p class="dad" id="dad"></p>
     <p class="dfare" id="dfare"></p>
@@ -853,9 +892,9 @@ function renderMusic(){
   document.getElementById("musiclist").innerHTML=musicRows(d,0);
 }
 function showView(id){
-  ["dayview","pinsview","musicview"].forEach(function(v){ document.getElementById(v).hidden = v!==id; });
+  ["dayview","pinsview","musicview","phrasesview"].forEach(function(v){ document.getElementById(v).hidden = v!==id; });
   DAYS.forEach(function(x){ document.getElementById("tab-"+x.id).removeAttribute("aria-current"); });
-  ["pins","music"].forEach(function(t){ var el=document.getElementById("tab-"+t); if(t+"view"===id) el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current"); });
+  ["pins","music","phrases"].forEach(function(t){ var el=document.getElementById("tab-"+t); if(t+"view"===id) el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current"); });
 }
 function pinLook(n){ var t=LOOKPIN[n]; if(!t) return ""; return t.charAt(0)==="@" ? (LOOK[t.slice(1)]||LOOKPIN[t.slice(1)]||"") : t; }
 function lookText(k){ return LOOK[k] || (P[k] ? pinLook(P[k].n) : ""); }
@@ -1031,6 +1070,18 @@ function lightLine(d,it){
   return '<p class="light"><span class="lflag">Light</span>'+txt+'</p>';
 }
 
+/* ---------- strikes reported for the trip days. From Italian news strike calendars read on 13 November 2026;
+   the official register could not be reached to confirm, and strikes are often revoked or moved. ---------- */
+var STRIKES={
+ fri:"A national rail strike is reported from 21:00 tonight until 20:00 on Saturday, called by CUB Trasporti and SGB. The CGIL union has also called a general strike for today across public and private workplaces.",
+ sat:"The national rail strike reported from 21:00 on Friday runs until 20:00 tonight, and some local public transport companies are included. Air traffic controllers at ENAV are reported to strike nationally from 13:00 to 17:00.",
+ sun:"24-hour strikes are reported today at some northern airports, Milan Malpensa and Venice among them, not at Fiumicino. Check your flight with Ryanair before you leave for the airport."
+};
+function strikeHtml(d){
+  if(!STRIKES[d.id]) return "";
+  return '<p class="strikebox"><b>Strikes reported.</b> '+esc(STRIKES[d.id])+'<small>From news strike calendars on 13 November; I couldn’t reach the official register to confirm. Strikes are often called off or moved, so check the <a target="_blank" rel="noopener" href="https://scioperi.mit.gov.it/mit2/public/scioperi">transport ministry’s strike list</a> nearer the day.</small></p>';
+}
+
 /* ---------- weather: Open-Meteo forecast for central Rome. The last one loaded is kept on the device ---------- */
 var WXURL="https://api.open-meteo.com/v1/forecast?latitude=41.8967&longitude=12.4822&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&hourly=precipitation_probability&timezone=Europe%2FRome&start_date="+DAYS[0].date+"&end_date="+DAYS[DAYS.length-1].date;
 var WET=60, wx=load("wx",null);          // wx = {at: when loaded, days: {date: {code, hi, lo, h: [chance of rain per hour]}}}
@@ -1105,13 +1156,11 @@ DAYS.forEach(function(d){
 
 (function(){
   var a=document.createElement("a");
-  a.className="tab"; a.href="#pins"; a.id="tab-pins";
-  a.innerHTML="<b>Pins</b><small>Saved</small>";
-  tabsEl.appendChild(a);
-  a=document.createElement("a");
-  a.className="tab"; a.href="#music"; a.id="tab-music";
-  a.innerHTML="<b>Music</b><small>Live</small>";
-  tabsEl.appendChild(a);
+  [["pins","Pins"],["music","Music"],["phrases","Phrases"]].forEach(function(t){
+    a=document.createElement("a");
+    a.className="subtab"; a.href="#"+t[0]; a.id="tab-"+t[0]; a.textContent=t[1];
+    document.getElementById("tabs2").appendChild(a);
+  });
 })();
 
 /* ---------- the plan as shown: study-visit choice, then swaps, then any delay ---------- */
@@ -1209,6 +1258,7 @@ function render(id){
   document.getElementById("dtitle").textContent=d.title;
   document.getElementById("dsum").textContent=d.sum;
   wxPaint(d);
+  document.getElementById("strike").innerHTML=strikeHtml(d);
   document.getElementById("sunline").textContent="Sunrise "+hm(d.sun.rise)+" · golden hour from "+hm(d.sun.gpm)+" · sunset "+hm(d.sun.set)+" · dark by "+hm(d.sun.dusk);
 
   var ch=document.getElementById("choice");
@@ -1242,6 +1292,7 @@ function render(id){
       (it.lv && it.lv!==it.t?'<p class="leave">'+esc(it.lvl||"Leave by")+' '+it.lv+(it.ti?' Irish time':'')+'.'+(it.lvd?' '+esc(it.lvd):'')+'</p>':'')+
       (it.drv && !it.swapped?'<p class="drv">'+it.drv.map(function(k){ return '<button type="button" data-drv="'+k+'">Show the driver: '+esc(driverInfo(k).name)+'</button>'; }).join("")+'</p>':'')+
       lightLine(d,it)+rainLine(d,it)+
+      '<p class="useful"><button type="button" class="textbtn" data-phr="'+ctxOf(it)+'">Useful phrases here</button></p>'+
       bookLine(it)+
       (it.warn?'<p class="warn"><span class="wflag">Check</span>'+esc(it.warn)+'</p>':'')+
       (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+(it.p?aboutHtml(aboutFor(it.p),"p"):'')+musicStep(d,it)+look+altsHtml(it)+'</div></li>';
@@ -1365,7 +1416,7 @@ function renderPins(){
       list.map(function(p){
         var q=(p[3]||p[0])+", Roma";
         return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(q)+'">'+esc(p[0])+'</a><span class="ty">'+TYPES[p[1]]+'</span>'+(p[2]?'<span class="ds">'+esc(p[2])+'</span>':'')+aboutHtml(ABOUT[p[0]],"span")+
-          (useL&&typeof p[4]==="number"?'<span class="ds"><button type="button" class="textbtn" data-mapat="'+p[4]+','+p[5]+'">Show on map</button></span>':'')+lookHtml(pinLook(p[0]))+'</li>';
+          '<span class="ds macts">'+(useL&&typeof p[4]==="number"?'<button type="button" class="textbtn" data-mapat="'+p[4]+','+p[5]+'">Show on map</button>':'')+'<button type="button" class="textbtn" data-phr="'+p[1]+'">Useful phrases</button></span>'+lookHtml(pinLook(p[0]))+'</li>';
       }).join("")+'</ul></div>';
   });
   document.getElementById("areas").innerHTML=html||'<p class="daynote">Nothing of that type in your list.</p>';
@@ -1422,7 +1473,7 @@ function renderNear(){
     var how=m<40?(nearFrom==="me"?"You’re here":"Next door"):Math.max(1,Math.round(m*1.3/80))+" min walk · "+far+" "+compass(o.lat,o.lon,p.lat,p.lon);
     return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(p.q)+'">'+esc(p.n)+'</a><span class="ty">'+how+' · '+(p.label||TYPES[p.ty])+'</span>'+
       (p.plan?'<span class="ds used">On your plan: '+esc(p.plan)+'</span>':'')+(p.d?'<span class="ds">'+esc(p.d)+'</span>':'')+aboutHtml((p.k&&aboutFor(p.k))||ABOUT[p.n],"span")+
-      (useL?'<span class="ds"><button type="button" class="textbtn" data-mapat="'+p.lat+','+p.lon+'">Show on map</button></span>':'')+lookHtml((p.k&&LOOK[p.k])||pinLook(p.n))+'</li>';
+      '<span class="ds macts">'+(useL?'<button type="button" class="textbtn" data-mapat="'+p.lat+','+p.lon+'">Show on map</button>':'')+'<button type="button" class="textbtn" data-phr="'+(p.ty==="base"?(p.label==="Awards venue"?"work":"hotel"):p.ty)+'">Useful phrases</button></span>'+lookHtml((p.k&&LOOK[p.k])||pinLook(p.n))+'</li>';
   }).join("")+'</ul>'+(list.length>nearLimit?'<button type="button" class="textbtn" id="nearmore">Show more</button>':'');
 }
 document.getElementById("pinmode").addEventListener("click",function(e){
@@ -1779,13 +1830,15 @@ function driverInfo(key){
   return {name:name,ad:((DAD[key]||pad)?(DAD[key]||pad)+"\n":"")+city,fare:"",en:en,q:q};
 }
 var driverEl=document.getElementById("driver"), wake=null;
-function openDriver(key){
-  var d=driverInfo(key); if(!d) return;
+function openDriver(key,card){
+  var d=card||driverInfo(key); if(!d) return;
+  document.getElementById("dsay").hidden=!!card;
+  document.getElementById("dmaps").hidden=!!card;
   document.getElementById("dname").textContent=d.name;
   document.getElementById("dad").textContent=d.ad;
   document.getElementById("dfare").textContent=d.fare;
   document.getElementById("den").textContent=d.en;
-  document.getElementById("dmaps").href=mapsUrl(d.q);
+  if(!card) document.getElementById("dmaps").href=mapsUrl(d.q);
   driverEl.hidden=false; driverEl.scrollTop=0; document.documentElement.classList.add("maplock");
   document.getElementById("dclose").focus();
   if(navigator.wakeLock && navigator.wakeLock.request) navigator.wakeLock.request("screen").then(function(l){ if(driverEl.hidden) l.release(); else wake=l; }).catch(function(){});
@@ -1801,6 +1854,84 @@ document.addEventListener("click",function(e){
 },true);
 document.getElementById("dclose").addEventListener("click",closeDriver);
 document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !driverEl.hidden) closeDriver(); });
+
+/* ---------- Italian phrases, from phrases.json. {name} is filled from a surname kept on this device ---------- */
+var PHR=null, phrCtx="basics", itVoice=null;
+function phrLoad(done){
+  if(PHR){ done(); return; }
+  fetch("phrases.json").then(function(r){ return r.json(); }).then(function(j){ PHR=j; done(); })
+    .catch(function(){ PHR=null; done(); });
+}
+function pickVoice(){
+  try{
+    var v=window.speechSynthesis ? speechSynthesis.getVoices() : [];
+    itVoice=v.filter(function(x){ return /^it(-|_|$)/i.test(x.lang); })[0]||null;
+  }catch(e){ itVoice=null; }
+  [].forEach.call(document.querySelectorAll("button[data-hear]"),function(b){ b.hidden=!itVoice; });
+}
+if(window.speechSynthesis){ pickVoice(); try{ speechSynthesis.addEventListener("voiceschanged",pickVoice); }catch(e){} }
+function phrText(t){ return t.replace(/\{name\}/g, load("priv:surname","")||"…"); }
+/* which phrases suit a place: its type, or what kind of step it is */
+function ctxOf(it){
+  if(it.p){
+    if(P[it.p].hotel) return "hotel";
+    if(it.p==="venue") return "work";
+    if(PTY[it.p]) return PTY[it.p];
+    for(var i=0;i<PINLIST.length;i++) if(PINLIST[i].n===P[it.p].n) return PINLIST[i].ty;
+  }
+  return it.c==="stay"?"hotel":it.c==="work"?"work":it.c==="travel"?"taxi":"basics";
+}
+function phrItems(ctx){
+  var all=PHR?PHR.phrases:[], out=[];
+  function sec(c){ var l=all.filter(function(p){ return p.contexts.indexOf(c)>=0 && out.every(function(o){ return o.l.indexOf(p)<0; }); }); if(l.length) out.push({c:c,l:l}); }
+  sec(ctx); if(ctx!=="basics") sec("basics"); if(ctx!=="trouble") sec("trouble");
+  return out;
+}
+function phrHtml(ctx){
+  if(!PHR) return '<p class="daynote">The phrases couldn’t be loaded. They need one visit with signal to be saved on this device.</p>';
+  return phrItems(ctx).map(function(g,gi){
+    return (gi?'<h3 class="phrsec">'+esc(PHR.contexts[g.c]||g.c)+'</h3>':'')+'<ul class="phr">'+g.l.map(function(p){
+      var i=PHR.phrases.indexOf(p), it=phrText(p.it), speak=/[a-zà-ù]/i.test(p.it);
+      return '<li><span class="it" lang="it">'+esc(it)+'</span><span class="en">'+esc(phrText(p.en))+'</span>'+
+        (p.say?'<span class="say">Say: '+esc(p.say)+'</span>':'')+(p.tip?'<span class="tip">'+esc(p.tip)+'</span>':'')+
+        '<span class="acts"><button type="button" data-showphr="'+i+'">Show</button>'+(speak?'<button type="button" data-hear="'+i+'"'+(itVoice?'':' hidden')+'>Hear it</button>':'')+'</span></li>';
+    }).join("")+'</ul>';
+  }).join("");
+}
+function renderPhrases(){
+  showView("phrasesview"); current=null;
+  phrLoad(function(){
+    var keys=PHR?Object.keys(PHR.contexts):[];
+    document.getElementById("phrchips").innerHTML=keys.map(function(k){ return '<button type="button" data-ctx="'+k+'" aria-pressed="'+(k===phrCtx)+'">'+esc(PHR.contexts[k])+'</button>'; }).join("");
+    document.getElementById("phrlist").innerHTML=phrHtml(phrCtx);
+  });
+}
+var phrPanel=document.getElementById("phrpanel");
+function openPhrases(ctx){
+  phrLoad(function(){
+    document.getElementById("phrtitle").textContent="Useful here: "+((PHR&&PHR.contexts[ctx])||"phrases");
+    document.getElementById("phrpanellist").innerHTML=phrHtml(ctx);
+    phrPanel.hidden=false; phrPanel.scrollTop=0; document.documentElement.classList.add("maplock");
+  });
+}
+function closePhrases(){ phrPanel.hidden=true; if(!mapbox.classList.contains("mapfull")) document.documentElement.classList.remove("maplock"); }
+document.getElementById("phrclose").addEventListener("click",closePhrases);
+document.getElementById("phrchips").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-ctx]"); if(!b) return; phrCtx=b.getAttribute("data-ctx"); renderPhrases();
+});
+document.getElementById("phrname").addEventListener("change",function(){ if(!document.getElementById("phrasesview").hidden) renderPhrases(); });
+document.addEventListener("click",function(e){
+  var t=e.target.closest&&e.target.closest("button[data-phr],button[data-showphr],button[data-hear]"); if(!t) return;
+  if(t.hasAttribute("data-phr")){ openPhrases(t.getAttribute("data-phr")); return; }
+  var p=PHR && PHR.phrases[+(t.getAttribute("data-showphr")||t.getAttribute("data-hear"))]; if(!p) return;
+  if(t.hasAttribute("data-showphr")){ openDriver(null,{name:phrText(p.it),ad:"",fare:"",en:phrText(p.en)+(p.say?"  ·  Say: "+p.say:"")}); return; }
+  try{
+    speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(phrText(p.it).replace(/\s*\/\s*/g,". ").replace(/…/g,""));
+    u.lang="it-IT"; if(itVoice) u.voice=itVoice; u.rate=0.9; speechSynthesis.speak(u);
+  }catch(err){}
+});
+document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !phrPanel.hidden && driverEl.hidden) closePhrases(); });
 
 /* ---------- bookings tracker ---------- */
 var bookEl=document.getElementById("booklist");
@@ -1912,6 +2043,7 @@ function route(){
   var h=(location.hash||"").replace("#","");
   if(h==="pins"){ renderPins(); return; }
   if(h==="music"){ renderMusic(); return; }
+  if(h==="phrases"){ renderPhrases(); return; }
   var ok=DAYS.some(function(d){return d.id===h;});
   render(ok?h:(todayId||"wed"));
 }

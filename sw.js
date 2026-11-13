@@ -8,7 +8,7 @@
 
 var SHELL = "rome-shell-v1", FONTS = "rome-fonts-v1", TILES = "rome-tiles-v1";
 var FILES = ["index.html", "vendor/leaflet/leaflet.css", "vendor/leaflet/leaflet.js",
-             "manifest.webmanifest", "icons/icon-192.png", "icons/icon-180.png"];
+             "manifest.webmanifest", "icons/icon-192.png", "icons/icon-180.png", "phrases.json"];
 var FONT_CSS = "https://fonts.googleapis.com/css2?family=Marcellus&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap";
 var WEEK = 7 * 24 * 60 * 60 * 1000, MAX_TILES = 2500, PAGE_WAIT = 3000;
 
@@ -59,6 +59,18 @@ function page(e) {
   });
 }
 
+/* data files: fresh copy when there is signal, saved copy otherwise */
+function fresh(e) {
+  return caches.open(SHELL).then(function (cache) {
+    return fetch(e.request).then(function (res) {
+      if (res.ok) e.waitUntil(cache.put(e.request, res.clone()));
+      return res;
+    }).catch(function () {
+      return cache.match(e.request, { ignoreSearch: true }).then(function (hit) { return hit || Response.error(); });
+    });
+  });
+}
+
 /* saved copy first, otherwise fetch and keep */
 function cacheFirst(e, name) {
   return caches.open(name).then(function (cache) {
@@ -105,5 +117,6 @@ self.addEventListener("fetch", function (e) {
   if (url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com") { e.respondWith(cacheFirst(e, FONTS)); return; }
   if (url.origin !== self.location.origin) return;
   if (req.mode === "navigate") { e.respondWith(page(e)); return; }
+  if (/\.json$/.test(url.pathname)) { e.respondWith(fresh(e)); return; }
   e.respondWith(cacheFirst(e, SHELL));
 });
