@@ -1,0 +1,1272 @@
+{
+ "about": "Tags for the 'I've got some time' feature. Minutes are judgement, not measurement. Match entries to app places by name; names follow the owner's Google Maps list.",
+ "fields": {
+  "moods": "view, church, square, fountain, ancient, art, park, wander, coffee, sweet, snack, meal, drink, music",
+  "minutes": "typical time spent there, excluding the walk and any queue",
+  "queue_minutes": "typical extra wait, where there is one",
+  "climb_minutes": "extra walking time to add for the hill, on top of the distance estimate",
+  "setting": "indoor, outdoor, either. Demote outdoor when rain is forecast.",
+  "booking": "required = never suggest spontaneously unless there is a booking; advised = suggest with a label",
+  "confidence": "check = type or details are my best guess; unidentified = I could not work out what this place is, so exclude it until tagged",
+  "key": "for plan stops: the place's key in the app's P table, added so the app can match it"
+ },
+ "hours_rules": {
+  "always": "Public space. Suggest at any hour.",
+  "basilica": "Major church open through the day, roughly 07:00 to 18:30. Label 'check it's open' after 18:00.",
+  "church": "Assume shut roughly 12:30 to 15:30 and after about 18:30. In those windows demote and label 'probably shut until mid-afternoon'. Otherwise label 'check it's open'.",
+  "ticketed": "Daytime with a last entry. Use the note; otherwise don't suggest within 90 minutes of 18:00 without a label.",
+  "daytime": "Roughly 09:00 to 18:00. Don't suggest in the evening.",
+  "kitchen": "Lunch roughly 12:30 to 15:00 and dinner roughly 19:30 to 22:30. Don't suggest a meal outside those.",
+  "allday": "Open continuously from morning or midday into the evening.",
+  "evening": "From about 18:00 for bars, later for music. Don't suggest before then.",
+  "unknown": "No basis for a rule. Always label 'check hours'."
+ },
+ "mood_rules": [
+  "view: boost during golden hour; drop after dark unless the place is also a square or fountain.",
+  "music: only when the venue has something listed tonight.",
+  "meal: needs at least 60 minutes in the budget.",
+  "River: add 5 minutes when the walk crosses the Tiber, since crossings only happen at bridges."
+ ],
+ "pins": [
+  {
+   "name": "Saint Peter's Basilica",
+   "type": "sight",
+   "moods": [
+    "church",
+    "art"
+   ],
+   "minutes": 60,
+   "setting": "indoor",
+   "hours": "basilica",
+   "free": true,
+   "queue_minutes": 30,
+   "dress_code": true,
+   "note": "Security queue varies from 10 to 60 minutes. The dome climb is ticketed and adds about 75 minutes."
+  },
+  {
+   "name": "Sistine Chapel",
+   "type": "sight",
+   "moods": [
+    "art"
+   ],
+   "minutes": 180,
+   "setting": "indoor",
+   "hours": "ticketed",
+   "booking": "required",
+   "dress_code": true,
+   "note": "Only reachable through the Vatican Museums; shut on most Sundays."
+  },
+  {
+   "name": "Vatican City",
+   "type": "sight",
+   "moods": [
+    "square"
+   ],
+   "minutes": 15,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true,
+   "note": "Treat as St Peter's Square."
+  },
+  {
+   "name": "La Zanzara",
+   "type": "eat",
+   "moods": [
+    "meal",
+    "drink"
+   ],
+   "minutes": 75,
+   "setting": "indoor",
+   "hours": "allday",
+   "booking": "advised"
+  },
+  {
+   "name": "Il Sorpasso",
+   "type": "eat",
+   "moods": [
+    "meal",
+    "drink"
+   ],
+   "minutes": 75,
+   "setting": "indoor",
+   "hours": "allday"
+  },
+  {
+   "name": "L'Arcangelo",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 90,
+   "setting": "indoor",
+   "hours": "kitchen",
+   "booking": "required"
+  },
+  {
+   "name": "Osteria Ragno d'Oro",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 75,
+   "setting": "indoor",
+   "hours": "kitchen"
+  },
+  {
+   "name": "Da Romolo alla Mole Adriana",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 75,
+   "setting": "indoor",
+   "hours": "kitchen"
+  },
+  {
+   "name": "Be.Re. + Trapizzino",
+   "type": "quick",
+   "moods": [
+    "snack",
+    "drink"
+   ],
+   "minutes": 30,
+   "setting": "indoor",
+   "hours": "allday",
+   "note": "Opens around late morning."
+  },
+  {
+   "name": "Vuliò",
+   "type": "quick",
+   "moods": [
+    "snack"
+   ],
+   "minutes": 20,
+   "setting": "indoor",
+   "hours": "allday"
+  },
+  {
+   "name": "L'angolo della pizza",
+   "type": "quick",
+   "moods": [
+    "snack"
+   ],
+   "minutes": 15,
+   "setting": "indoor",
+   "hours": "allday",
+   "confidence": "check"
+  },
+  {
+   "name": "Argot Prati",
+   "type": "drink",
+   "moods": [
+    "drink"
+   ],
+   "minutes": 60,
+   "setting": "indoor",
+   "hours": "evening",
+   "confidence": "check"
+  },
+  {
+   "name": "The Basement",
+   "type": "drink",
+   "moods": [
+    "drink",
+    "music"
+   ],
+   "minutes": 60,
+   "setting": "indoor",
+   "hours": "evening",
+   "confidence": "check"
+  },
+  {
+   "name": "T'SaBaR bar",
+   "type": "drink",
+   "moods": [
+    "drink"
+   ],
+   "minutes": 45,
+   "setting": "indoor",
+   "hours": "unknown",
+   "confidence": "check"
+  },
+  {
+   "name": "Saxophone Live Pub",
+   "type": "music",
+   "moods": [
+    "music",
+    "drink"
+   ],
+   "minutes": 90,
+   "setting": "indoor",
+   "hours": "evening"
+  },
+  {
+   "name": "MiVà",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 75,
+   "setting": "indoor",
+   "hours": "kitchen",
+   "confidence": "check",
+   "note": "Restaurant on Via Ezio. Identified from the owner's Maps link."
+  },
+  {
+   "name": "VIDA Prati",
+   "type": "eat",
+   "moods": [
+    "meal",
+    "drink"
+   ],
+   "minutes": 75,
+   "setting": "indoor",
+   "hours": "kitchen",
+   "confidence": "check",
+   "note": "Restaurant and bar on Via Belli. Identified from the owner's Maps link."
+  },
+  {
+   "name": "Bar San Calisto",
+   "type": "drink",
+   "moods": [
+    "drink",
+    "coffee"
+   ],
+   "minutes": 30,
+   "setting": "either",
+   "hours": "allday",
+   "free": false,
+   "note": "Open from morning until late; most people stand outside."
+  },
+  {
+   "name": "Samovar",
+   "type": "drink",
+   "moods": [
+    "drink"
+   ],
+   "minutes": 45,
+   "setting": "indoor",
+   "hours": "unknown",
+   "confidence": "check"
+  },
+  {
+   "name": "Lettere Caffè",
+   "type": "drink",
+   "moods": [
+    "drink",
+    "music"
+   ],
+   "minutes": 45,
+   "setting": "indoor",
+   "hours": "evening",
+   "confidence": "check"
+  },
+  {
+   "name": "Alcazar Live",
+   "type": "music",
+   "moods": [
+    "music",
+    "drink"
+   ],
+   "minutes": 120,
+   "setting": "indoor",
+   "hours": "evening",
+   "note": "Only suggest when something is listed tonight."
+  },
+  {
+   "name": "Otello",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 75,
+   "setting": "either",
+   "hours": "kitchen"
+  },
+  {
+   "name": "Tonnarello",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 90,
+   "setting": "either",
+   "hours": "allday",
+   "queue_minutes": 30,
+   "note": "Serves through the afternoon; expect a queue at peak times."
+  },
+  {
+   "name": "La Canonica",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 75,
+   "setting": "either",
+   "hours": "kitchen"
+  },
+  {
+   "name": "Bacco In Trastevere",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 75,
+   "setting": "indoor",
+   "hours": "kitchen",
+   "confidence": "check"
+  },
+  {
+   "name": "Il Botticelli",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 75,
+   "setting": "indoor",
+   "hours": "kitchen",
+   "confidence": "check"
+  },
+  {
+   "name": "Antica Pesa",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 105,
+   "setting": "indoor",
+   "hours": "evening",
+   "booking": "required",
+   "note": "Dinner only as far as I know; verify.",
+   "confidence": "check"
+  },
+  {
+   "name": "Ivo a Trastevere",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 60,
+   "setting": "indoor",
+   "hours": "evening",
+   "note": "Pizzeria, evenings; verify lunch opening."
+  },
+  {
+   "name": "Trapizzino | Trastevere",
+   "type": "quick",
+   "moods": [
+    "snack"
+   ],
+   "minutes": 15,
+   "setting": "indoor",
+   "hours": "allday"
+  },
+  {
+   "name": "Supplì Roma",
+   "type": "quick",
+   "moods": [
+    "snack"
+   ],
+   "minutes": 10,
+   "setting": "indoor",
+   "hours": "allday",
+   "note": "Takeaway counter; verify evening closing time."
+  },
+  {
+   "name": "Giselda",
+   "type": "sweet",
+   "moods": [
+    "coffee",
+    "sweet",
+    "snack"
+   ],
+   "minutes": 20,
+   "setting": "indoor",
+   "hours": "allday"
+  },
+  {
+   "name": "Sora Mirella",
+   "type": "sweet",
+   "moods": [
+    "sweet"
+   ],
+   "minutes": 10,
+   "setting": "outdoor",
+   "hours": "unknown",
+   "note": "Seasonal shaved-ice kiosk; likely shut in November.",
+   "confidence": "check"
+  },
+  {
+   "name": "Church of St Callixtus",
+   "type": "sight",
+   "moods": [
+    "church"
+   ],
+   "minutes": 10,
+   "setting": "indoor",
+   "hours": "church",
+   "free": true,
+   "note": "Small and often locked.",
+   "confidence": "check"
+  },
+  {
+   "name": "Theatre of Marcellus",
+   "type": "sight",
+   "moods": [
+    "ancient",
+    "wander"
+   ],
+   "minutes": 10,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true,
+   "note": "Seen from outside."
+  },
+  {
+   "name": "Ponte Fabricio",
+   "type": "sight",
+   "moods": [
+    "ancient",
+    "wander",
+    "view"
+   ],
+   "minutes": 10,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true
+  },
+  {
+   "name": "Altar of the Fatherland",
+   "type": "sight",
+   "moods": [
+    "view"
+   ],
+   "minutes": 30,
+   "setting": "outdoor",
+   "hours": "daytime",
+   "free": true,
+   "climb_minutes": 4,
+   "note": "Terraces are free; the lift to the top is paid. Closes around early evening."
+  },
+  {
+   "name": "Pizza Florida",
+   "type": "quick",
+   "moods": [
+    "snack"
+   ],
+   "minutes": 15,
+   "setting": "indoor",
+   "hours": "allday"
+  },
+  {
+   "name": "Saporizzo",
+   "type": "quick",
+   "moods": [
+    "snack"
+   ],
+   "minutes": 15,
+   "setting": "indoor",
+   "hours": "allday",
+   "confidence": "check",
+   "note": "Takeaway on Piazza d'Aracoeli. Identified from the owner's Maps link."
+  },
+  {
+   "name": "Colosseum",
+   "type": "sight",
+   "moods": [
+    "ancient"
+   ],
+   "minutes": 90,
+   "setting": "outdoor",
+   "hours": "ticketed",
+   "booking": "required",
+   "note": "Winter last entry 15:30. From outside it is always there: 15 minutes."
+  },
+  {
+   "name": "Roman Forum",
+   "type": "sight",
+   "moods": [
+    "ancient",
+    "wander"
+   ],
+   "minutes": 75,
+   "setting": "outdoor",
+   "hours": "ticketed",
+   "booking": "advised",
+   "note": "Winter last entry 15:30."
+  },
+  {
+   "name": "La Nuova Piazzetta",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 75,
+   "setting": "either",
+   "hours": "kitchen",
+   "confidence": "check"
+  },
+  {
+   "name": "Drink Kong",
+   "type": "drink",
+   "moods": [
+    "drink"
+   ],
+   "minutes": 75,
+   "setting": "indoor",
+   "hours": "evening",
+   "booking": "required"
+  },
+  {
+   "name": "Papal Basilica of Saint Mary Major",
+   "type": "sight",
+   "moods": [
+    "church",
+    "art"
+   ],
+   "minutes": 30,
+   "setting": "indoor",
+   "hours": "basilica",
+   "free": true,
+   "queue_minutes": 10,
+   "dress_code": true
+  },
+  {
+   "name": "Piazza Navona",
+   "type": "sight",
+   "moods": [
+    "square",
+    "fountain",
+    "wander"
+   ],
+   "minutes": 15,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true
+  },
+  {
+   "name": "Chiesa di Sant'Agnese in Agone",
+   "type": "sight",
+   "moods": [
+    "church",
+    "art"
+   ],
+   "minutes": 15,
+   "setting": "indoor",
+   "hours": "church",
+   "free": true,
+   "dress_code": true
+  },
+  {
+   "name": "Church of Saint Louis of the French",
+   "type": "sight",
+   "moods": [
+    "church",
+    "art"
+   ],
+   "minutes": 20,
+   "setting": "indoor",
+   "hours": "church",
+   "free": true,
+   "dress_code": true,
+   "note": "Shut over lunch; the Caravaggios are the reason to go."
+  },
+  {
+   "name": "Campo de' Fiori",
+   "type": "sight",
+   "moods": [
+    "square",
+    "wander"
+   ],
+   "minutes": 15,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true,
+   "note": "Market in the morning, not Sundays."
+  },
+  {
+   "name": "Ristorante Pancrazio dal 1922",
+   "type": "eat",
+   "moods": [
+    "meal",
+    "ancient"
+   ],
+   "minutes": 90,
+   "setting": "indoor",
+   "hours": "kitchen"
+  },
+  {
+   "name": "Saltimbocca ristorante",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 75,
+   "setting": "either",
+   "hours": "kitchen"
+  },
+  {
+   "name": "Il Corallo",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 75,
+   "setting": "either",
+   "hours": "kitchen"
+  },
+  {
+   "name": "Vivi Bistrot",
+   "type": "eat",
+   "moods": [
+    "meal",
+    "coffee"
+   ],
+   "minutes": 45,
+   "setting": "indoor",
+   "hours": "daytime",
+   "confidence": "check"
+  },
+  {
+   "name": "Antico Forno Roscioli",
+   "type": "quick",
+   "moods": [
+    "snack"
+   ],
+   "minutes": 15,
+   "setting": "indoor",
+   "hours": "daytime",
+   "note": "Bakery hours; verify Saturday afternoon."
+  },
+  {
+   "name": "Forno Campo de' Fiori",
+   "type": "quick",
+   "moods": [
+    "snack"
+   ],
+   "minutes": 10,
+   "setting": "indoor",
+   "hours": "daytime",
+   "note": "Bakery hours; shut Sundays as far as I know."
+  },
+  {
+   "name": "Norcineria Viola",
+   "type": "quick",
+   "moods": [
+    "snack"
+   ],
+   "minutes": 10,
+   "setting": "indoor",
+   "hours": "daytime"
+  },
+  {
+   "name": "Frigidarium",
+   "type": "sweet",
+   "moods": [
+    "sweet"
+   ],
+   "minutes": 10,
+   "setting": "indoor",
+   "hours": "allday"
+  },
+  {
+   "name": "Jerry Thomas Speakeasy",
+   "type": "drink",
+   "moods": [
+    "drink"
+   ],
+   "minutes": 75,
+   "setting": "indoor",
+   "hours": "evening",
+   "booking": "required",
+   "note": "Needs a reservation and the password from their site."
+  },
+  {
+   "name": "La Botticella of Poggi Giovanni",
+   "type": "drink",
+   "moods": [
+    "drink"
+   ],
+   "minutes": 45,
+   "setting": "indoor",
+   "hours": "evening"
+  },
+  {
+   "name": "FIORE",
+   "type": "quick",
+   "moods": [
+    "snack",
+    "meal"
+   ],
+   "minutes": 25,
+   "setting": "indoor",
+   "hours": "allday",
+   "confidence": "check",
+   "note": "Neapolitan pizza and street food. Identified from the owner's Maps link."
+  },
+  {
+   "name": "Chiesa di Sant'Ignazio di Loyola",
+   "type": "sight",
+   "moods": [
+    "church",
+    "art"
+   ],
+   "minutes": 20,
+   "setting": "indoor",
+   "hours": "church",
+   "free": true,
+   "dress_code": true,
+   "note": "Verify whether it shuts at midday."
+  },
+  {
+   "name": "Via dei Pastini",
+   "type": "sight",
+   "moods": [
+    "wander"
+   ],
+   "minutes": 5,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true
+  },
+  {
+   "name": "Trevi Fountain",
+   "type": "sight",
+   "moods": [
+    "fountain",
+    "square"
+   ],
+   "minutes": 15,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true,
+   "note": "Quietest early morning and late at night."
+  },
+  {
+   "name": "La Casa del Caffè Tazza d'Oro",
+   "type": "sweet",
+   "moods": [
+    "coffee"
+   ],
+   "minutes": 10,
+   "setting": "indoor",
+   "hours": "allday",
+   "note": "Verify Sunday opening time."
+  },
+  {
+   "name": "Venchi",
+   "type": "sweet",
+   "moods": [
+    "sweet"
+   ],
+   "minutes": 10,
+   "setting": "indoor",
+   "hours": "allday",
+   "note": "Three branches pinned."
+  },
+  {
+   "name": "All'Antico Vinaio",
+   "type": "quick",
+   "moods": [
+    "snack"
+   ],
+   "minutes": 20,
+   "setting": "indoor",
+   "hours": "allday",
+   "queue_minutes": 15,
+   "note": "Two branches pinned."
+  },
+  {
+   "name": "Pane e Salame",
+   "type": "quick",
+   "moods": [
+    "snack",
+    "meal"
+   ],
+   "minutes": 40,
+   "setting": "indoor",
+   "hours": "allday",
+   "queue_minutes": 20
+  },
+  {
+   "name": "Orient Express La Minerva",
+   "type": "drink",
+   "moods": [
+    "drink",
+    "view"
+   ],
+   "minutes": 60,
+   "setting": "either",
+   "hours": "evening",
+   "booking": "advised",
+   "note": "Hotel rooftop; verify access for non-guests.",
+   "confidence": "check"
+  },
+  {
+   "name": "Trinity College Pub",
+   "type": "drink",
+   "moods": [
+    "drink"
+   ],
+   "minutes": 45,
+   "setting": "indoor",
+   "hours": "allday"
+  },
+  {
+   "name": "Spanish Steps",
+   "type": "sight",
+   "moods": [
+    "view",
+    "wander"
+   ],
+   "minutes": 15,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true,
+   "climb_minutes": 4
+  },
+  {
+   "name": "Piazza di Spagna",
+   "type": "sight",
+   "moods": [
+    "square",
+    "fountain"
+   ],
+   "minutes": 10,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true
+  },
+  {
+   "name": "Piazza del Popolo",
+   "type": "sight",
+   "moods": [
+    "square",
+    "church"
+   ],
+   "minutes": 15,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true
+  },
+  {
+   "name": "Villa Borghese",
+   "type": "sight",
+   "moods": [
+    "park",
+    "view",
+    "wander"
+   ],
+   "minutes": 45,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true,
+   "climb_minutes": 5,
+   "note": "The gallery inside is separate and needs a booked slot."
+  },
+  {
+   "name": "Pastificio Guerra",
+   "type": "quick",
+   "moods": [
+    "snack",
+    "meal"
+   ],
+   "minutes": 20,
+   "setting": "indoor",
+   "hours": "daytime",
+   "note": "Lunchtime only as far as I know; verify."
+  },
+  {
+   "name": "Gregory's Jazz Club",
+   "type": "music",
+   "moods": [
+    "music",
+    "drink"
+   ],
+   "minutes": 120,
+   "setting": "indoor",
+   "hours": "evening",
+   "booking": "advised"
+  },
+  {
+   "name": "Il Bar della Musa",
+   "type": "drink",
+   "moods": [
+    "drink"
+   ],
+   "minutes": 45,
+   "setting": "indoor",
+   "hours": "unknown",
+   "confidence": "check"
+  },
+  {
+   "name": "Paparazzo Bar & Rooftop",
+   "type": "drink",
+   "moods": [
+    "drink",
+    "view"
+   ],
+   "minutes": 60,
+   "setting": "either",
+   "hours": "unknown",
+   "confidence": "check"
+  },
+  {
+   "name": "Alexanderplatz Jazz Club",
+   "type": "music",
+   "moods": [
+    "music",
+    "drink"
+   ],
+   "minutes": 120,
+   "setting": "indoor",
+   "hours": "evening",
+   "booking": "advised",
+   "note": "Its site says live jazz from 21:30. Added in Claude Code."
+  },
+  {
+   "name": "Big Mama",
+   "type": "music",
+   "moods": [
+    "music",
+    "drink"
+   ],
+   "minutes": 90,
+   "setting": "indoor",
+   "hours": "evening",
+   "confidence": "check",
+   "note": "Its website was showing an error; confirm it is open. Added in Claude Code."
+  },
+  {
+   "name": "Charity Café",
+   "type": "music",
+   "moods": [
+    "music",
+    "drink"
+   ],
+   "minutes": 90,
+   "setting": "indoor",
+   "hours": "evening",
+   "confidence": "check",
+   "note": "Added in Claude Code."
+  },
+  {
+   "name": "Blackmarket Hall",
+   "type": "drink",
+   "moods": [
+    "drink",
+    "music"
+   ],
+   "minutes": 60,
+   "setting": "indoor",
+   "hours": "evening",
+   "confidence": "check",
+   "note": "Added in Claude Code."
+  },
+  {
+   "name": "The Fiddler's Elbow",
+   "type": "drink",
+   "moods": [
+    "drink",
+    "music"
+   ],
+   "minutes": 60,
+   "setting": "indoor",
+   "hours": "evening",
+   "confidence": "check",
+   "note": "Added in Claude Code."
+  }
+ ],
+ "plan_stops": [
+  {
+   "name": "Castel Sant'Angelo",
+   "type": "sight",
+   "moods": [
+    "view",
+    "ancient",
+    "art"
+   ],
+   "minutes": 90,
+   "setting": "either",
+   "hours": "ticketed",
+   "note": "About 16 euros; verify last entry.",
+   "key": "csa"
+  },
+  {
+   "name": "Ponte Sant'Angelo",
+   "type": "sight",
+   "moods": [
+    "view",
+    "wander"
+   ],
+   "minutes": 10,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true,
+   "key": "ponte"
+  },
+  {
+   "name": "Gianicolo terrace (Piazzale Garibaldi)",
+   "type": "sight",
+   "moods": [
+    "view",
+    "wander"
+   ],
+   "minutes": 20,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true,
+   "climb_minutes": 10,
+   "key": "gian"
+  },
+  {
+   "name": "Fontana dell'Acqua Paola",
+   "type": "sight",
+   "moods": [
+    "fountain",
+    "view"
+   ],
+   "minutes": 10,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true,
+   "climb_minutes": 8,
+   "key": "paola"
+  },
+  {
+   "name": "Santa Maria in Trastevere",
+   "type": "sight",
+   "moods": [
+    "church",
+    "art",
+    "square"
+   ],
+   "minutes": 20,
+   "setting": "indoor",
+   "hours": "basilica",
+   "free": true,
+   "dress_code": true,
+   "note": "Open through the day into the evening; verify.",
+   "key": "smt"
+  },
+  {
+   "name": "San Clemente",
+   "type": "sight",
+   "moods": [
+    "church",
+    "ancient"
+   ],
+   "minutes": 55,
+   "setting": "indoor",
+   "hours": "ticketed",
+   "booking": "required",
+   "note": "Excavations need an online slot; shut over lunch.",
+   "key": "clem"
+  },
+  {
+   "name": "Capitoline Hill",
+   "type": "sight",
+   "moods": [
+    "view",
+    "square",
+    "ancient"
+   ],
+   "minutes": 25,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true,
+   "climb_minutes": 3,
+   "key": "camp"
+  },
+  {
+   "name": "Circus Maximus",
+   "type": "sight",
+   "moods": [
+    "ancient",
+    "wander",
+    "park"
+   ],
+   "minutes": 15,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true,
+   "key": "circo"
+  },
+  {
+   "name": "Orange Garden",
+   "type": "sight",
+   "moods": [
+    "view",
+    "park"
+   ],
+   "minutes": 25,
+   "setting": "outdoor",
+   "hours": "daytime",
+   "free": true,
+   "climb_minutes": 6,
+   "note": "Closes around 18:00 in winter.",
+   "key": "aranci"
+  },
+  {
+   "name": "Santa Sabina",
+   "type": "sight",
+   "moods": [
+    "church",
+    "ancient"
+   ],
+   "minutes": 15,
+   "setting": "indoor",
+   "hours": "church",
+   "free": true,
+   "climb_minutes": 6,
+   "key": "sabina"
+  },
+  {
+   "name": "Pantheon",
+   "type": "sight",
+   "moods": [
+    "ancient",
+    "church",
+    "art"
+   ],
+   "minutes": 30,
+   "setting": "indoor",
+   "hours": "ticketed",
+   "note": "About 5 euros; last entry around 18:30.",
+   "key": "pan"
+  },
+  {
+   "name": "Pincio terrace",
+   "type": "sight",
+   "moods": [
+    "view",
+    "park"
+   ],
+   "minutes": 20,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true,
+   "climb_minutes": 5,
+   "key": "pincio"
+  },
+  {
+   "name": "Fonclea",
+   "type": "music",
+   "moods": [
+    "music",
+    "drink"
+   ],
+   "minutes": 90,
+   "setting": "indoor",
+   "hours": "evening",
+   "key": "fonclea"
+  },
+  {
+   "name": "La Gensola",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 90,
+   "setting": "indoor",
+   "hours": "kitchen",
+   "booking": "advised",
+   "confidence": "check",
+   "key": "gensola"
+  },
+  {
+   "name": "Le Mani in Pasta",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 90,
+   "setting": "indoor",
+   "hours": "kitchen",
+   "booking": "required",
+   "confidence": "check",
+   "key": "manipasta"
+  },
+  {
+   "name": "La Taverna dei Fori Imperiali",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 90,
+   "setting": "indoor",
+   "hours": "kitchen",
+   "booking": "required",
+   "key": "taverna"
+  },
+  {
+   "name": "Armando al Pantheon",
+   "type": "eat",
+   "moods": [
+    "meal"
+   ],
+   "minutes": 90,
+   "setting": "indoor",
+   "hours": "kitchen",
+   "booking": "required",
+   "key": "armando"
+  },
+  {
+   "name": "Mercato Trionfale",
+   "type": "quick",
+   "moods": [
+    "snack",
+    "wander"
+   ],
+   "minutes": 30,
+   "setting": "indoor",
+   "hours": "daytime",
+   "note": "Morning market; winds down early afternoon, shut Sundays.",
+   "key": "trionfale"
+  },
+  {
+   "name": "Vatican Museums",
+   "type": "sight",
+   "moods": [
+    "art"
+   ],
+   "minutes": 180,
+   "setting": "indoor",
+   "hours": "ticketed",
+   "booking": "required",
+   "dress_code": true,
+   "key": "vatmus"
+  },
+  {
+   "name": "Arch of Constantine",
+   "key": "arco",
+   "type": "sight",
+   "moods": [
+    "ancient",
+    "wander"
+   ],
+   "minutes": 10,
+   "setting": "outdoor",
+   "hours": "always",
+   "free": true,
+   "confidence": "check",
+   "note": "Added in Claude Code."
+  },
+  {
+   "name": "Palatine Hill",
+   "key": "palatino",
+   "type": "sight",
+   "moods": [
+    "ancient",
+    "view"
+   ],
+   "minutes": 60,
+   "setting": "outdoor",
+   "hours": "ticketed",
+   "booking": "required",
+   "climb_minutes": 6,
+   "confidence": "check",
+   "note": "On the Colosseum ticket. Added in Claude Code."
+  }
+ ]
+}

@@ -272,6 +272,20 @@ html.maplock{overflow:hidden}
 .ref dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;font-size:.92rem}
 .ref dt{color:var(--muted)}
 .ref dd{margin:0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#spare{position:fixed;inset:0;z-index:37;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 0 calc(env(safe-area-inset-bottom,0px) + 24px)}
+.sparelab{font-size:.82rem;font-weight:600;color:var(--muted);margin:16px 0 0}
+#spare .chips{margin:8px 0 0}
+.scard{margin:14px 0 0;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;max-width:640px}
+.scard h3{margin:0;font-size:1.1rem;font-weight:600}
+.scard .ty{display:block;font-size:.84rem;color:var(--muted);margin-top:1px}
+.scard p{margin:8px 0 0;font-size:.94rem}
+.scard ul{margin:8px 0 0;padding:0;list-style:none;font-size:.9rem}
+.scard li{margin:3px 0}
+.scard .macts{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;margin-top:10px;font-size:.9rem}
+.scard .macts a{font-weight:600}
+.scard .macts .textbtn{margin:0;font-size:inherit;font-weight:600;color:inherit}
+.sparenote{margin:12px 0 0;font-size:.86rem;color:var(--muted);max-width:62ch}
+.sparebtn{display:inline-block;border:1px solid var(--ink);background:none;border-radius:999px;padding:7px 15px;font-size:.88rem;font-weight:600;cursor:pointer}
 #phrpanel{position:fixed;inset:0;z-index:38;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 0 calc(env(safe-area-inset-bottom,0px) + 24px)}
 .phrhead{display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;background:var(--bg);padding:6px 0 10px}
 .phrhead h2{font-family:var(--display);font-weight:400;font-size:1.6rem;margin:0}
@@ -350,6 +364,7 @@ html.maplock{overflow:hidden}
   <div class="pinsview" id="pinsview" hidden>
     <h2>Your pinned places</h2>
     <p id="pinsintro"></p>
+    <p style="margin:14px 0 0"><button type="button" class="sparebtn" data-spare="1">I’ve got some time</button></p>
     <div class="seg pinseg" id="pinmode" role="group" aria-label="Order">
       <button type="button" data-pm="area">By neighbourhood</button><button type="button" data-pm="near">Nearest to me</button>
     </div>
@@ -390,7 +405,7 @@ html.maplock{overflow:hidden}
       <figure class="mapbox" id="mapbox">
         <div id="lmap" hidden></div>
         <svg id="map" role="img" aria-label="Sketch map of the day’s stops"></svg>
-        <figcaption><span id="mapcap"></span><span id="mapmsg" role="status"></span><button type="button" class="textbtn" id="nearbtn">What’s near me?</button></figcaption>
+        <figcaption><span id="mapcap"></span><span id="mapmsg" role="status"></span><button type="button" class="textbtn" id="nearbtn">What’s near me?</button><button type="button" class="textbtn" data-spare="1" style="display:block;margin:6px 0 0;font-size:.85rem;font-weight:600;color:var(--ink)">I’ve got some time</button></figcaption>
       </figure>
     </div>
     <section aria-live="polite">
@@ -502,6 +517,13 @@ html.maplock{overflow:hidden}
   </div>
 </div>
 
+<div id="spare" hidden role="dialog" aria-modal="true" aria-label="Suggestions for the time you have">
+  <div class="wrap">
+    <div class="phrhead"><h2>I’ve got some time</h2><button type="button" class="pillbtn" id="spareclose">Close</button></div>
+    <div id="sparebody"></div>
+  </div>
+</div>
+
 <div id="driver" hidden role="dialog" aria-modal="true" aria-label="Destination to show a taxi driver">
   <div class="dmain" lang="it">
     <p class="dsay" id="dsay">Vorrei andare a:</p>
@@ -557,6 +579,9 @@ var P = {
   taverna:{n:"La Taverna dei Fori Imperiali",lat:41.89397,lon:12.48838,q:"La Taverna dei Fori Imperiali, Via della Madonna dei Monti 9, Roma"},
   palatino:{n:"Palatine Hill",lat:41.88823,lon:12.48720,q:"Palatino, Roma"},
   armando:{n:"Armando al Pantheon",lat:41.89906,lon:12.47620,q:"Armando al Pantheon, Salita de' Crescenzi 31, Roma"},
+  ponte:{n:"Ponte Sant’Angelo",lat:41.90192,lon:12.46646,q:"Ponte Sant'Angelo, Roma"},
+  sabina:{n:"Santa Sabina",lat:41.88452,lon:12.47975,q:"Basilica di Santa Sabina all'Aventino, Roma"},
+  pincio:{n:"Pincio terrace",lat:41.91120,lon:12.47844,q:"Terrazza del Pincio, Piazzale Napoleone I, Roma"},
   tazza:{n:"Tazza d’Oro",lat:41.89959,lon:12.47749,q:"La Casa del Caffè Tazza d'Oro, Via degli Orfani 84, Roma"}
 };
 var RIVER = [[41.9200,12.4672],[41.9160,12.4683],[41.9115,12.4739],[41.9082,12.4762],[41.9052,12.4753],[41.9024,12.4720],[41.9017,12.4664],[41.9009,12.4641],[41.8985,12.4626],[41.8953,12.4650],[41.8924,12.4708],[41.8905,12.4747],[41.8900,12.4777],[41.8880,12.4797],[41.8838,12.4762],[41.8790,12.4740]];
@@ -1352,6 +1377,7 @@ function paintToday(){
   }
   if(ni<0 && xi<0) html+='<p>Nothing more on today’s plan.</p>';
   if(lateInfo) lateInfo.warns.forEach(function(w){ html+=row(w.i,"Check",esc(w.title),esc(w.w),"urgent"); });
+  html+='<div class="late"><button type="button" data-spare="1">I’ve got some time</button></div>';
   if(xi>=0){
     var on=lateInfo && lateInfo.moved;
     html+='<div class="late"><span>Running late?</span><button type="button" data-late="15">+15 min</button><button type="button" data-late="30">+30 min</button>'+(on?'<button type="button" data-late="0">Undo</button>':'')+'</div>';
@@ -1436,6 +1462,7 @@ function renderPins(){
 
 /* ---------- nearest to me: pins and plan stops by distance ---------- */
 var PTY={stp:"sight",csa:"sight",gian:"sight",paola:"sight",smt:"sight",col:"sight",clem:"sight",forum:"sight",camp:"sight",marc:"sight",circo:"sight",aranci:"sight",pan:"sight",vatmus:"sight",arco:"sight",palatino:"sight",
+  ponte:"sight",sabina:"sight",pincio:"sight",
   zanzara:"eat",romolo:"eat",gensola:"eat",piazzetta:"eat",manipasta:"eat",taverna:"eat",armando:"eat",trionfale:"quick",calisto:"drink",kong:"drink",fonclea:"music",alcazar:"music",tazza:"sweet"};
 var NEARLIST=null;
 function nearList(){
@@ -1650,6 +1677,7 @@ function onPos(pos){
   mePos={lat:pos.coords.latitude,lon:pos.coords.longitude,acc:pos.coords.accuracy||0};
   nearErr="";
   if(lmap) drawMe();
+  if(!spareEl.hidden && spare.from==="auto") sparePaint();
   // refresh the near list on the first fix and then only after moving, so it doesn't jump under a thumb
   if(pinMode==="near" && nearFrom==="me" && !document.getElementById("pinsview").hidden && (!nearAt || metres(nearAt.lat,nearAt.lon,mePos.lat,mePos.lon)>25)) renderNear();
 }
@@ -1989,6 +2017,153 @@ function renderMenu(){
   fetch("menu.json").then(function(r){ return r.json(); }).then(function(j){ MENU=j; menuPaint(); }).catch(function(){ menuPaint(); });
 }
 document.getElementById("menuq").addEventListener("input",menuPaint);
+
+/* ---------- "I've got some time": one or two suggestions that fit the time, the mood and where you need to be next.
+   Tags come from place-tags.json. Hours are rules of thumb by kind of place, never looked-up opening times. ---------- */
+var TAGS=null, spareEl=document.getElementById("spare"), spare={min:60,mood:"any",from:"auto",skip:{}};
+var MOODS=[["any","Anything"],["view","A view"],["church","A church"],["art","Art"],["ancient","Ancient Rome"],["wander","A wander"],["coffee","Coffee or something sweet"],["snack","A snack"],["meal","A meal"],["drink","A drink"],["music","Live music"]];
+var MOODMAP={wander:["wander","square","fountain","park"],coffee:["coffee","sweet"]};
+var TYDEF={sight:{moods:["wander"],minutes:15,setting:"outdoor",hours:"always"},eat:{moods:["meal"],minutes:75,setting:"indoor",hours:"kitchen"},
+  quick:{moods:["snack"],minutes:15,setting:"indoor",hours:"allday"},sweet:{moods:["coffee","sweet"],minutes:10,setting:"indoor",hours:"allday"},
+  drink:{moods:["drink"],minutes:40,setting:"indoor",hours:"evening"},music:{moods:["music"],minutes:90,setting:"indoor",hours:"evening"}};
+function nkey(t){ return plain(t).replace(/[^a-z0-9]/g,""); }
+function tagsLoad(done){
+  if(TAGS){ done(); return; }
+  fetch("place-tags.json").then(function(r){ return r.json(); }).then(function(j){
+    var idx={k:{},n:{}};
+    j.plan_stops.forEach(function(t){ if(t.key) idx.k[t.key]=t; idx.n[nkey(t.name)]=t; });
+    j.pins.forEach(function(t){ idx.n[nkey(t.name)]=t; });
+    TAGS=idx; done();
+  }).catch(function(){ TAGS=null; done(); });
+}
+function tagOf(p){ return (p.k&&TAGS.k[p.k]) || TAGS.n[nkey(p.n)] || TYDEF[p.ty] || null; }
+function walkMin(a,b){ return Math.round(metres(a.lat,a.lon,b.lat,b.lon)*1.3/80); }
+function segX(ax,ay,bx,by,cx,cy,dx,dy){
+  function o(px,py,qx,qy,rx,ry){ return (qx-px)*(ry-py)-(qy-py)*(rx-px); }
+  return (o(cx,cy,dx,dy,ax,ay)>0)!==(o(cx,cy,dx,dy,bx,by)>0) && (o(ax,ay,bx,by,cx,cy)>0)!==(o(ax,ay,bx,by,dx,dy)>0);
+}
+function riverMin(a,b){                      // crossings only happen at bridges: add five minutes when the line crosses the Tiber
+  var n=0; for(var i=0;i<RIVER.length-1;i++) if(segX(a.lat,a.lon,b.lat,b.lon,RIVER[i][0],RIVER[i][1],RIVER[i+1][0],RIVER[i+1][1])) n++;
+  return n%2 ? 5 : 0;
+}
+/* rules of thumb for whether a kind of place is open at an arrival time (minutes after midnight) */
+function hoursRule(t,at){
+  var h=t.hours, m=/last entry[^0-9]*(\d\d):(\d\d)/i.exec(t.note||""), last=m?(+m[1])*60+(+m[2]):0;
+  if(h==="always") return {};
+  if(h==="basilica") return at<420?{drop:1}:at>=1110?{pen:3,lab:"Probably shut for the evening."}:at>=1080?{lab:"Check it’s open: big churches close around 18:30."}:{};
+  if(h==="church") return at<450?{drop:1}:(at>=750&&at<930)?{pen:3,lab:"Probably shut until mid-afternoon. Most Roman churches close from about 12:30 to 15:30."}:at>=1110?{pen:3,lab:"Probably shut for the evening."}:{lab:"Check it’s open."};
+  if(h==="ticketed") return (at<540||at>=1080||(last&&at>last))?{drop:1}:at>=990?{lab:"Check the last entry time."}:{};
+  if(h==="daytime") return (at<540||at>=1080)?{drop:1}:{};
+  if(h==="kitchen") return ((at>=750&&at<900)||(at>=1170&&at<1350))?{}:{drop:1};
+  if(h==="allday") return (at<480||at>=1380)?{drop:1}:{};
+  if(h==="evening") return at<(t.type==="music"?1140:1080)?{drop:1}:{};
+  return {lab:"Check hours: I have no basis for when this is open."};
+}
+function spareDay(){ return DAYS.filter(function(d){ return d.id===(todayId||lastDay); })[0]||DAYS[0]; }
+function spareOrigin(d){
+  if(spare.from==="isa"||spare.from==="abr") return {lat:P[spare.from].lat,lon:P[spare.from].lon,name:P[spare.from].n};
+  if(mePos && inRomeLL(mePos.lat,mePos.lon)) return {lat:mePos.lat,lon:mePos.lon,name:"where you are",me:1};
+  if(todayId){
+    var at=null; visibleItemsQuiet(d).forEach(function(it){ if(it.p && st(it)<=now.min) at=it.p; });
+    if(at) return {lat:P[at].lat,lon:P[at].lon,name:P[at].n,plan:1};
+  }
+  var h=P[(d.id==="sat"||d.id==="sun")?"abr":"isa"]; return {lat:h.lat,lon:h.lon,name:h.n};
+}
+function visibleItemsQuiet(d){ var keep=lateInfo, r=visibleItems(d); lateInfo=keep; return r; }
+function sparePick(){
+  var d=spareDay(), o=spareOrigin(d), items=todayId?visibleItemsQuiet(d):[], nextIt=null, ahead=[];
+  items.forEach(function(it){ if(st(it)>now.min){ if(it.p) ahead.push(P[it.p]); if(!nextIt && it.p) nextIt=it; } });
+  var until=nextIt ? st(nextIt)-now.min : 0;
+  var budget=spare.min==="next" ? until : spare.min, capped=0;
+  if(nextIt && isFixed(nextIt) && budget>until){ budget=until; capped=1; }     // a fixed time is a hard stop
+  var end=nextIt ? {lat:P[nextIt.p].lat,lon:P[nextIt.p].lon,name:P[nextIt.p].n.replace(/, evening$/,""),next:nextIt} : null;
+  if(!end){ var h=P[(d.id==="sat"||d.id==="sun")?"abr":"isa"]; end=todayId?{lat:h.lat,lon:h.lon,name:h.n}:{lat:o.lat,lon:o.lon,name:o.name,back:1}; }
+  var want=spare.mood==="any"?null:(MOODMAP[spare.mood]||[spare.mood]), direct=walkMin(o,end), out=[], coffee=null;
+  nearList().forEach(function(p){
+    if(p.ty==="base") return;
+    var t=tagOf(p); if(!t || !t.moods || !t.moods.length || t.confidence==="unidentified") return;
+    if(metres(o.lat,o.lon,p.lat,p.lon)<25 && !o.me) return;                                    // you're standing in it
+    if(ahead.some(function(a){ return metres(a.lat,a.lon,p.lat,p.lon)<25; })) return;          // still to come on today's plan
+    var w1=walkMin(o,p)+(t.climb_minutes||0)+riverMin(o,p), arrive=now.min+w1, labs=[], pen=0;
+    var hr=hoursRule(t,arrive); if(hr.drop) return; if(hr.pen) pen+=hr.pen; if(hr.lab) labs.push(hr.lab);
+    var isCoffee=t.moods.indexOf("coffee")>=0||t.moods.indexOf("sweet")>=0||t.moods.indexOf("snack")>=0;
+    if(isCoffee && (!coffee || w1<coffee.w1)) coffee={p:p,w1:w1};
+    if(want && !t.moods.some(function(m){ return want.indexOf(m)>=0; })) return;
+    if(t.booking==="required"){
+      var booked=BOOK.some(function(b){ return b.p && metres(P[b.p].lat,P[b.p].lon,p.lat,p.lon)<30 && bookState(b).s==="done"; });
+      if(!booked) return; labs.push("You have this booked.");
+    } else if(t.booking==="advised") labs.push("Better booked ahead.");
+    var isView=t.moods.indexOf("view")>=0, open=t.moods.indexOf("square")>=0||t.moods.indexOf("fountain")>=0;
+    if(isView && (arrive>=d.sun.dusk||arrive<d.sun.rise) && !open) return;                     // no view in the dark
+    if(t.type==="music"||(want&&want[0]==="music")){
+      var mu=MUSIC.filter(function(x){ return nkey(x.n)===nkey(p.n) || (p.k&&x.k===p.k); })[0], on=mu&&mu.on&&mu.on[d.id];
+      if(!on) return; labs.push("Listed tonight: "+on.join("; ")+".");
+    }
+    if(t.moods.indexOf("meal")>=0 && want && want[0]==="meal" && budget<60) return;
+    var q=t.queue_minutes||0, w2=walkMin(p,end)+riverMin(p,end), total=w1+q+t.minutes+w2;
+    if(total+10>budget) return;                                                                 // ten minutes in hand
+    var score=(1-(w1+w2)/Math.max(budget,1))*2 - pen, detour=w1+w2-direct;
+    if(!end.back && detour<=6){ score+=1.5; labs.push("It’s on your way to "+end.name+"."); }
+    if(isView && arrive+t.minutes>=d.sun.gpm && arrive<d.sun.set){ score+=1.5; labs.push("Golden hour light, with sunset at "+hm(d.sun.set)+"."); }
+    var rain=rainAt(d,arrive,arrive+Math.max(t.minutes,1));
+    if(rain!==null && rain>=WET && t.setting==="outdoor"){ score-=2; labs.push("Rain is likely ("+rain+"%), and this is outdoors."); }
+    if(t.dress_code) labs.push("Shoulders and knees covered.");
+    if(t.note) labs.push(t.note);
+    out.push({p:p,t:t,w1:w1,w2:w2,q:q,total:total,score:score,labs:labs,up:!!t.climb_minutes});
+  });
+  out.sort(function(a,b){ return b.score-a.score; });
+  return {d:d,o:o,end:end,budget:budget,until:until,capped:capped,list:out,coffee:coffee};
+}
+function sparePaint(){
+  var body=document.getElementById("sparebody");
+  if(!TAGS){ body.innerHTML='<p class="daynote">The place tags couldn’t be loaded. They need one visit with signal to be saved on this device.</p>'; return; }
+  var r=sparePick(), html="";
+  function chips(attr,list,cur){ return '<div class="chips">'+list.map(function(x){ return '<button type="button" '+attr+'="'+x[0]+'" aria-pressed="'+(String(x[0])===String(cur))+'">'+x[1]+'</button>'; }).join("")+'</div>'; }
+  var times=[[30,"30 min"],[60,"1 hour"],[120,"2 hours"]]; if(r.until>0) times.push(["next","Until my next thing ("+inMin(r.until).replace("in ","")+")"]);
+  if(spare.min==="next" && r.until<=0){ spare.min=60; r=sparePick(); }
+  html+='<p class="sparelab">How long?</p>'+chips("data-smin",times,spare.min);
+  html+='<p class="sparelab">In the mood for</p>'+chips("data-smood",MOODS,spare.mood);
+  html+='<p class="sparelab">Starting from</p>'+chips("data-sfrom",[["auto","Here"],["isa","Hotel Isa"],["abr","Albergo Abruzzi"]],spare.from);
+  html+='<p class="sparenote">'+(todayId?'':'It isn’t a trip day, so this plans a round trip using the time in Rome now, '+hm(now.min)+', and '+esc(r.d.tab)+'’s light and forecast. ')+
+    'Measuring from '+esc(r.o.name)+(r.o.plan?', where the plan has you':'')+(r.end.back?'':', and getting you on to '+esc(r.end.name)+(r.end.next?' for '+r.end.next.t:''))+'.'+
+    (r.capped?' '+esc(r.end.next.title)+' is fixed, so I’ve cut the time to the '+r.budget+' minutes before it.':
+      (r.end.next && spare.min!=="next" && r.budget>r.until?' That is longer than the '+r.until+' minutes before the plan’s next step, so these suggestions run past it.':''))+
+    (spare.from==="auto"&&!r.o.me?' <button type="button" class="textbtn" id="spareloc" style="margin:0;font-size:inherit">Use my location</button>':'')+'</p>';
+  var show=r.list.filter(function(x){ return !spare.skip[x.p.n]; }).slice(0,2);
+  if(!show.length){
+    html+='<div class="scard"><h3>Nothing on your list fits</h3><p>Nothing '+(spare.mood==="any"?'':'for that mood ')+'fits '+r.budget+' minutes from here once the walk there and on to '+esc(r.end.name)+' is counted.'+
+      (r.coffee?' The nearest coffee or snack is '+esc(r.coffee.p.n)+', about '+r.coffee.w1+' min on foot.':'')+'</p>'+
+      (Object.keys(spare.skip).length?'<div class="macts"><button type="button" class="textbtn" id="sparereset">Show the ones I skipped</button></div>':'')+'</div>';
+  }
+  show.forEach(function(x){
+    var p=x.p, t=x.t;
+    html+='<div class="scard"><h3>'+esc(p.n)+'</h3><span class="ty">'+esc(p.label||TYPES[p.ty]||"")+(t.free?' · free':'')+'</span>'+
+      '<p>'+x.w1+' min walk'+(x.up?', uphill':'')+'. About '+t.minutes+' min there'+(x.q?', plus around '+x.q+' in a queue':'')+', then '+x.w2+' min '+(r.end.back?'back to ':'on to ')+esc(r.end.name)+
+      '. That’s '+x.total+' of your '+r.budget+' minutes.</p>'+
+      (x.labs.length?'<ul>'+x.labs.map(function(l){ return '<li>'+esc(l)+'</li>'; }).join("")+'</ul>':'')+
+      '<div class="macts">'+(useL?'<button type="button" class="textbtn" data-mapat="'+p.lat+','+p.lon+'" data-sclose="1">Show on map</button>':'')+
+      '<a target="_blank" rel="noopener" href="'+mapsUrl(p.q)+'">Open in Maps</a><button type="button" class="textbtn" data-sskip="'+esc(p.n)+'">Not this one</button></div></div>';
+  });
+  html+='<p class="sparenote">Walking times are straight-line estimates with extra for hills and the river. Visit times are rough, and opening hours are rules of thumb, not looked up.</p>';
+  body.innerHTML=html;
+}
+function openSpare(){ spare.skip={}; now=romeNow(); tagsLoad(function(){ sparePaint(); spareEl.hidden=false; spareEl.scrollTop=0; document.documentElement.classList.add("maplock"); }); }
+function closeSpare(){ spareEl.hidden=true; if(!mapbox.classList.contains("mapfull")) document.documentElement.classList.remove("maplock"); }
+document.getElementById("spareclose").addEventListener("click",closeSpare);
+document.addEventListener("click",function(e){
+  var t=e.target; if(!t.closest) return;
+  if(t.closest("[data-spare]")){ openSpare(); return; }
+  if(!t.closest("#spare")) return;
+  var b;
+  if((b=t.closest("[data-smin]"))){ var v=b.getAttribute("data-smin"); spare.min=v==="next"?"next":+v; spare.skip={}; sparePaint(); }
+  else if((b=t.closest("[data-smood]"))){ spare.mood=b.getAttribute("data-smood"); spare.skip={}; sparePaint(); }
+  else if((b=t.closest("[data-sfrom]"))){ spare.from=b.getAttribute("data-sfrom"); spare.skip={}; sparePaint(); }
+  else if((b=t.closest("[data-sskip]"))){ spare.skip[b.getAttribute("data-sskip")]=1; sparePaint(); }
+  else if(t.id==="sparereset"){ spare.skip={}; sparePaint(); }
+  else if(t.id==="spareloc"){ if(watchId===null) startLocate(false); }
+  else if(t.closest("[data-sclose]")) closeSpare();
+},true);
+document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !spareEl.hidden) closeSpare(); });
 
 /* ---------- bookings tracker ---------- */
 var bookEl=document.getElementById("booklist");
