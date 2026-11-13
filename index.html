@@ -385,6 +385,38 @@ html.maplock{overflow:hidden}
   .item{grid-template-columns:52px minmax(0,1fr);gap:0 10px}
   .wrap{padding:0 16px}
 }
+/* --- buttons you can hit with a thumb: one secondary style for the actions on steps, pins, cards and the map --- */
+body .acts2,body .pinlist .ds.macts,body .scard .macts,body .strip .sacts{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+body .acts2 a,body .acts2 button,body .chipbtn,body .macts a,body .macts .textbtn,body .strip .sacts a,body .strip .sacts .textbtn,body .popact a,body .popact .textbtn{
+  display:inline-flex;align-items:center;min-height:38px;margin:0;padding:7px 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);
+  color:var(--ink);font:600 .84rem/1.2 var(--body);text-decoration:none;cursor:pointer}
+body .popact{gap:6px}
+body .popact a,body .popact .textbtn{min-height:34px;padding:5px 11px;font-size:.8rem}
+body .chipbtn{min-height:34px;padding:5px 12px;vertical-align:middle}
+#maptoggle{margin:0 0 10px}
+#mapcapbtns{margin-top:8px}
+.more{margin:10px 0 0;max-width:62ch}
+.more summary{cursor:pointer;font-size:.9rem;font-weight:600;color:var(--c);width:max-content;max-width:100%;padding:6px 0}
+.alts summary{padding:6px 0}
+.where{font-weight:500;color:var(--ink)}
+main.wrap{padding-bottom:84px}
+.ontrip .mast p{display:none}
+.ontrip #dsum,.ontrip .legend{display:none}
+.item.past:not(.open){padding:8px 0;cursor:pointer;opacity:.62}
+.item.past:not(.open) .body>*:not(h3){display:none}
+.item.past:not(.open) .time small{display:none}
+.item.past:not(.open) h3{font-weight:500;font-size:.95rem}
+.item.past:not(.open) h3::after{content:" · done";font-weight:400;color:var(--muted);font-size:.82rem}
+.pinlist li>a:first-child{display:inline-block;padding:5px 0}
+.ontrip .mast{padding-bottom:12px}
+.ontrip .mast h1{font-size:1.9rem}
+@media (max-width:480px){
+  .tab small{display:none}
+  .tab .today{display:inline;margin-left:5px}
+  .tabs nav{padding:6px 0}
+  .subtab{padding:4px 9px;font-size:.82rem}
+  .tabs nav.sub{gap:5px}
+}
 @media (prefers-reduced-motion:no-preference){
   .item .body{transition:background-color .2s}
 }
@@ -396,6 +428,7 @@ html.maplock{overflow:hidden}
   <h1>Rome <span>Wednesday 18 to Sunday 22 November 2026</span></h1>
   <p>One main plan for each day, built around the awards and your two hotels, with other options under most steps. Your saved places are woven in and listed in full under Pins.</p>
   <div class="status" id="status" role="status"></div>
+  <a class="status" id="checkpill" href="#trip" hidden></a>
   <div class="status" id="offpill" hidden>Saved for offline use</div>
   <div class="themerow"><div class="seg" id="themeseg" role="group" aria-label="Theme">
     <button type="button" data-theme-set="auto">Auto</button><button type="button" data-theme-set="light">Light</button><button type="button" data-theme-set="dark">Dark</button>
@@ -457,10 +490,11 @@ html.maplock{overflow:hidden}
   <div class="day" id="dayview">
     <div id="today"></div>
     <div class="mapcol">
+      <button type="button" class="chipbtn" id="maptoggle">Hide the map</button>
       <figure class="mapbox" id="mapbox">
         <div id="lmap" hidden></div>
         <svg id="map" role="img" aria-label="Sketch map of the day’s stops"></svg>
-        <figcaption><span id="mapcap"></span><span id="mapmsg" role="status"></span><button type="button" class="textbtn" id="mapmode" hidden style="display:block;margin:6px 0 0;font-size:.85rem;font-weight:600;color:var(--ink);text-align:left"></button><button type="button" class="textbtn" id="nearbtn">What’s near me?</button><button type="button" class="textbtn" data-spare="1" style="display:block;margin:6px 0 0;font-size:.85rem;font-weight:600;color:var(--ink)">I’ve got some time</button></figcaption>
+        <figcaption><span id="mapcap"></span><span id="mapmsg" role="status"></span><div class="acts2" id="mapcapbtns"><button type="button" id="nearbtn">What’s near me?</button><button type="button" data-spare="1">I’ve got some time</button><button type="button" id="mapmode" hidden></button></div></figcaption>
       </figure>
     </div>
     <section aria-live="polite">
@@ -486,6 +520,7 @@ html.maplock{overflow:hidden}
   </div>
 </main>
 
+<div id="tripview" hidden>
 <section class="lower">
   <div class="wrap">
     <h2>Before you go</h2>
@@ -564,6 +599,7 @@ html.maplock{overflow:hidden}
     <p class="foot">Flight, hotel and programme times come from your confirmations and the ESN programme page. Opening hours, ticket prices and taxi fares were checked on 13 November 2026 and can change, so confirm when you book. Restaurants and bars, including your pins, haven’t been checked for this week’s opening hours. Walking times are estimates. Sun times are calculated for central Rome and are good to a minute or two; golden hour here means the sun is less than 6° above the horizon. The forecast comes from <a target="_blank" rel="noopener" href="https://open-meteo.com/">Open-Meteo</a> when you have signal, and the last one loaded is kept on this device. The “What to look at” notes were checked against Wikipedia on 13 November 2026. Notes about restaurants, bars and music venues repeat only what each place’s own website said on that date; places with no working site of their own have none.</p>
   </div>
 </section>
+</div>
 
 <div id="phrpanel" hidden role="dialog" aria-modal="true" aria-label="Useful phrases here">
   <div class="wrap">
@@ -995,9 +1031,9 @@ function renderMusic(){
   document.getElementById("musiclist").innerHTML=musicRows(d,0);
 }
 function showView(id){
-  ["dayview","pinsview","musicview","phrasesview","menuview","tipsview","busview"].forEach(function(v){ document.getElementById(v).hidden = v!==id; });
+  ["dayview","pinsview","musicview","phrasesview","menuview","tipsview","busview","tripview"].forEach(function(v){ document.getElementById(v).hidden = v!==id; });
   DAYS.forEach(function(x){ document.getElementById("tab-"+x.id).removeAttribute("aria-current"); });
-  ["pins","music","phrases","menu","tips"].forEach(function(t){ var el=document.getElementById("tab-"+t); if(t+"view"===id) el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current"); });
+  ["pins","music","phrases","menu","tips","trip"].forEach(function(t){ var el=document.getElementById("tab-"+t); if(t+"view"===id) el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current"); });
 }
 function pinLook(n){ var t=LOOKPIN[n]; if(!t) return ""; return t.charAt(0)==="@" ? (LOOK[t.slice(1)]||LOOKPIN[t.slice(1)]||"") : t; }
 function lookText(k){ return LOOK[k] || (P[k] ? pinLook(P[k].n) : ""); }
@@ -1230,6 +1266,7 @@ function wxFetch(){
 var now = romeNow();
 var todayId = null;
 DAYS.forEach(function(d){ if(d.date===now.date) todayId=d.id; });
+if(todayId) document.body.classList.add("ontrip");
 
 (function(){
   var s = document.getElementById("status"), txt;
@@ -1259,7 +1296,7 @@ DAYS.forEach(function(d){
 
 (function(){
   var a=document.createElement("a");
-  [["pins","Pins"],["music","Music"],["phrases","Phrases"],["menu","Menu"],["tips","Tips"]].forEach(function(t){
+  [["pins","Pins"],["music","Music"],["phrases","Phrases"],["menu","Menu"],["tips","Tips"],["trip","Trip"]].forEach(function(t){
     a=document.createElement("a");
     a.className="subtab"; a.href="#"+t[0]; a.id="tab-"+t[0]; a.textContent=t[1];
     document.getElementById("tabs2").appendChild(a);
@@ -1381,24 +1418,28 @@ function render(id){
 
   var looked={};
   tl.innerHTML=items.map(function(it,i){
-    var look="";
-    if(it.p && !looked[it.p] && lookText(it.p)){ looked[it.p]=1; look=lookHtml(lookText(it.p)); }
-    var pl = it.p?P[it.p]:null, where="";
-    if(pl) where='<p class="where">'+(nums[it.p]?'<span class="num">'+nums[it.p]+'</span>':'')+
-      '<a target="_blank" rel="noopener" href="'+mapsUrl(it.swapped?it.q:pl.q)+'">'+esc(pl.n)+', open in Maps</a>'+(useL?'<button type="button" class="textbtn" data-show="'+it.p+'">Show on map</button>':'')+'</p>';
-    else if(it.swapped) where='<p class="where"><a target="_blank" rel="noopener" href="'+mapsUrl(it.q)+'">Open in Maps</a></p>';
-    return '<li class="item" data-c="'+it.c+'" data-idx="'+it.idx+'"'+(it.p?' data-p="'+it.p+'"':'')+'>'+
+    var pl = it.p?P[it.p]:null, lookT="";
+    if(it.p && !looked[it.p] && lookText(it.p)){ looked[it.p]=1; lookT=lookText(it.p); }
+    var where = pl ? '<p class="where">'+(nums[it.p]?'<span class="num">'+nums[it.p]+'</span>':'')+esc(pl.n)+'</p>' : "";
+    var acts="";
+    if(pl||it.swapped) acts+='<a target="_blank" rel="noopener" href="'+mapsUrl(it.swapped?it.q:pl.q)+'">Open in Maps</a>';
+    if(pl&&useL) acts+='<button type="button" data-show="'+it.p+'">Show on map</button>';
+    acts+='<button type="button" data-phr="'+ctxOf(it)+'" data-ptime="'+(it.bk?((it.bks.s==="done"&&/^\d\d:\d\d$/.test(it.bks.slot))?it.bks.slot:it.t):"")+'" data-pdrv="'+(it.drv&&!it.swapped?it.drv.join(","):"")+'" data-pplace="'+(it.p||"")+'">Phrases and tips</button>';
+    if(it.drv && !it.swapped) acts+=it.drv.map(function(k){ return '<button type="button" data-drv="'+k+'">Show the driver: '+esc(driverInfo(k).name)+'</button>'; }).join("");
+    var more=lightLine(d,it)+(it.p?aboutHtml(aboutFor(it.p),"p"):'')+busStep(it)+(lookT?'<p class="about"><b>What to look at.</b> '+esc(lookT)+'</p>':'');
+    return '<li class="item" data-c="'+it.c+'" data-idx="'+it.idx+'" data-end="'+en(it,items[i+1])+'"'+(it.p?' data-p="'+it.p+'"':'')+'>'+
       '<div class="time">'+it.t+(it.was?'<small>was '+it.was+'</small>':'')+(it.e?'<small>to '+it.e+'</small>':'')+'</div>'+
       '<div class="body"><h3><span class="kind">'+KIND[it.c]+'</span>'+(it.opt?'<span class="opt">Optional</span>':'')+(it.swapped?'<span class="opt">Swapped</span>':'')+esc(it.title)+'</h3>'+
       where+
-      (it.swapped?'<p class="instead">Instead of: '+esc(it.swapped)+'.<button type="button" class="textbtn" data-swap="-1" data-idx="'+it.idx+'">Back to the original</button></p>':'')+
+      (it.swapped?'<p class="instead">Instead of: '+esc(it.swapped)+'. <button type="button" class="chipbtn" data-swap="-1" data-idx="'+it.idx+'">Back to the original</button></p>':'')+
       (it.lv && it.lv!==it.t?'<p class="leave">'+esc(it.lvl||"Leave by")+' '+it.lv+(it.ti?' Irish time':'')+'.'+(it.lvd?' '+esc(it.lvd):'')+'</p>':'')+
-      (it.drv && !it.swapped?'<p class="drv">'+it.drv.map(function(k){ return '<button type="button" data-drv="'+k+'">Show the driver: '+esc(driverInfo(k).name)+'</button>'; }).join("")+'</p>':'')+
-      lightLine(d,it)+rainLine(d,it)+
-      '<p class="useful"><button type="button" class="textbtn" data-phr="'+ctxOf(it)+'" data-ptime="'+(it.bk?((it.bks.s==="done"&&/^\d\d:\d\d$/.test(it.bks.slot))?it.bks.slot:it.t):"")+'" data-pdrv="'+(it.drv&&!it.swapped?it.drv.join(","):"")+'" data-pplace="'+(it.p||"")+'">Phrases and tips</button></p>'+
       bookLine(it)+
       (it.warn?'<p class="warn"><span class="wflag">Check</span>'+esc(it.warn)+'</p>':'')+
-      (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+(it.p?aboutHtml(aboutFor(it.p),"p"):'')+musicStep(d,it)+busStep(it)+look+altsHtml(it)+'</div></li>';
+      rainLine(d,it)+
+      (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+musicStep(d,it)+
+      '<div class="acts2">'+acts+'</div>'+
+      (more?'<details class="more"><summary>More about this stop</summary>'+more+'</details>':'')+
+      altsHtml(it)+'</div></li>';
   }).join("");
 
   paintToday();
@@ -1412,6 +1453,7 @@ function paintToday(){
   var box=document.getElementById("today");
   [].forEach.call(tl.querySelectorAll(".flag"),function(f){ f.parentNode.removeChild(f); });
   if(!current || current.id!==todayId){ box.innerHTML=""; return; }
+  [].forEach.call(tl.children,function(li){ li.classList.toggle("past", +li.getAttribute("data-end")<=now.min); });
   var items=curItems, n=now.min, ni=-1, xi=-1, fi=-1, i;
   for(i=0;i<items.length;i++){
     var s=st(items[i]);
@@ -1485,7 +1527,7 @@ function musicStep(d,it){
 function bookLine(it){
   if(!it.bk || it.bks.s==="skip") return "";
   if(it.bks.s==="done") return '<p class="bkline"><b>Booked'+(it.bks.slot?' for '+esc(it.bks.slot):'')+'.</b>'+(it.bks.ref?' Confirmation '+esc(it.bks.ref)+'.':'')+'</p>';
-  return '<p class="bkline">Not booked yet.<button type="button" class="textbtn" data-goto="bookings">Bookings</button></p>';
+  return '<p class="bkline">Not booked yet. <button type="button" class="chipbtn" data-goto="bookings">Bookings</button></p>';
 }
 function altsHtml(it){
   if(!it.alts||!it.alts.length) return "";
@@ -1627,7 +1669,7 @@ function setMapMode(m){
     onlineLayer.addTo(lmap);
   }
   var b=document.getElementById("mapmode");
-  if(b){ b.hidden=!(window.protomapsL && protomapsL.leafletLayer); b.textContent = m==="offline" ? "Offline map of central Rome. Switch to the online map" : "Switch to the offline map"; }
+  if(b){ b.hidden=!(window.protomapsL && protomapsL.leafletLayer); b.textContent = m==="offline" ? "Using the offline map. Go online" : "Use the offline map"; }
 }
 var PINLIST=[];
 AREAS.forEach(function(ar){ ar.pins.forEach(function(p){ if(typeof p[4]==="number") PINLIST.push({n:p[0],ty:p[1],d:p[2],q:(p[3]||p[0])+", Roma",lat:p[4],lon:p[5]}); }); });
@@ -1751,7 +1793,8 @@ function drawLeaflet(items,nums){
         '<div class="popact"><button type="button" class="textbtn" data-drv="pin:'+pi+'">Show the driver</button><a target="_blank" rel="noopener" href="'+mapsUrl(p.q)+'">Open in Maps</a></div>'),{maxWidth:240,autoPanPaddingTopLeft:[8,54],autoPanPaddingBottomRight:[8,8]})
       .addTo(pinLayer);
   });
-  lmap.fitBounds(L.latLngBounds((ids.length?ids:shown).map(ll)).pad(0.2),{maxZoom:17,animate:false});
+  lastFit=L.latLngBounds((ids.length?ids:shown).map(ll)).pad(0.2);
+  lmap.fitBounds(lastFit,{maxZoom:17,animate:false});
   document.getElementById("mapcap").textContent="Numbers match the plan, H marks your hotels and the small dots are your pins. The dotted line joins the stops in order; it isn’t a walking route.";
 }
 
@@ -1801,6 +1844,15 @@ function onMapBtn(e){
 }
 
 document.getElementById("mapmode").addEventListener("click",function(){ mapPinned=true; setMapMode(mapMode==="offline"?"online":"offline"); });
+
+/* the map can be folded away so the plan follows the Today panel; on a phone during the trip it starts folded */
+var lastFit=null;
+function showMap(on){
+  mapbox.hidden=!on; save("maphide",!on);
+  document.getElementById("maptoggle").textContent=on?"Hide the map":"Show the map";
+  if(on && lmap){ lmap.invalidateSize(false); if(lastFit) lmap.fitBounds(lastFit,{maxZoom:17,animate:false}); }
+}
+document.getElementById("maptoggle").addEventListener("click",function(){ showMap(mapbox.hidden); });
 
 /* live location: only starts when asked, never leaves the device */
 var watchId=null, meMark=null, meRing=null, meCentre=false;
@@ -1949,6 +2001,8 @@ function setHot(p,scroll,fromMap){
 map.addEventListener("click",function(e){ var g=e.target.closest&&e.target.closest(".pin"); if(g) setHot(g.getAttribute("data-p"),true); });
 map.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ var g=e.target.closest&&e.target.closest(".pin"); if(g){ e.preventDefault(); setHot(g.getAttribute("data-p"),true); } } });
 tl.addEventListener("click",function(e){
+  var pli=e.target.closest(".item.past:not(.open)");
+  if(pli){ pli.classList.add("open"); return; }
   var sw=e.target.closest("button[data-swap]");
   if(sw){
     var idx=sw.getAttribute("data-idx");
@@ -1957,9 +2011,10 @@ tl.addEventListener("click",function(e){
     var row=tl.querySelector('[data-idx="'+idx+'"]'); if(row) row.scrollIntoView({block:"nearest"});
     return;
   }
-  if(e.target.closest("button[data-goto]")){ document.getElementById("bookings").scrollIntoView({block:"start"}); return; }
+  if(e.target.closest("button[data-goto]")){ location.hash="#trip"; setTimeout(function(){ document.getElementById("bookings").scrollIntoView({block:"start"}); },60); return; }
   var sb=e.target.closest("button[data-show]");
-  if(sb){ setHot(sb.getAttribute("data-show"),false); mapbox.scrollIntoView({block:"start"}); return; }
+  if(sb){ showMap(true); setHot(sb.getAttribute("data-show"),false); mapbox.scrollIntoView({block:"start"}); return; }
+  if(e.target.closest("button")) return;
   if(e.target.closest("a")||e.target.closest("details")) return; var li=e.target.closest(".item"); if(li) setHot(li.getAttribute("data-p")===hot?null:li.getAttribute("data-p"),false); });
 
 document.getElementById("choice").addEventListener("click",function(e){
@@ -1970,19 +2025,24 @@ document.getElementById("choice").addEventListener("click",function(e){
 
 /* ---------- checklist ---------- */
 var checksEl=document.getElementById("checks");
+function checkPill(count){          // before the trip, the checklist's progress shows under the title and links to it
+  var p=document.getElementById("checkpill");
+  p.hidden=!(now.date && now.date<DAYS[0].date);
+  p.textContent="Checklist: "+count+" of "+CHECKS.length;
+}
 function renderChecks(){
   var done=load("checks",{}), count=0;
   checksEl.innerHTML=CHECKS.map(function(c){
     if(done[c[0]]) count++;
     return '<li><label><input type="checkbox" data-k="'+c[0]+'"'+(done[c[0]]?" checked":"")+'><span>'+esc(c[1])+(c[2]?'<small>'+esc(c[2])+'</small>':'')+'</span></label></li>';
   }).join("");
-  document.getElementById("progress").textContent=count+" of "+CHECKS.length+" done";
+  document.getElementById("progress").textContent=count+" of "+CHECKS.length+" done"; checkPill(count);
 }
 checksEl.addEventListener("change",function(e){
   var k=e.target.getAttribute("data-k"); if(!k) return;
   var done=load("checks",{}); done[k]=e.target.checked; save("checks",done);
   var count=CHECKS.filter(function(c){return done[c[0]];}).length;
-  document.getElementById("progress").textContent=count+" of "+CHECKS.length+" done";
+  document.getElementById("progress").textContent=count+" of "+CHECKS.length+" done"; checkPill(count);
 });
 document.getElementById("reset").addEventListener("click",function(){ save("checks",{}); renderChecks(); });
 
@@ -2220,7 +2280,7 @@ function busStep(it){
   if(!BUS || !it.p || it.swapped&&!P[it.p]) return "";
   var parts=[];
   BUS.dirs.forEach(function(d,i){ var n=busNear(d,P[it.p].lat,P[it.p].lon); if(n.m<=350) parts.push(busWay(i,n.i)+" from "+n.s[0]+" ("+busWalk(n.m)+" min walk)"); });
-  return parts.length?'<p class="about">Bus 81 from here: '+esc(parts.join("; "))+'.<button type="button" class="textbtn" data-bus="1" style="margin:0 0 0 8px;font-size:.88rem">Bus 81</button></p>':'';
+  return parts.length?'<p class="about">Bus 81 from here: '+esc(parts.join("; "))+'.<button type="button" class="chipbtn" data-bus="1">Bus 81</button></p>':'';
 }
 document.addEventListener("click",function(e){
   var t=e.target; if(!t.closest) return;
@@ -2668,6 +2728,7 @@ function focusOnMap(lat,lon){
 document.addEventListener("click",function(e){
   var b=e.target.closest&&e.target.closest("button[data-mapat]"); if(!b) return;
   var at=b.getAttribute("data-mapat").split(","), day=b.getAttribute("data-day") || todayId || lastDay;
+  showMap(true);
   if(!current || current.id!==day){
     try{ history.replaceState(null,"","#"+day); }catch(err){}
     render(day);
@@ -2684,6 +2745,7 @@ function route(){
   if(h==="menu"){ renderMenu(); return; }
   if(h==="tips"){ renderTips(); return; }
   if(h==="bus"){ renderBus(); return; }
+  if(h==="trip"){ showView("tripview"); current=null; return; }
   var ok=DAYS.some(function(d){return d.id===h;});
   render(ok?h:(todayId||"wed"));
 }
@@ -2700,6 +2762,7 @@ if(todayId && !FAKE && load("lastday","")!==now.date){
   save("lastday",now.date);
   if(location.hash!=="#"+todayId){ try{ history.replaceState(null,"","#"+todayId); }catch(e){ location.hash="#"+todayId; } }
 }
+(function(){ var saved=load("maphide",null), hide = saved===null ? !!(todayId && window.innerWidth<900) : !!saved; mapbox.hidden=hide; document.getElementById("maptoggle").textContent=hide?"Show the map":"Hide the map"; })();
 renderChecks(); renderBooks(); route(); wxFetch();
 
 /* ---------- offline: the service worker saves the app, and map tiles as they are viewed ---------- */
