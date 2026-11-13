@@ -7,6 +7,7 @@
     "sweet": "Coffee and gelato",
     "drink": "Bars",
     "music": "Live music",
+    "chat": "Small talk",
     "sight": "Sights and tickets",
     "taxi": "Taxis",
     "hotel": "Hotels",
@@ -849,6 +850,205 @@
       "en": "You have to buy a drink",
       "it": "C'è la consumazione obbligatoria",
       "say": "cheh la kon-soo-mat-see-OH-neh ob-blee-ga-TOH-rya",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "Is this seat free? / May I?",
+      "it": "È libero? / Posso?",
+      "say": "eh LEE-beh-ro / POSS-o"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "Do you mind if I join you?",
+      "it": "Posso sedermi con voi?",
+      "say": "POSS-o seh-DAIR-mee kon voy"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "My name is… And you?",
+      "it": "Mi chiamo… E tu?",
+      "say": "mee KYAH-mo… eh too",
+      "tip": "Tu is normal with people your own age in a bar. With someone older, say E Lei?"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "I'm Irish, from Dublin",
+      "it": "Sono irlandese, di Dublino",
+      "say": "SO-no eer-lan-DEH-zeh, dee doo-BLEE-no"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "I'm here for a few days, for work",
+      "it": "Sono qui per qualche giorno, per lavoro",
+      "say": "SO-no kwee pair KWAL-keh JOR-no, pair la-VO-ro"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "Until Sunday",
+      "it": "Fino a domenica",
+      "say": "FEE-no ah do-MEH-nee-ka"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "Are you from Rome?",
+      "it": "Sei di Roma?",
+      "say": "say dee RO-ma"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "What do you do?",
+      "it": "Che lavoro fai?",
+      "say": "keh la-VO-ro fy"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "What would you recommend around here?",
+      "it": "Cosa mi consigli qui in zona?",
+      "say": "KO-za mee kon-SEEL-yee kwee een DZO-na"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "I really like this place",
+      "it": "Mi piace molto questo posto",
+      "say": "mee PYAH-cheh MOL-to KWES-to POS-to"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "What's the band called? They're good",
+      "it": "Come si chiama il gruppo? Sono bravi",
+      "say": "KO-meh see KYAH-ma eel GROOP-po? SO-no BRAH-vee"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "What are you drinking?",
+      "it": "Cosa bevi?",
+      "say": "KO-za BEH-vee"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "Can I get you a drink?",
+      "it": "Posso offrirti qualcosa da bere?",
+      "say": "POSS-o of-FREER-tee kwal-KO-za da BEH-reh"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "Cheers!",
+      "it": "Salute! / Cin cin!",
+      "say": "sa-LOO-teh / cheen cheen"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "I only speak a little Italian",
+      "it": "Parlo solo un po' di italiano",
+      "say": "PAR-lo SO-lo oon po dee ee-ta-LYAH-no"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "Could you speak more slowly?",
+      "it": "Puoi parlare più lentamente?",
+      "say": "pwoy par-LAH-reh pyoo len-ta-MEN-teh"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "It was nice to meet you",
+      "it": "È stato un piacere",
+      "say": "eh STAH-to oon pya-CHEH-reh"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "See you / Have a good evening",
+      "it": "Ci vediamo / Buona serata",
+      "say": "chee veh-DYAH-mo / BWO-na seh-RAH-ta"
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "Where are you from?",
+      "it": "Di dove sei?",
+      "say": "dee DOH-veh say",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "What's your name?",
+      "it": "Come ti chiami?",
+      "say": "KO-meh tee KYAH-mee",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "Are you here on holiday?",
+      "it": "Sei qui in vacanza?",
+      "say": "say kwee een va-KAN-tsa",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "How long are you staying?",
+      "it": "Quanto ti fermi?",
+      "say": "KWAN-to tee FAIR-mee",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "Do you like Rome?",
+      "it": "Ti piace Roma?",
+      "say": "tee PYAH-cheh RO-ma",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "chat"
+      ],
+      "en": "What do you do for a living?",
+      "it": "Che fai nella vita?",
+      "say": "keh fy NEL-la VEE-ta",
       "hear": true
     }
   ]

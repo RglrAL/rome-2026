@@ -1893,7 +1893,8 @@ function ctxOf(it){
 function phrItems(ctx){
   var all=PHR?PHR.phrases:[], out=[];
   function sec(c){ var l=all.filter(function(p){ return p.contexts.indexOf(c)>=0 && out.every(function(o){ return o.l.indexOf(p)<0; }); }); if(l.length) out.push({c:c,l:l}); }
-  sec(ctx); if(ctx!=="basics") sec("basics"); if(ctx!=="trouble") sec("trouble");
+  sec(ctx); if(ctx==="drink"||ctx==="music") sec("chat");            // bars and gigs are where you get talking
+  if(ctx!=="basics") sec("basics"); if(ctx!=="trouble") sec("trouble");
   return out;
 }
 function phrHtml(ctx,o){
