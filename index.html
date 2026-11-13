@@ -88,6 +88,20 @@ button{font:inherit;color:inherit}
 .seg button{background:transparent;border:0;padding:7px 16px;font-size:.9rem;font-weight:600;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 
+#today{grid-column:1/-1;max-width:720px}
+#today:empty{display:none}
+.todaybox{padding:4px 16px 6px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.todaybox h3{margin:10px 0 4px;font-size:.82rem;font-weight:600;color:var(--muted)}
+.todaybox p{margin:6px 0 10px;font-size:.95rem}
+.trow{display:grid;grid-template-columns:50px minmax(0,1fr);gap:0 10px;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:10px 0;cursor:pointer;font-size:.95rem;line-height:1.35}
+.todaybox h3 + .trow{border-top:0}
+.trow .tk{font-size:.78rem;font-weight:700;padding-top:2px}
+.trow b{font-weight:600}
+.trow small{display:block;color:var(--muted);font-size:.86rem}
+.trow.urgent{background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:10px;margin:2px -10px 4px;width:calc(100% + 20px)}
+.trow.urgent small{color:inherit;opacity:.85}
+.trow.urgent + .trow{border-top:0}
+.leave{margin:6px 0 0;font-size:.9rem;font-weight:600;max-width:62ch}
 .legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:18px 0 0;padding:0;list-style:none;font-size:.82rem;color:var(--muted)}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
 
@@ -246,6 +260,7 @@ html.maplock{overflow:hidden}
     <div id="areas"></div>
   </div>
   <div class="day" id="dayview">
+    <div id="today"></div>
     <div class="mapcol">
       <figure class="mapbox" id="mapbox">
         <div id="lmap" hidden></div>
@@ -383,11 +398,13 @@ function A(n,d,pin,q){ return {n:n,d:d,pin:pin,q:q||(n+", Roma")}; }
 
 /* ---------- days ---------- */
 var DAYS = [
+/* fix:1 = a fixed time. lv = when to leave for it (lvl replaces the "Leave by" label, lvd adds how).
+   ti:1 / ei:1 = the start / end time is Irish time, an hour behind Rome. */
  {id:"wed",date:"2026-11-18",tab:"Wed 18",gist:"Arrive",title:"Wednesday: Dublin to Rome",
   sum:"A travel day. You land at 17:00 Rome time, so the evening is dinner in Prati and live music if you still have the energy.",
   items:[
-   {t:"11:00",c:"travel",title:"Be at Dublin Airport",note:"Irish time. Ryanair bag drop closes 40 minutes before departure and the gate closes 30 minutes before, so two hours gives you room for security."},
-   {t:"13:00",e:"17:00",c:"travel",title:"Flight FR9611 to Rome Fiumicino",note:"Rome is one hour ahead of Dublin, so the flight is about three hours."},
+   {t:"11:00",ti:1,c:"travel",title:"Be at Dublin Airport",note:"Irish time. Ryanair bag drop closes 40 minutes before departure and the gate closes 30 minutes before, so two hours gives you room for security."},
+   {t:"13:00",ti:1,e:"17:00",fix:1,lv:"12:30",lvl:"Gate closes at",c:"travel",title:"Flight FR9611 to Rome Fiumicino",note:"Rome is one hour ahead of Dublin, so the flight is about three hours."},
    {t:"17:30",c:"travel",title:"Fiumicino to Hotel Isa",note:"A white licensed taxi from the rank takes 45 to 60 minutes at this hour. The fixed fare is €55 to anywhere inside the Aurelian Walls. Prati sits right at the edge of that zone, so agree the fare before you set off.",
     alts:[A("Train and metro","Leonardo Express to Termini (32 minutes, €14), then Metro A four stops to Lepanto and a six-minute walk. Cheaper, and about the same time in bad traffic.",0,"Lepanto metro, Roma")]},
    {t:"18:45",c:"stay",p:"isa",title:"Check in at Hotel Isa",note:"Both rooms are under your name, so give that at the desk. Breakfast is included."},
@@ -420,13 +437,13 @@ var DAYS = [
    {v:"go",t:"07:30",e:"09:45",c:"free",p:"stp",title:"St Peter’s Basilica and the dome, early",note:"The dome opens at 07:30 and is at its quietest then. €17 by stairs or €22 with the lift booked ahead, €10 and €15 at the kiosk. 551 steps, or 320 with the lift. Shoulders and knees covered.",
     alts:[A("A slow breakfast instead","Save the dome for another trip and keep your legs for the evening.",0,"Hotel Isa, Via Cicerone 39, Roma")]},
    {v:"go",t:"10:15",c:"travel",title:"Cross the city to the Policlinico",note:"A taxi takes about 20 minutes. By metro, take Line A from Lepanto to Termini, change to Line B and go two stops to Policlinico. Allow 35 minutes door to door."},
-   {v:"go",t:"11:00",e:"13:00",c:"work",p:"poli",title:"Study visit: TOBIA-DAMA",note:"Outpatient care for people with cognitive or neuromotor disabilities, run by a multidisciplinary team at the university hospital."},
+   {v:"go",t:"11:00",e:"13:00",fix:1,lv:"10:15",lvd:"A taxi takes about 20 minutes, the metro about 35.",c:"work",p:"poli",title:"Study visit: TOBIA-DAMA",note:"Outpatient care for people with cognitive or neuromotor disabilities, run by a multidisciplinary team at the university hospital."},
    {v:"go",t:"13:15",c:"free",title:"Lunch, then back to Prati",note:"Eat near the hospital or head straight back and use one of your Prati pins. Aim to be at the hotel by 15:00.",
     alts:[A("Be.Re. + Trapizzino","Craft beer and stuffed pizza pockets on Piazza del Risorgimento.",1),
           A("Vuliò","Puglian street food, quick and cheap.",1,"Vuliò, Via degli Scipioni 55, Roma")]},
    {t:"14:30",c:"stay",p:"isa",title:"Back at the hotel to rest and change",note:"The ceremony is seated banquet-style with a three-course dinner, so pack something smart."},
    {t:"16:40",c:"travel",title:"Walk to the venue",note:"About 18 minutes, past Castel Sant’Angelo and along the river. A taxi is five minutes if it’s raining."},
-   {t:"17:00",e:"18:00",c:"work",p:"venue",title:"Check-in and welcome reception",note:"Cloakroom, interpretation headsets and a welcome drink."},
+   {t:"17:00",e:"18:00",fix:1,lv:"16:40",lvd:"About 18 minutes on foot from Hotel Isa.",c:"work",p:"venue",title:"Check-in and welcome reception",note:"Cloakroom, interpretation headsets and a welcome drink."},
    {t:"18:00",e:"20:30",c:"work",p:"venue",title:"Awards ceremony",note:"Welcome from Christian Fillet and Massimiliano Maselli, a keynote from Sinead Kane, then eleven awards presented by Alfonso Lara Montero and Jane Dudman. Closing remarks from Ruth Paserman of the European Commission."},
    {t:"20:30",e:"23:00",c:"work",p:"venue",title:"Dinner",note:"Three courses at the venue."},
    {t:"23:00",c:"travel",title:"Back to Hotel Isa",note:"The same 18-minute walk, or ask the venue to call a taxi."}
@@ -437,7 +454,7 @@ var DAYS = [
   note:"<b>If it rains:</b> take the churches loop under the Gianicolo step instead, then a taxi to Trastevere for dinner.",
   items:[
    {t:"08:40",c:"travel",title:"Walk to the venue",note:"About 18 minutes from the hotel."},
-   {t:"09:00",e:"09:30",c:"work",p:"venue",title:"Check-in opens"},
+   {t:"09:00",e:"09:30",fix:1,lv:"08:40",lvd:"About 18 minutes on foot from Hotel Isa.",c:"work",p:"venue",title:"Check-in opens"},
    {t:"09:30",e:"10:45",c:"work",p:"venue",title:"Panel discussion and partner presentations",note:"Led by EY and the Regional Government of Lazio, on how technology and AI are changing social service delivery and the workforce."},
    {t:"10:45",e:"11:15",c:"work",p:"venue",title:"Coffee break"},
    {t:"11:15",e:"13:00",c:"work",p:"venue",title:"Walking Practice Fair",note:"Nominated projects and partner exhibition stands."},
@@ -451,7 +468,7 @@ var DAYS = [
     alts:[A("Church of St Callixtus","On the next square, a minute away.",1,"Chiesa di San Callisto, Piazza di San Calisto, Roma"),
           A("Ponte Fabricio and Tiber Island","Ten minutes east: the oldest working bridge in Rome.",1,"Ponte Fabricio, Roma")]},
    {v:"go",t:"14:15",c:"travel",title:"Travel to the Astrea centre",note:"Confirm the address and how long it takes from the venue before Friday."},
-   {v:"go",t:"15:00",e:"17:00",c:"work",title:"Study visit: restorative justice",note:"The only fully public restorative justice centre in Lazio, set up under the Cartabia Reform."},
+   {v:"go",t:"15:00",e:"17:00",fix:1,lv:"14:15",lvd:"Confirm the address and the journey time first.",c:"work",title:"Study visit: restorative justice",note:"The only fully public restorative justice centre in Lazio, set up under the Cartabia Reform."},
    {v:"go",t:"17:45",c:"free",p:"smt",title:"Taxi to Trastevere, Santa Maria in Trastevere",note:"It’s dark by now, so skip the hill. The basilica’s gold mosaics are lit and the piazza is at its best in the evening."},
    {t:"18:00",c:"free",p:"calisto",title:"A drink at Bar San Calisto",note:"Cheap, scruffy and loved. Stand outside with a beer or a spritz like everyone else.",
     alts:[A("Samovar","Another bar from your list.",1,"Samovar, Trastevere, Roma"),
@@ -477,10 +494,10 @@ var DAYS = [
   items:[
    {t:"07:45",c:"stay",p:"isa",title:"Breakfast and check out of Hotel Isa",note:"City tax of €22.50 per room is paid at the desk."},
    {t:"08:15",c:"travel",p:"abr",title:"Taxi to Albergo Abruzzi, then on to the Colosseum",note:"Ten minutes to the Pantheon to leave your bags (check-in is from 14:00), then ten more to the Colosseum. Ask the driver to wait."},
-   {t:"09:00",e:"10:30",c:"free",p:"col",title:"Colosseum, Full Experience Attic ticket",note:"The ticket takes you to the top tier as well as the main levels, in groups of 25, with 90 minutes inside. About €24 on colosseo.it. Slots are released 30 days ahead, so book now. It includes the Forum and Palatine.",
+   {t:"09:00",e:"10:30",fix:1,lv:"08:15",lvd:"By taxi from Hotel Isa, leaving your bags at Albergo Abruzzi on the way.",c:"free",p:"col",title:"Colosseum, Full Experience Attic ticket",note:"The ticket takes you to the top tier as well as the main levels, in groups of 25, with 90 minutes inside. About €24 on colosseo.it. Slots are released 30 days ahead, so book now. It includes the Forum and Palatine.",
     alts:[A("Standard ticket","About €18, still timed entry, without the upper tier. Take this if the attic slots have gone.",1,"Colosseo, Roma"),
           A("Outside only","Walk the perimeter and the Arch of Constantine and put the time into San Clemente and the Forum.",0,"Arco di Costantino, Roma")]},
-   {t:"10:45",e:"11:40",c:"free",p:"clem",title:"San Clemente, the underground levels",note:"Five minutes’ walk. A twelfth-century basilica on top of a fourth-century church on top of a Roman house and a temple of Mithras. The excavations need a slot booked online, about €10. The Saturday morning session ends at 12:30."},
+   {t:"10:45",e:"11:40",fix:1,lv:"10:35",lvd:"Five minutes’ walk from the Colosseum.",c:"free",p:"clem",title:"San Clemente, the underground levels",note:"Five minutes’ walk. A twelfth-century basilica on top of a fourth-century church on top of a Roman house and a temple of Mithras. The excavations need a slot booked online, about €10. The Saturday morning session ends at 12:30."},
    {t:"12:00",c:"free",p:"piazzetta",title:"Lunch in Monti at La Nuova Piazzetta",note:"Your pin, on a lane between the Colosseum and Via Cavour. Go as it opens to get a table.",
     alts:[A("La Taverna dei Fori Imperiali","Family-run trattoria a few minutes away. Book.",0,"La Taverna dei Fori Imperiali, Via della Madonna dei Monti 9, Roma"),
           A("Santa Maria Maggiore","Not lunch, but ten minutes north if you want the fifth-century mosaics.",1,"Basilica Papale di Santa Maria Maggiore, Roma")]},
@@ -519,9 +536,9 @@ var DAYS = [
    {t:"07:00",c:"free",p:"pan",opt:1,title:"Piazza della Rotonda with nobody in it",note:"Step outside before the crowds. The Pantheon doesn’t open until 09:00, but the square at this hour is worth ten minutes."},
    {t:"07:15",c:"free",p:"tazza",opt:1,title:"Coffee at Tazza d’Oro",note:"One minute from the hotel, if it’s open this early on a Sunday. Otherwise there’s coffee at the airport."},
    {t:"07:40",c:"stay",p:"abr",title:"Check out of Albergo Abruzzi",note:"City tax is paid at the desk."},
-   {t:"08:00",c:"travel",title:"Taxi to Fiumicino",note:"The Pantheon is inside the Aurelian Walls, so the fixed €55 fare applies. Allow 45 minutes. Ask the hotel on Saturday to book the car."},
+   {t:"08:00",fix:1,lv:"08:00",lvl:"Taxi leaves at",c:"travel",title:"Taxi to Fiumicino",note:"The Pantheon is inside the Aurelian Walls, so the fixed €55 fare applies. Allow 45 minutes. Ask the hotel on Saturday to book the car."},
    {t:"08:45",c:"travel",title:"At the airport",note:"Bag drop closes 40 minutes before departure and the gate closes at 10:35. Your boarding pass shows the terminal."},
-   {t:"11:05",e:"13:20",c:"travel",title:"Flight FR9612 to Dublin",note:"Lands 13:20 Irish time."}
+   {t:"11:05",e:"13:20",ei:1,fix:1,lv:"10:35",lvl:"Gate closes at",c:"travel",title:"Flight FR9612 to Dublin",note:"Lands 13:20 Irish time."}
   ]}
 ];
 
@@ -634,7 +651,10 @@ function load(k,d){ try{ var v = localStorage.getItem("rome26:"+k); return v===n
 function save(k,v){ mem[k]=v; try{ localStorage.setItem("rome26:"+k, JSON.stringify(v)); }catch(e){} }
 
 /* ---------- time in Rome ---------- */
+/* add ?now=2026-11-19T16:20 to the address to preview a moment of the trip */
+var FAKE=/[?&]now=(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})/.exec(location.search);
 function romeNow(){
+  if(FAKE) return {date:FAKE[1],min:(+FAKE[2])*60+(+FAKE[3])};
   try{
     var parts = new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Rome",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).formatToParts(new Date());
     var o={}; parts.forEach(function(p){o[p.type]=p.value;});
@@ -642,6 +662,10 @@ function romeNow(){
   }catch(e){ return {date:"",min:0}; }
 }
 function mins(t){ var a=t.split(":"); return (+a[0])*60+(+a[1]); }
+function st(it){ return mins(it.t)+(it.ti?60:0); }                       // start, in Rome minutes
+function en(it,next){ return it.e ? mins(it.e)+(it.ei?60:0) : (next ? st(next) : st(it)+60); }
+function hm(m){ m=((m%1440)+1440)%1440; return ("0"+Math.floor(m/60)).slice(-2)+":"+("0"+(m%60)).slice(-2); }
+function inMin(m){ if(m<1) return "now"; var h=Math.floor(m/60), r=m%60; return "in "+(h?h+" h"+(r?" "+r+" min":""):r+" min"); }
 function dayDiff(a,b){ return Math.round((Date.parse(b+"T00:00:00Z")-Date.parse(a+"T00:00:00Z"))/86400000); }
 
 var now = romeNow();
@@ -661,7 +685,7 @@ DAYS.forEach(function(d){ if(d.date===now.date) todayId=d.id; });
 
 /* ---------- rendering ---------- */
 var tabsEl=document.getElementById("tabs"), tl=document.getElementById("tl"), map=document.getElementById("map");
-var current=null, hot=null;
+var current=null, hot=null, curItems=[];
 
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function mapsUrl(q){ return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q); }
@@ -712,15 +736,7 @@ function render(id){
   var nums={}, n=0;
   items.forEach(function(it){ if(it.p && !P[it.p].hotel && !(it.p in nums)) nums[it.p]=++n; });
 
-  // now / next
-  var flagIdx=-1, flag="";
-  if(d.id===todayId){
-    for(var i=0;i<items.length;i++){
-      var s=mins(items[i].t), e=items[i].e?mins(items[i].e):(i+1<items.length?mins(items[i+1].t):s+60);
-      if(now.min>=s && now.min<e){ flagIdx=i; flag="Now"; break; }
-      if(now.min<s){ flagIdx=i; flag="Next"; break; }
-    }
-  }
+  curItems=items;
 
   tl.innerHTML=items.map(function(it,i){
     var pl = it.p?P[it.p]:null;
@@ -728,13 +744,71 @@ function render(id){
       '<a target="_blank" rel="noopener" href="'+mapsUrl(pl.q)+'">'+esc(pl.n)+', open in Maps</a>'+(useL?'<button type="button" class="textbtn" data-show="'+it.p+'">Show on map</button>':'')+'</p>' : "";
     return '<li class="item" data-c="'+it.c+'"'+(it.p?' data-p="'+it.p+'"':'')+'>'+
       '<div class="time">'+it.t+(it.e?'<small>to '+it.e+'</small>':'')+'</div>'+
-      '<div class="body"><h3>'+(i===flagIdx?'<span class="flag">'+flag+'</span>':'')+'<span class="kind">'+KIND[it.c]+'</span>'+(it.opt?'<span class="opt">Optional</span>':'')+esc(it.title)+'</h3>'+
-      where+(it.note?'<p class="note">'+esc(it.note)+'</p>':'')+altsHtml(it)+'</div></li>';
+      '<div class="body"><h3>'+'<span class="kind">'+KIND[it.c]+'</span>'+(it.opt?'<span class="opt">Optional</span>':'')+esc(it.title)+'</h3>'+
+      where+(it.lv && it.lv!==it.t?'<p class="leave">'+esc(it.lvl||"Leave by")+' '+it.lv+(it.ti?' Irish time':'')+'.'+(it.lvd?' '+esc(it.lvd):'')+'</p>':'')+(it.note?'<p class="note">'+esc(it.note)+'</p>':'')+altsHtml(it)+'</div></li>';
   }).join("");
 
+  paintToday();
   document.getElementById("daynote").innerHTML = d.note ? '<p class="daynote">'+d.note+'</p>' : "";
   drawMap(items,nums);
 }
+
+/* ---------- today: now, next and when to leave. Repainted every 30 seconds ---------- */
+function paintToday(){
+  var box=document.getElementById("today");
+  [].forEach.call(tl.querySelectorAll(".flag"),function(f){ f.parentNode.removeChild(f); });
+  if(!current || current.id!==todayId){ box.innerHTML=""; return; }
+  var items=curItems, n=now.min, ni=-1, xi=-1, fi=-1, i;
+  for(i=0;i<items.length;i++){
+    var s=st(items[i]);
+    if(s<=n && n<en(items[i],items[i+1])) ni=i;
+    if(s>n && xi<0) xi=i;
+    if(items[i].fix && s>n && fi<0) fi=i;
+  }
+  function flag(idx,txt){ var h=tl.children[idx]&&tl.children[idx].querySelector("h3"); if(h){ var sp=document.createElement("span"); sp.className="flag"; sp.textContent=txt; h.insertBefore(sp,h.firstChild); } }
+  function clock(it){ return it.t+(it.ti?" Irish time":""); }
+  function row(idx,key,main,sub,cls){ return '<button type="button" class="trow'+(cls?" "+cls:"")+'" data-i="'+idx+'"><span class="tk">'+key+'</span><span><b>'+main+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</span></button>'; }
+  var html='<h3>Today, '+hm(n)+' in Rome</h3>';
+  if(ni>=0){
+    flag(ni,"Now");
+    var it=items[ni], until=(it.e||items[ni+1]) ? "Until "+hm(en(it,items[ni+1])) : "";
+    html+=row(ni,"Now",esc(it.title),until);
+  }
+  if(xi>=0){
+    flag(xi,"Next");
+    html+=row(xi,"Next",esc(items[xi].title),clock(items[xi])+", "+inMin(st(items[xi])-n));
+  }
+  if(fi>=0){
+    var fx=items[fi], what=esc(fx.title)+" at "+clock(fx);
+    if(fx.lv){
+      var lm=mins(fx.lv)+(fx.ti?60:0), left=lm-n, lbl=esc(fx.lvl||"Leave by")+" "+fx.lv+(fx.ti?" Irish time":"");
+      if(left>0) html+=row(fi,"Fixed",lbl+", "+inMin(left),(fx.lv===fx.t?"":"For "+what+".")+(fx.lvd?" "+esc(fx.lvd):""),left<=30?"urgent":"");
+      else if(fx.lvl) html+=row(fi,"Fixed",what,esc(fx.lvl)+" "+fx.lv+", which has passed.","urgent");
+      else html+=row(fi,"Fixed","Leave now","For "+what+". You meant to go at "+fx.lv+"."+(fx.lvd?" "+esc(fx.lvd):""),"urgent");
+    } else if(fi!==xi) html+=row(fi,"Fixed",what,inMin(st(fx)-n));
+  }
+  if(ni<0 && xi<0) html+='<p>Nothing more on today’s plan.</p>';
+  box.innerHTML='<div class="todaybox">'+html+'</div>';
+}
+document.getElementById("today").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-i]"); if(!b) return;
+  var li=tl.children[+b.getAttribute("data-i")]; if(!li) return;
+  setHot(null,false);
+  li.classList.add("hot");
+  var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  li.scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"});
+});
+function tick(){
+  var n=romeNow();
+  if(n.date && n.date!==now.date){          // midnight has passed: move to the new day
+    var t=DAYS.filter(function(d){ return d.date===n.date; })[0];
+    if(t) location.hash="#"+t.id;
+    location.reload(); return;
+  }
+  now=n; paintToday();
+}
+setInterval(tick,30000);
+document.addEventListener("visibilitychange",function(){ if(!document.hidden) tick(); });
 
 function altsHtml(it){
   if(!it.alts||!it.alts.length) return "";
@@ -1064,6 +1138,11 @@ window.addEventListener("resize",function(){ clearTimeout(rz); rz=setTimeout(fun
   lastW=window.innerWidth;
   if(current && !useL){ var keep=hot; render(current.id); if(keep) setHot(keep,false); }
 },150); });
+// first open on a new trip day goes to that day, whatever tab was left open the day before
+if(todayId && !FAKE && load("lastday","")!==now.date){
+  save("lastday",now.date);
+  if(location.hash!=="#"+todayId){ try{ history.replaceState(null,"","#"+todayId); }catch(e){ location.hash="#"+todayId; } }
+}
 renderChecks(); route();
 
 /* ---------- offline: the service worker saves the app, and map tiles as they are viewed ---------- */
