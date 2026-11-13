@@ -308,6 +308,18 @@ html.maplock{overflow:hidden}
 .busbox ul{margin:8px 0 0;padding:0;list-style:none}
 .busbox li{padding:6px 0;border-top:1px solid var(--line)}
 .busbox li b{font-weight:600}
+.strip{list-style:none;margin:14px 0 0 6px;padding:0 0 0 18px;border-left:3px solid var(--travel);max-width:620px}
+.strip li{position:relative;padding:5px 0;font-size:.88rem;color:var(--muted)}
+.strip li::before{content:"";position:absolute;left:-26px;top:10px;width:9px;height:9px;border-radius:50%;background:var(--bg);border:2px solid var(--travel)}
+.strip li b{font-weight:500}
+.strip li small{margin-left:8px;font-size:.78rem}
+.strip li span{display:block;font-size:.88rem;margin-top:1px}
+.strip li.on{color:var(--ink);padding:9px 0;font-size:.95rem}
+.strip li.on::before{background:var(--travel);width:13px;height:13px;left:-28px;top:13px}
+.strip li.on b{font-weight:600;font-size:1.02rem}
+.strip .sacts{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:3px}
+.strip .sacts a{font-weight:600}
+.strip .sacts .textbtn{margin:0;font-size:inherit;font-weight:600;color:inherit}
 .busline{stroke:var(--travel);stroke-opacity:.9}
 .bstop{width:10px;height:10px;border-radius:2px;background:var(--travel);border:2px solid var(--bg);box-shadow:0 1px 2px rgba(0,0,0,.35)}
 .popbus{font-size:.84rem;margin-top:3px}
@@ -395,6 +407,11 @@ html.maplock{overflow:hidden}
     <p>Every live music place among your pins. Pick a night to see what each one had listed and how far it is from that night’s hotel. Listings were read from each place’s own site on 13 November and can change, so check the link on the day.</p>
     <div class="seg pinseg" id="musicnights" role="group" aria-label="Night"></div>
     <div id="musiclist"></div>
+  </div>
+  <div class="pinsview" id="busview" hidden>
+    <h2>Bus 81</h2>
+    <div id="busbody"></div>
+    <p class="refnote">Stops, route and timetable come from Rome’s official transit data, downloaded on 13 November 2026. Times are the schedule, not live; the “Live arrivals” links open Roma mobile, an independent site built on the city’s open data.</p>
   </div>
   <div class="pinsview" id="tipsview" hidden>
     <h2>How Rome works</h2>
@@ -721,7 +738,7 @@ var DAYS = [
   items:[
    {t:"07:45",c:"stay",p:"isa",title:"Breakfast and check out of Hotel Isa",note:"City tax of €22.50 per room is paid at the desk."},
    {t:"08:15",drv:["abr","col"],c:"travel",p:"abr",title:"Taxi to Albergo Abruzzi, then on to the Colosseum",note:"Ten minutes to the Pantheon to leave your bags (check-in is from 14:00), then ten more to the Colosseum. Ask the driver to wait.",
-    alts:[A("Bus 81 for the second leg","Once the bags are dropped, walk four minutes to the Rinascimento stop and take the 81 nine stops to Celio Vibenna, beside the Colosseum. A local transport strike is reported for this Saturday, so have the taxi as the fallback.",0,"Corso del Rinascimento, Roma")]},
+    alts:[A("Bus 81 for the second leg","Once the bags are dropped, walk five minutes to the Rinascimento stop and take the 81 ten stops to Celio Vibenna, beside the Colosseum: 20 minutes on the timetable. A local transport strike is reported for this Saturday, so have the taxi as the fallback.",0,"Corso del Rinascimento, Roma")]},
    {t:"09:00",e:"10:30",fix:1,lv:"08:15",lvd:"By taxi from Hotel Isa, leaving your bags at Albergo Abruzzi on the way.",c:"free",p:"col",title:"Colosseum, Full Experience Attic ticket",note:"The ticket takes you to the top tier as well as the main levels, in groups of 25, with 90 minutes inside. About €24 on colosseo.it. Slots are released 30 days ahead, so book now. It includes the Forum and Palatine.",
     alts:[A("Standard ticket","About €18, still timed entry, without the upper tier. Take this if the attic slots have gone.",1,"Colosseo, Roma"),
           A("Outside only","Walk the perimeter and the Arch of Constantine and put the time into San Clemente and the Forum.",0,"Arco di Costantino, Roma")]},
@@ -948,7 +965,7 @@ function renderMusic(){
   document.getElementById("musiclist").innerHTML=musicRows(d,0);
 }
 function showView(id){
-  ["dayview","pinsview","musicview","phrasesview","menuview","tipsview"].forEach(function(v){ document.getElementById(v).hidden = v!==id; });
+  ["dayview","pinsview","musicview","phrasesview","menuview","tipsview","busview"].forEach(function(v){ document.getElementById(v).hidden = v!==id; });
   DAYS.forEach(function(x){ document.getElementById("tab-"+x.id).removeAttribute("aria-current"); });
   ["pins","music","phrases","menu","tips"].forEach(function(t){ var el=document.getElementById("tab-"+t); if(t+"view"===id) el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current"); });
 }
@@ -1351,7 +1368,7 @@ function render(id){
       '<p class="useful"><button type="button" class="textbtn" data-phr="'+ctxOf(it)+'" data-ptime="'+(it.bk?((it.bks.s==="done"&&/^\d\d:\d\d$/.test(it.bks.slot))?it.bks.slot:it.t):"")+'" data-pdrv="'+(it.drv&&!it.swapped?it.drv.join(","):"")+'" data-pplace="'+(it.p||"")+'">Phrases and tips</button></p>'+
       bookLine(it)+
       (it.warn?'<p class="warn"><span class="wflag">Check</span>'+esc(it.warn)+'</p>':'')+
-      (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+(it.p?aboutHtml(aboutFor(it.p),"p"):'')+musicStep(d,it)+look+altsHtml(it)+'</div></li>';
+      (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+(it.p?aboutHtml(aboutFor(it.p),"p"):'')+musicStep(d,it)+busStep(it)+look+altsHtml(it)+'</div></li>';
   }).join("");
 
   paintToday();
@@ -1567,7 +1584,14 @@ MUSIC.forEach(function(m){ if(m.ad) PINLIST.forEach(function(p){ if(p.n===m.n) p
 /* ---------- bus 81: route and stops from bus-81.json ---------- */
 var BUS=null, showBus=load("showbus",false), busLayer=null;
 function busDir(d){ return /Malatesta/.test(d.to) ? "Malatesta, the Colosseum direction" : "Piazza del Risorgimento, the Prati direction"; }
-function busNear(d,lat,lon){ var bi=-1,bm=1e9; d.stops.forEach(function(s,i){ var m=metres(lat,lon,s[1],s[2]); if(m<bm){ bm=m; bi=i; } }); return {i:bi,m:bm,s:d.stops[bi]}; }
+function busNear(d,lat,lon){ var bi=-1,bm=1e9; d.stops.forEach(function(s,i){ var m=metres(lat,lon,s[2],s[3]); if(m<bm){ bm=m; bi=i; } }); return {i:bi,m:bm,s:d.stops[bi]}; }
+function busDate(){ var d=DAYS.filter(function(x){ return x.id===todayId; })[0]; return d?d.date:""; }
+function busTimes(d,i,n){                     // next scheduled departures from a stop today, from the official timetable
+  var l=d.days[busDate()]||[], out=[];
+  for(var k=0;k<l.length && out.length<n;k++){ var t=l[k]+d.stops[i][4]; if(t>=now.min) out.push(hm(t)); }
+  return out;
+}
+function busLive(id){ return BUS.live.stop.replace("{stop_id}",id); }
 function busHint(o,lat,lon){                 // a ride on the 81 between two points, when both are near stops in the right order
   if(!BUS || !o) return "";
   var best=null;
@@ -1578,24 +1602,36 @@ function busHint(o,lat,lon){                 // a ride on the 81 between two poi
   });
   if(!best) return "";
   function wm(m){ return Math.max(1,Math.round(m*1.3/80)); }
-  return "Or bus 81 towards "+busDir(best.d)+": board at "+best.a.s[0]+" ("+wm(best.a.m)+" min walk), "+(best.b.i-best.a.i)+" stops to "+best.b.s[0]+", then "+wm(best.b.m)+" min on foot.";
+  var nx=busTimes(best.d,best.a.i,2);
+  return "Or bus 81 towards "+busDir(best.d)+": board at "+best.a.s[0]+" ("+wm(best.a.m)+" min walk), about "+(best.b.s[4]-best.a.s[4])+" min and "+(best.b.i-best.a.i)+" stops to "+best.b.s[0]+", then "+wm(best.b.m)+" min on foot."+(nx.length?" Next scheduled: "+nx.join(", ")+".":"");
 }
 function drawBus(){
   if(!lmap) return;
   if(busLayer){ lmap.removeLayer(busLayer); busLayer=null; }
+  var b=lmapEl.querySelector('button[data-a="bus"]'); if(b) b.setAttribute("aria-pressed",showBus);
   if(!showBus || !BUS) return;
   busLayer=L.layerGroup();
   BUS.dirs.forEach(function(d){
     L.polyline(d.line,{className:"busline",weight:4,interactive:false}).addTo(busLayer);
-    d.stops.forEach(function(st){
-      L.marker([st[1],st[2]],{icon:dot('<span class="bstop"></span>',22,-5),title:st[0]+" (bus 81)",alt:st[0]})
-        .bindPopup(withDist(st[1],st[2],'<b>'+esc(st[0])+'</b><br><span class="popty">Bus 81 stop, towards '+esc(busDir(d))+'</span><div class="popdist"></div>'),{maxWidth:240,autoPanPaddingTopLeft:[8,54],autoPanPaddingBottomRight:[8,8]})
+    d.stops.forEach(function(st,i){
+      L.marker([st[2],st[3]],{icon:dot('<span class="bstop"></span>',22,-5),title:st[0]+" (bus 81)",alt:st[0]})
+        .bindPopup(function(){
+          var nx=busTimes(d,i,3);
+          return withDist(st[2],st[3],'<b>'+esc(st[0])+'</b><br><span class="popty">Bus 81 stop, towards '+esc(busDir(d))+'</span><div class="popdist"></div>'+
+            (st[5]?'<div class="popbus">'+esc(st[5])+'</div>':'')+(nx.length?'<div class="popbus">Scheduled next: '+nx.join(", ")+'</div>':'')+
+            '<div class="popact"><a target="_blank" rel="noopener" href="'+busLive(st[1])+'">Live arrivals</a><button type="button" class="textbtn" data-bus="1">The whole line</button></div>')();
+        },{maxWidth:240,autoPanPaddingTopLeft:[8,54],autoPanPaddingBottomRight:[8,8]})
         .addTo(busLayer);
     });
   });
   busLayer.addTo(lmap);
 }
-fetch("bus-81.json").then(function(r){ return r.json(); }).then(function(j){ BUS=j; drawBus(); if(!document.getElementById("tipsview").hidden) renderTips(); }).catch(function(){});
+fetch("bus-81.json").then(function(r){ return r.json(); }).then(function(j){
+  BUS=j; drawBus();
+  if(!document.getElementById("tipsview").hidden) renderTips();
+  else if(!document.getElementById("busview").hidden) renderBus();
+  else if(current && !tl.querySelector("details[open]")) render(current.id);        // so the steps can show their bus line
+}).catch(function(){});
 function metres(a,b,c,d){ var k=Math.cos(41.9*Math.PI/180), y=(a-c)*111320, x=(b-d)*111320*k; return Math.sqrt(x*x+y*y); }
 function say(t){ mapmsg.textContent=t||""; }
 function ll(id){ return [P[id].lat,P[id].lon]; }
@@ -2077,23 +2113,76 @@ function tipsLoad(done){
 function tipLi(t){
   return '<li><b>'+esc(t.title)+'</b>'+(t.check?'<span class="tipchk">Check first</span>':'')+'<span>'+esc(t.text)+'</span>'+(t.checked?'<small>'+esc(t.checked)+'</small>':'')+'</li>';
 }
+var BUSKEY=[["isa","Hotel Isa"],["abr","Albergo Abruzzi"],["pan","the Pantheon"],["zanzara","La Zanzara"],["fonclea","Fonclea"],["stp","St Peter’s"],["csa","Castel Sant’Angelo"],["camp","the Capitoline"],["marc","the Theatre of Marcellus"],["circo","the Circus Maximus"],["aranci","the Orange Garden"],["col","the Colosseum"],["clem","San Clemente"]];
+function busWalk(m){ return Math.max(1,Math.round(m*1.3/80)); }
+function busDaySummary(d,date,stopName){            // times at one named stop, since some buses start part-way along
+  var l=d.days[date]||[]; if(l.length<2) return "";
+  var i=0; d.stops.forEach(function(s,k){ if(s[0]===stopName) i=k; });
+  var gaps=l.slice(1).map(function(t,k){ return t-l[k]; }).sort(function(a,b){ return a-b; }), off=d.stops[i][4];
+  return l.length+" buses, about every "+gaps[Math.floor(gaps.length/2)]+" minutes, passing "+d.stops[i][0]+" from "+hm(l[0]+off)+" until "+hm(l[l.length-1]+off);
+}
+function busWay(di,i){                              // what "this direction" means from a given stop
+  if(di===1) return "towards Prati";
+  var c=0; BUS.dirs[0].stops.forEach(function(s,k){ if(s[0]==="Celio Vibenna") c=k; });
+  return i<c ? "towards the Colosseum" : "towards Malatesta, away from the centre";
+}
 function busCard(){
   if(!BUS) return "";
-  function near(k,di){ var d=BUS.dirs[di], n=busNear(d,P[k].lat,P[k].lon); return n.m<=450 ? n.s[0]+" ("+Math.max(1,Math.round(n.m*1.3/80))+" min walk)" : ""; }
-  var toCol=/Malatesta/.test(BUS.dirs[0].to)?0:1, toPrati=1-toCol;
-  var rows=[["isa","Hotel Isa"],["zanzara","La Zanzara and Fonclea"],["abr","Albergo Abruzzi and the Pantheon"],["camp","Capitoline Hill"],["marc","Theatre of Marcellus"],["circo","Circus Maximus"],["col","Colosseum"],["clem","San Clemente"]];
+  function near(k,di){ var d=BUS.dirs[di], n=busNear(d,P[k].lat,P[k].lon); return n.m<=450 ? n.s[0]+" ("+busWalk(n.m)+" min walk)" : ""; }
+  var rows=[["isa","Hotel Isa"],["abr","Albergo Abruzzi and the Pantheon"],["col","Colosseum"]];
   return '<div class="busbox"><h3>Bus 81</h3>'+
-    '<p>ATAC line 81 runs between Piazza del Risorgimento in Prati and Malatesta, by way of Piazza Cavour, Corso del Rinascimento, Largo Argentina, Piazza Venezia, the Circus Maximus and the Colosseum. It links most of your Saturday route to Hotel Isa without a change.</p>'+
-    '<p><b>How often:</b> timetable sites give roughly every 15 to 20 minutes, from about 05:30 to midnight. I couldn’t confirm that on ATAC’s own site, so trust the display at the stop.</p>'+
-    '<p><b>Paying:</b> €1.50 for 100 minutes. Tap a contactless card or phone on the reader as you board, or validate a paper ticket.</p>'+
-    '<p><b>Saturday 21:</b> a public transport strike is reported for some local operators that day. Check before relying on the bus.</p>'+
+    '<p>'+esc(BUS.line.why_it_matters)+'</p>'+
     '<ul>'+rows.map(function(r){
-      var a=near(r[0],toCol), b=near(r[0],toPrati); if(!a&&!b) return "";
+      var a=near(r[0],0), b=near(r[0],1); if(!a&&!b) return "";
       return '<li><b>'+r[1]+'</b><br>'+(a?'Towards the Colosseum: '+esc(a)+'. ':'')+(b?'Towards Prati: '+esc(b)+'.':'')+'</li>';
     }).join("")+'</ul>'+
-    '<p>Turn on “Bus 81” on any day’s map to see the route and every stop. Map popups suggest the bus when it suits the trip.</p>'+
-    '<p><a target="_blank" rel="noopener" href="https://www.atac.roma.it/">atac.roma.it</a> has the live service and strike notices.</p></div>';
+    '<p><button type="button" class="sparebtn" data-bus="1">The whole line, stop by stop</button></p></div>';
 }
+var busDirSel=0;
+function renderBus(){
+  showView("busview"); current=null;
+  document.getElementById("tab-tips").setAttribute("aria-current","page");
+  var box=document.getElementById("busbody");
+  if(!BUS){ box.innerHTML='<p class="daynote">The bus details couldn’t be loaded. They need one visit with signal to be saved on this device.</p>'; return; }
+  var d=BUS.dirs[busDirSel], day=DAYS.filter(function(x){ return x.id===(todayId||lastDay); })[0]||DAYS[0], html="";
+  html+='<div class="busbox"><p>'+esc(BUS.line.why_it_matters)+'</p>'+
+    '<p><b>Timetable for '+esc(day.tab)+':</b> towards the Colosseum, '+busDaySummary(BUS.dirs[0],day.date,"Cicerone/Plinio")+'. Towards Prati, '+busDaySummary(BUS.dirs[1],day.date,"Rinascimento")+'. The whole line takes '+BUS.dirs[0].stops[BUS.dirs[0].stops.length-1][4]+' minutes on paper.</p>'+
+    '<p><b>Notices on '+esc(BUS.alerts_date)+':</b> '+BUS.alerts.map(esc).join("; ")+'. '+esc(BUS.alerts_note)+'</p>'+
+    (day.id==="sat"?'<p><b>Saturday 21:</b> a public transport strike is reported for some local operators. Check before relying on the bus.</p>':'')+
+    '<div class="macts" style="display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:8px"><a target="_blank" rel="noopener" href="'+BUS.live.line+'"><b>Live buses on the line</b></a><a target="_blank" rel="noopener" href="https://www.atac.roma.it/"><b>ATAC notices</b></a></div></div>';
+  html+='<h3 class="phrsec">Trips that fit your plan</h3><ul class="gloss">'+BUS.trips.map(function(t){
+    return '<li><b>'+esc(t.when)+'</b><span>'+esc(t.from)+' to '+esc(t.to)+', towards '+esc(t.towards)+(t.stops?', '+t.stops+' stops':'')+', '+esc(t.minutes)+' minutes.</span><span>'+esc(t["for"])+'</span></li>';
+  }).join("")+'</ul>';
+  html+='<h3 class="phrsec">Riding it</h3><ul class="gloss"><li><b>Paying</b>'+(BUS.tickets.check?'<span class="tipchk">Check first</span>':'')+'<span>'+esc(BUS.tickets.how)+'</span></li>'+BUS.etiquette.map(function(e){ return '<li><span>'+esc(e)+'</span></li>'; }).join("")+'</ul>';
+  html+='<h3 class="phrsec">Every stop</h3><div class="seg pinseg" role="group" aria-label="Direction" style="margin-top:8px">'+BUS.dirs.map(function(x,i){ return '<button type="button" data-busdir="'+i+'" aria-pressed="'+(i===busDirSel)+'">'+(i===0?"Towards the Colosseum":"Towards Prati")+'</button>'; }).join("")+'</div>';
+  html+='<ol class="strip">'+d.stops.map(function(st,i){
+    var near=null; BUSKEY.forEach(function(k){ var m=metres(P[k[0]].lat,P[k[0]].lon,st[2],st[3]); if(m<=300 && (!near||m<near.m)) near={m:m,n:k[1]}; });
+    var useful=st[6]||near, nx=busTimes(d,i,3);
+    return '<li class="'+(useful?"on":"")+'"><b>'+esc(st[0])+'</b><small>'+st[4]+' min from the start</small>'+
+      (st[5]?'<span>'+esc(st[5])+'</span>':'')+(near?'<span>'+busWalk(near.m)+' min walk to '+esc(near.n)+'.</span>':'')+
+      (nx.length?'<span>Scheduled next: '+nx.join(", ")+'</span>':'')+
+      '<span class="sacts"><a target="_blank" rel="noopener" href="'+busLive(st[1])+'">Live arrivals</a>'+(useful&&useL?'<button type="button" class="textbtn" data-mapat="'+st[2]+','+st[3]+'" data-busmap="1">Show on map</button>':'')+'</span></li>';
+  }).join("")+'</ol>';
+  box.innerHTML=html;
+}
+/* a step near an 81 stop says which stop serves each direction */
+function busStep(it){
+  if(!BUS || !it.p || it.swapped&&!P[it.p]) return "";
+  var parts=[];
+  BUS.dirs.forEach(function(d,i){ var n=busNear(d,P[it.p].lat,P[it.p].lon); if(n.m<=350) parts.push(busWay(i,n.i)+" from "+n.s[0]+" ("+busWalk(n.m)+" min walk)"); });
+  return parts.length?'<p class="about">Bus 81 from here: '+esc(parts.join("; "))+'.<button type="button" class="textbtn" data-bus="1" style="margin:0 0 0 8px;font-size:.88rem">Bus 81</button></p>':'';
+}
+document.addEventListener("click",function(e){
+  var t=e.target; if(!t.closest) return;
+  var b=t.closest("[data-busdir]"); if(b){ busDirSel=+b.getAttribute("data-busdir"); renderBus(); return; }
+  if(t.closest("[data-busmap]") && !showBus){ showBus=true; save("showbus",true); drawBus(); }
+  if(t.closest("[data-bus]")){
+    if(lmap) lmap.closePopup();
+    if(mapbox.classList.contains("mapfull")) setFull(false);
+    if(location.hash==="#bus") renderBus(); else location.hash="#bus";
+    window.scrollTo(0,document.querySelector(".tabs").offsetTop);
+  }
+},true);
 function renderTips(){
   showView("tipsview"); current=null;
   tipsLoad(function(){
@@ -2401,6 +2490,7 @@ function route(){
   if(h==="phrases"){ renderPhrases(); return; }
   if(h==="menu"){ renderMenu(); return; }
   if(h==="tips"){ renderTips(); return; }
+  if(h==="bus"){ renderBus(); return; }
   var ok=DAYS.some(function(d){return d.id===h;});
   render(ok?h:(todayId||"wed"));
 }
