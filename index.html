@@ -113,6 +113,9 @@ button{font:inherit;color:inherit}
 .sunline{margin:10px 0 0;font-size:.88rem;color:var(--muted)}
 .light{margin:6px 0 0;font-size:.9rem;max-width:62ch}
 .lflag{display:inline-block;font-size:.74rem;font-weight:600;border:1px solid var(--line);color:var(--muted);padding:0 8px;border-radius:999px;margin-right:6px;vertical-align:1px}
+.look{margin:10px 0 0;max-width:62ch}
+.look summary{cursor:pointer;font-size:.9rem;font-weight:600;color:var(--c);width:max-content;max-width:100%;padding:2px 0}
+.look p{margin:6px 0 2px;font-size:.92rem}
 .leave{margin:6px 0 0;font-size:.9rem;font-weight:600;max-width:62ch}
 .legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:18px 0 0;padding:0;list-style:none;font-size:.82rem;color:var(--muted)}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
@@ -414,7 +417,7 @@ html.maplock{overflow:hidden}
         </dl>
       </div>
     </div>
-    <p class="foot">Flight, hotel and programme times come from your confirmations and the ESN programme page. Opening hours, ticket prices and taxi fares were checked on 13 November 2026 and can change, so confirm when you book. Restaurants and bars, including your pins, haven’t been checked for this week’s opening hours. Walking times are estimates. Sun times are calculated for central Rome and are good to a minute or two; golden hour here means the sun is less than 6° above the horizon.</p>
+    <p class="foot">Flight, hotel and programme times come from your confirmations and the ESN programme page. Opening hours, ticket prices and taxi fares were checked on 13 November 2026 and can change, so confirm when you book. Restaurants and bars, including your pins, haven’t been checked for this week’s opening hours. Walking times are estimates. Sun times are calculated for central Rome and are good to a minute or two; golden hour here means the sun is less than 6° above the horizon. The “What to look at” notes were checked against Wikipedia on 13 November 2026.</p>
   </div>
 </section>
 
@@ -651,6 +654,25 @@ var CHECKS = [
  ["pack","Pack for the ceremony, the stairs and the rain","Something smart for Thursday night, proper walking shoes for the dome and Saturday, covered shoulders and knees for churches, and an umbrella. Late November in Rome is usually 8 to 17°C with showers."],
  ["taxi","On Saturday, ask Albergo Abruzzi to book Sunday’s 08:00 taxi",""]
 ];
+
+/* ---------- what to look at, by place. Every statement was checked against the English Wikipedia article
+   for the building on 13 November 2026; anything that couldn't be confirmed there was left out. ---------- */
+var LOOK={
+ stp:"Michelangelo redesigned the dome in 1547 as two shells of brick, and Giacomo della Porta and Domenico Fontana finished it in 1590. The last part of the climb runs between those two shells. Inside, Bernini’s bronze baldachin stands over the high altar, and from the top you look down on his colonnades, four columns deep, around the square.",
+ csa:"Built between 134 and 139 AD as the tomb of the emperor Hadrian: the round drum is the Roman mausoleum, and the popes turned it into a castle from the 14th century, linking it to St Peter’s by a fortified corridor, the Passetto di Borgo. The bronze archangel on top dates from 1753. The bridge was finished in 134 AD to lead to the tomb. Its ten angels, each holding an instrument of the Passion, follow Bernini’s scheme; the two he carved himself are now in the church of Sant’Andrea delle Fratte.",
+ gian:"The equestrian monument at the top is to Garibaldi, by Emilio Gallori, put up in 1895 near where he defended the short-lived Roman Republic in 1849. A cannon is fired from the hill every day at noon as a time signal.",
+ paola:"Built in 1612 to mark the end of the Acqua Paola aqueduct, restored by Pope Paul V, whose name it carries. Giovanni Fontana and Flaminio Ponzio used white marble from the ruined Temple of Minerva in the Forum of Nerva for its five arches. The semicircular pool in front was added by Carlo Fontana in 1690, and the fountain’s form later inspired the Trevi.",
+ smt:"The basilica was largely rebuilt under Pope Innocent II in the 12th century. The 22 granite columns along the nave, with Ionic and Corinthian capitals, came from the ruins of the Baths of Caracalla. In the apse, the Coronation of the Virgin mosaic (1130 to 1143) shows Innocent II holding a model of the church, and the band of scenes below it, the Life of the Virgin, is by Pietro Cavallini, from 1291.",
+ col:"Begun under Vespasian in 72 AD and completed under Titus in 80. On the outer wall the arcades are framed by engaged columns in three orders, Doric at the bottom, then Ionic, then Corinthian, with Corinthian pilasters on the attic above. Around the top of the attic were 240 corbels for the masts of the velarium, the awning that kept sun and rain off the crowd. The tunnels under the arena floor, the hypogeum, were added under Domitian.",
+ clem:"Three buildings stacked: the present basilica, built just before 1100; under it a 4th-century basilica; and under that a Roman house whose basement served as a temple of Mithras in the 2nd century. Upstairs, look for the apse mosaic of the Triumph of the Cross and the marble choir enclosure, which reuses pieces from the older basilica. Downstairs, the fresco of Sisinnius carries one of the earliest examples of written Italian rather than Latin. The lower levels were found in the 1860s by Joseph Mullooly, prior of the Irish Dominicans, who own the basilica.",
+ forum:"Three things along the Via Sacra. The Arch of Titus, built about 81 AD, shows the menorah carried in his triumphal procession. The Temple of Antoninus and Faustina, begun in 141 AD, survived by becoming the church of San Lorenzo in Miranda; the deep grooves in its columns are thought to come from a medieval attempt to dismantle the portico. The Curia Julia, the Senate house, is mostly intact for the same reason: it was a church from the 7th century. Its bronze doors are replicas, and the originals have been at St John Lateran since 1660.",
+ camp:"Michelangelo designed the piazza and the palaces around it in the 16th century. He gave the Palazzo dei Conservatori its façade of giant pilasters and designed the Cordonata, the ramped stair down to the city. The geometric paving was only laid in 1940, following his design from an old print. The bronze Marcus Aurelius in the middle is a copy; the original is indoors in the Capitoline Museums.",
+ marc:"Completed in 13 BC and inaugurated the next year by Augustus, who named it for his nephew Marcellus. The arcades use engaged Doric columns at the bottom and Ionic above, the same stacking you saw at the Colosseum, which was built some 80 years later. The top is a 16th-century palace designed by Baldassare Peruzzi, built on the ruins.",
+ circo:"At 621 metres long and 118 wide it was Rome’s first and largest stadium, holding over 150,000 people. Augustus brought an obelisk from Heliopolis in Egypt and set it on the central barrier. In 1587 Pope Sixtus V removed two obelisks from the site, and one of them now stands in Piazza del Popolo.",
+ aranci:"Santa Sabina, beside the garden, was built between 422 and 432 and still looks much as it did then: 24 matching Corinthian columns reused from a Roman temple, and windows of selenite instead of glass. Its cypress-wood doors, carved around 430, include the first known publicly displayed image of the Crucifixion. The keyhole is in the gateway to the Knights of Malta’s priory, designed by Piranesi along with the square in front of it.",
+ pan:"Completed under Hadrian and probably dedicated around 126 AD. The inscription across the front credits Agrippa because Hadrian reused the wording from the earlier temple on the site. The dome is still the world’s largest of unreinforced concrete, and the height to the oculus equals the diameter, 43.3 metres, so a sphere would fit inside exactly. The granite columns of the porch, each 11.9 metres tall, were quarried in Egypt. Raphael is buried inside.",
+ venue:"The awards are in the Corsia Sistina, the main hall of the hospital of Santo Spirito, rebuilt by Pope Sixtus IV after a fire in 1471, in time for the Jubilee of 1475. It is a single hall about 100 metres long and 12 wide, divided into two wings by an octagonal lantern tower. The fresco cycle around the walls tells the origins of the hospital under Innocent III and then the life of Sixtus IV. “Sassia” recalls the Saxons who once lived in this quarter."
+};
 
 /* ---------- things to book. day + p (or title) ties each to its step. Status, time and confirmation stay on this device.
    stay:1 = booking it doesn't move the step's time. Links were checked on 13 November 2026. */
@@ -967,7 +989,10 @@ function render(id){
 
   curItems=items;
 
+  var looked={};
   tl.innerHTML=items.map(function(it,i){
+    var look="";
+    if(it.p && LOOK[it.p] && !it.swapped && !looked[it.p]){ looked[it.p]=1; look='<details class="look"><summary>What to look at</summary><p>'+esc(LOOK[it.p])+'</p></details>'; }
     var pl = it.p?P[it.p]:null, where="";
     if(pl) where='<p class="where">'+(nums[it.p]?'<span class="num">'+nums[it.p]+'</span>':'')+
       '<a target="_blank" rel="noopener" href="'+mapsUrl(it.swapped?it.q:pl.q)+'">'+esc(pl.n)+', open in Maps</a>'+(useL?'<button type="button" class="textbtn" data-show="'+it.p+'">Show on map</button>':'')+'</p>';
@@ -982,7 +1007,7 @@ function render(id){
       lightLine(d,it)+
       bookLine(it)+
       (it.warn?'<p class="warn"><span class="wflag">Check</span>'+esc(it.warn)+'</p>':'')+
-      (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+altsHtml(it)+'</div></li>';
+      (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+look+altsHtml(it)+'</div></li>';
   }).join("");
 
   paintToday();
