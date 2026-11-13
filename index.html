@@ -1292,7 +1292,7 @@ function render(id){
       (it.lv && it.lv!==it.t?'<p class="leave">'+esc(it.lvl||"Leave by")+' '+it.lv+(it.ti?' Irish time':'')+'.'+(it.lvd?' '+esc(it.lvd):'')+'</p>':'')+
       (it.drv && !it.swapped?'<p class="drv">'+it.drv.map(function(k){ return '<button type="button" data-drv="'+k+'">Show the driver: '+esc(driverInfo(k).name)+'</button>'; }).join("")+'</p>':'')+
       lightLine(d,it)+rainLine(d,it)+
-      '<p class="useful"><button type="button" class="textbtn" data-phr="'+ctxOf(it)+'">Useful phrases here</button></p>'+
+      '<p class="useful"><button type="button" class="textbtn" data-phr="'+ctxOf(it)+'" data-ptime="'+(it.bk?((it.bks.s==="done"&&/^\d\d:\d\d$/.test(it.bks.slot))?it.bks.slot:it.t):"")+'" data-pdrv="'+(it.drv&&!it.swapped?it.drv.join(","):"")+'">Useful phrases here</button></p>'+
       bookLine(it)+
       (it.warn?'<p class="warn"><span class="wflag">Check</span>'+esc(it.warn)+'</p>':'')+
       (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+(it.p?aboutHtml(aboutFor(it.p),"p"):'')+musicStep(d,it)+look+altsHtml(it)+'</div></li>';
@@ -1870,7 +1870,15 @@ function pickVoice(){
   [].forEach.call(document.querySelectorAll("button[data-hear]"),function(b){ b.hidden=!itVoice; });
 }
 if(window.speechSynthesis){ pickVoice(); try{ speechSynthesis.addEventListener("voiceschanged",pickVoice); }catch(e){} }
-function phrText(t){ return t.replace(/\{name\}/g, load("priv:surname","")||"…"); }
+/* {name} comes from the surname kept on this device; {time} from the step the phrases were opened on */
+var IT_N=["zero","uno","due","tre","quattro","cinque","sei","sette","otto","nove","dieci","undici","dodici","tredici","quattordici","quindici","sedici","diciassette","diciotto","diciannove"], IT_T={2:"venti",3:"trenta",4:"quaranta",5:"cinquanta"};
+function itNum(n){ if(n<20) return IT_N[n]; var t=IT_T[Math.floor(n/10)], u=n%10; if(!u) return t; if(u===1||u===8) t=t.slice(0,-1); return t+(u===3?"tré":IT_N[u]); }
+function itTime(t){ var a=t.split(":"), h=+a[0], m=+a[1]; return (h===1?"l’una":h===0?"mezzanotte":"le "+itNum(h))+(m?" e "+itNum(m):""); }
+function phrText(t,o,lang){
+  var time=o&&o.time;
+  return t.replace(/\{name\}/g, load("priv:surname","")||"…")
+          .replace(/\{time\}/g, lang==="it" ? (time?itTime(time):"le nove") : (time||"nine o’clock"));
+}
 /* which phrases suit a place: its type, or what kind of step it is */
 function ctxOf(it){
   if(it.p){
@@ -1879,6 +1887,7 @@ function ctxOf(it){
     if(PTY[it.p]) return PTY[it.p];
     for(var i=0;i<PINLIST.length;i++) if(PINLIST[i].n===P[it.p].n) return PINLIST[i].ty;
   }
+  if(it.bk && (it.bk.k==="fri"||it.bk.k==="sat")) return "eat";       // the dinner slots
   return it.c==="stay"?"hotel":it.c==="work"?"work":it.c==="travel"?"taxi":"basics";
 }
 function phrItems(ctx){
@@ -1887,15 +1896,20 @@ function phrItems(ctx){
   sec(ctx); if(ctx!=="basics") sec("basics"); if(ctx!=="trouble") sec("trouble");
   return out;
 }
-function phrHtml(ctx){
+function phrHtml(ctx,o){
   if(!PHR) return '<p class="daynote">The phrases couldn’t be loaded. They need one visit with signal to be saved on this device.</p>';
-  return phrItems(ctx).map(function(g,gi){
-    return (gi?'<h3 class="phrsec">'+esc(PHR.contexts[g.c]||g.c)+'</h3>':'')+'<ul class="phr">'+g.l.map(function(p){
-      var i=PHR.phrases.indexOf(p), it=phrText(p.it), speak=/[a-zà-ù]/i.test(p.it);
-      return '<li><span class="it" lang="it">'+esc(it)+'</span><span class="en">'+esc(phrText(p.en))+'</span>'+
-        (p.say?'<span class="say">Say: '+esc(p.say)+'</span>':'')+(p.tip?'<span class="tip">'+esc(p.tip)+'</span>':'')+
-        '<span class="acts"><button type="button" data-showphr="'+i+'">Show</button>'+(speak?'<button type="button" data-hear="'+i+'"'+(itVoice?'':' hidden')+'>Hear it</button>':'')+'</span></li>';
-    }).join("")+'</ul>';
+  function row(p){
+    var i=PHR.phrases.indexOf(p), speak=/[a-zà-ù]/i.test(p.it), dyn=o&&o.time&&/\{time\}/.test(p.it);
+    return '<li><span class="it" lang="it">'+esc(phrText(p.it,o,"it"))+'</span><span class="en">'+esc(phrText(p.en,o,"en"))+'</span>'+
+      (p.say&&!dyn?'<span class="say">'+(p.hear?'Sounds like: ':'Say: ')+esc(p.say)+'</span>':'')+(p.tip?'<span class="tip">'+esc(p.tip)+'</span>':'')+
+      '<span class="acts">'+(p.hear?'':'<button type="button" data-showphr="'+i+'">Show</button>')+(speak?'<button type="button" data-hear="'+i+'"'+(itVoice?'':' hidden')+'>Hear it</button>':'')+'</span></li>';
+  }
+  var top=(o&&o.drv&&o.drv.length)?'<p class="useful">'+o.drv.map(function(k){ var di=driverInfo(k); return di?'<button type="button" class="pick" style="--c:var(--ink)" data-drv="'+k+'">Show the driver: '+esc(di.name)+'</button> ':''; }).join("")+'</p>':'';
+  return top+phrItems(ctx).map(function(g,gi){
+    var say=g.l.filter(function(p){ return !p.hear; }), hear=g.l.filter(function(p){ return p.hear; });
+    return (gi?'<h3 class="phrsec">'+esc(PHR.contexts[g.c]||g.c)+'</h3>':'')+
+      (say.length?'<ul class="phr">'+say.map(row).join("")+'</ul>':'')+
+      (hear.length?'<h3 class="phrsec">What you’ll hear'+(gi?': '+esc((PHR.contexts[g.c]||g.c).toLowerCase()):'')+'</h3><ul class="phr">'+hear.map(row).join("")+'</ul>':'');
   }).join("");
 }
 function renderPhrases(){
@@ -1907,10 +1921,12 @@ function renderPhrases(){
   });
 }
 var phrPanel=document.getElementById("phrpanel");
-function openPhrases(ctx){
+var panelOpts=null;
+function openPhrases(ctx,o){
+  panelOpts=o||null;
   phrLoad(function(){
     document.getElementById("phrtitle").textContent="Useful here: "+((PHR&&PHR.contexts[ctx])||"phrases");
-    document.getElementById("phrpanellist").innerHTML=phrHtml(ctx);
+    document.getElementById("phrpanellist").innerHTML=phrHtml(ctx,panelOpts);
     phrPanel.hidden=false; phrPanel.scrollTop=0; document.documentElement.classList.add("maplock");
   });
 }
@@ -1922,12 +1938,16 @@ document.getElementById("phrchips").addEventListener("click",function(e){
 document.getElementById("phrname").addEventListener("change",function(){ if(!document.getElementById("phrasesview").hidden) renderPhrases(); });
 document.addEventListener("click",function(e){
   var t=e.target.closest&&e.target.closest("button[data-phr],button[data-showphr],button[data-hear]"); if(!t) return;
-  if(t.hasAttribute("data-phr")){ openPhrases(t.getAttribute("data-phr")); return; }
+  if(t.hasAttribute("data-phr")){
+    var dv=t.getAttribute("data-pdrv");
+    openPhrases(t.getAttribute("data-phr"),{time:t.getAttribute("data-ptime")||"",drv:dv?dv.split(","):[]}); return;
+  }
+  var o=t.closest("#phrpanel")?panelOpts:null;
   var p=PHR && PHR.phrases[+(t.getAttribute("data-showphr")||t.getAttribute("data-hear"))]; if(!p) return;
-  if(t.hasAttribute("data-showphr")){ openDriver(null,{name:phrText(p.it),ad:"",fare:"",en:phrText(p.en)+(p.say?"  ·  Say: "+p.say:"")}); return; }
+  if(t.hasAttribute("data-showphr")){ openDriver(null,{name:phrText(p.it,o,"it"),ad:"",fare:"",en:phrText(p.en,o,"en")}); return; }
   try{
     speechSynthesis.cancel();
-    var u=new SpeechSynthesisUtterance(phrText(p.it).replace(/\s*\/\s*/g,". ").replace(/…/g,""));
+    var u=new SpeechSynthesisUtterance(phrText(p.it,o,"it").replace(/\s*\/\s*/g,". ").replace(/…/g,""));
     u.lang="it-IT"; if(itVoice) u.voice=itVoice; u.rate=0.9; speechSynthesis.speak(u);
   }catch(err){}
 });

@@ -1,477 +1,855 @@
 {
- "note": "Phrase contexts match the app's place types: eat, quick, sweet, drink, music, sight, hotel, work. 'taxi' attaches to travel steps; 'basics' and 'trouble' show everywhere. 'say' is a rough English respelling with the stressed syllable in capitals.",
- "contexts": {
-  "basics": "Basics",
-  "eat": "Restaurants",
-  "quick": "Quick bites",
-  "sweet": "Coffee and gelato",
-  "drink": "Bars",
-  "music": "Live music",
-  "sight": "Sights and tickets",
-  "taxi": "Taxis",
-  "hotel": "Hotels",
-  "work": "At the awards",
-  "trouble": "If something goes wrong"
- },
- "phrases": [
-  {
-   "contexts": [
-    "basics"
-   ],
-   "en": "Good morning / Good evening",
-   "it": "Buongiorno / Buonasera",
-   "say": "bwon-JOR-no / bwon-ah-SEH-ra",
-   "tip": "Say it when you walk into any shop, bar or church. Buonasera from mid-afternoon."
+  "note": "Phrase contexts match the app's place types: eat, quick, sweet, drink, music, sight, hotel, work. 'taxi' attaches to travel steps; 'basics' and 'trouble' show everywhere. 'say' is a rough English respelling with the stressed syllable in capitals. Entries with \"hear\": true are things said to you. {name} and {time} are filled in by the app.",
+  "contexts": {
+    "basics": "Basics",
+    "eat": "Restaurants",
+    "quick": "Quick bites",
+    "sweet": "Coffee and gelato",
+    "drink": "Bars",
+    "music": "Live music",
+    "sight": "Sights and tickets",
+    "taxi": "Taxis",
+    "hotel": "Hotels",
+    "work": "At the awards",
+    "trouble": "If something goes wrong",
+    "numbers": "Numbers and times"
   },
-  {
-   "contexts": [
-    "basics"
-   ],
-   "en": "Please / Thank you",
-   "it": "Per favore / Grazie",
-   "say": "pair fa-VO-reh / GRAHT-see-eh"
-  },
-  {
-   "contexts": [
-    "basics"
-   ],
-   "en": "Excuse me (to get attention)",
-   "it": "Scusi",
-   "say": "SKOO-zee"
-  },
-  {
-   "contexts": [
-    "basics"
-   ],
-   "en": "Excuse me (to get past)",
-   "it": "Permesso",
-   "say": "pair-MESS-o"
-  },
-  {
-   "contexts": [
-    "basics"
-   ],
-   "en": "Do you speak English?",
-   "it": "Parla inglese?",
-   "say": "PAR-la een-GLEH-zeh"
-  },
-  {
-   "contexts": [
-    "basics"
-   ],
-   "en": "I don't understand",
-   "it": "Non capisco",
-   "say": "non ka-PEES-ko"
-  },
-  {
-   "contexts": [
-    "basics"
-   ],
-   "en": "Where is…?",
-   "it": "Dov'è…?",
-   "say": "doh-VEH"
-  },
-  {
-   "contexts": [
-    "basics",
-    "sight"
-   ],
-   "en": "Where is the toilet?",
-   "it": "Dov'è il bagno?",
-   "say": "doh-VEH eel BAN-yo"
-  },
-  {
-   "contexts": [
-    "eat"
-   ],
-   "en": "A table for one, please",
-   "it": "Un tavolo per uno, per favore",
-   "say": "oon TAH-vo-lo pair OO-no"
-  },
-  {
-   "contexts": [
-    "eat"
-   ],
-   "en": "I have a booking under {name}",
-   "it": "Ho una prenotazione a nome {name}",
-   "say": "oh OO-na preh-no-tat-see-OH-neh ah NO-meh"
-  },
-  {
-   "contexts": [
-    "eat"
-   ],
-   "en": "Do you have a table without a booking?",
-   "it": "Avete un tavolo senza prenotazione?",
-   "say": "ah-VEH-teh oon TAH-vo-lo SEN-tsa preh-no-tat-see-OH-neh"
-  },
-  {
-   "contexts": [
-    "eat"
-   ],
-   "en": "What do you recommend?",
-   "it": "Cosa mi consiglia?",
-   "say": "KO-za mee kon-SEEL-ya"
-  },
-  {
-   "contexts": [
-    "eat"
-   ],
-   "en": "What's the fish of the day?",
-   "it": "Qual è il pesce del giorno?",
-   "say": "kwal-EH eel PEH-sheh del JOR-no"
-  },
-  {
-   "contexts": [
-    "eat"
-   ],
-   "en": "I'll have…",
-   "it": "Prendo…",
-   "say": "PREN-do"
-  },
-  {
-   "contexts": [
-    "eat",
-    "drink"
-   ],
-   "en": "A glass of the house white / red",
-   "it": "Un bicchiere di bianco / rosso della casa",
-   "say": "oon beek-YEH-reh dee BYAN-ko / ROSS-o DEL-la KA-za"
-  },
-  {
-   "contexts": [
-    "eat"
-   ],
-   "en": "Still / sparkling water",
-   "it": "Acqua naturale / frizzante",
-   "say": "AK-wa na-too-RAH-leh / freet-SAN-teh"
-  },
-  {
-   "contexts": [
-    "eat",
-    "drink"
-   ],
-   "en": "The bill, please",
-   "it": "Il conto, per favore",
-   "say": "eel KON-to",
-   "tip": "It won't come until you ask."
-  },
-  {
-   "contexts": [
-    "eat",
-    "drink",
-    "quick",
-    "sweet"
-   ],
-   "en": "Can I pay by card?",
-   "it": "Posso pagare con la carta?",
-   "say": "POSS-o pa-GAH-reh kon la KAR-ta"
-  },
-  {
-   "contexts": [
-    "eat"
-   ],
-   "en": "It was delicious",
-   "it": "Era buonissimo",
-   "say": "EH-ra bwon-EESS-ee-mo"
-  },
-  {
-   "contexts": [
-    "quick"
-   ],
-   "en": "A slice of this one, please",
-   "it": "Un pezzo di questa, per favore",
-   "say": "oon PET-so dee KWES-ta",
-   "tip": "Pizza by the slice is sold by weight. Show the size with your hands."
-  },
-  {
-   "contexts": [
-    "quick"
-   ],
-   "en": "A bit more / That's enough",
-   "it": "Un po' di più / Basta così",
-   "say": "oon po dee PYOO / BAS-ta ko-ZEE"
-  },
-  {
-   "contexts": [
-    "quick",
-    "sweet"
-   ],
-   "en": "To take away / To eat here",
-   "it": "Da portare via / Da mangiare qui",
-   "say": "da por-TAH-reh VEE-a / da man-JAH-reh kwee"
-  },
-  {
-   "contexts": [
-    "quick"
-   ],
-   "en": "One supplì, please",
-   "it": "Un supplì, per favore",
-   "say": "oon soop-LEE"
-  },
-  {
-   "contexts": [
-    "sweet"
-   ],
-   "en": "A coffee, please",
-   "it": "Un caffè, per favore",
-   "say": "oon kaf-FEH",
-   "tip": "That's an espresso. Often you pay at the till first, then show the receipt at the bar."
-  },
-  {
-   "contexts": [
-    "sweet"
-   ],
-   "en": "A cappuccino and a pastry",
-   "it": "Un cappuccino e un cornetto",
-   "say": "oon kap-oo-CHEE-no eh oon kor-NET-to"
-  },
-  {
-   "contexts": [
-    "sweet"
-   ],
-   "en": "A small cup, two flavours",
-   "it": "Una coppetta piccola, due gusti",
-   "say": "OO-na kop-PET-ta PEEK-ko-la, DOO-eh GOOS-tee"
-  },
-  {
-   "contexts": [
-    "sweet"
-   ],
-   "en": "With whipped cream?  Yes, please",
-   "it": "Con panna?  Sì, grazie",
-   "say": "kon PAN-na"
-  },
-  {
-   "contexts": [
-    "drink",
-    "music"
-   ],
-   "en": "A beer, please",
-   "it": "Una birra, per favore",
-   "say": "OO-na BEER-ra"
-  },
-  {
-   "contexts": [
-    "drink"
-   ],
-   "en": "A spritz / a negroni",
-   "it": "Uno spritz / un negroni",
-   "say": "OO-no spritz / oon neh-GRO-nee"
-  },
-  {
-   "contexts": [
-    "drink",
-    "music"
-   ],
-   "en": "Another one, please",
-   "it": "Un altro, per favore",
-   "say": "oon AL-tro"
-  },
-  {
-   "contexts": [
-    "music"
-   ],
-   "en": "Is there live music tonight?",
-   "it": "C'è musica dal vivo stasera?",
-   "say": "cheh MOO-zee-ka dal VEE-vo sta-SEH-ra"
-  },
-  {
-   "contexts": [
-    "music"
-   ],
-   "en": "What time does it start?",
-   "it": "A che ora comincia?",
-   "say": "ah keh OH-ra ko-MEEN-cha"
-  },
-  {
-   "contexts": [
-    "music"
-   ],
-   "en": "Is there a cover charge?",
-   "it": "Si paga l'ingresso?",
-   "say": "see PAH-ga leen-GRESS-o"
-  },
-  {
-   "contexts": [
-    "sight"
-   ],
-   "en": "One ticket, please",
-   "it": "Un biglietto, per favore",
-   "say": "oon beel-YET-to"
-  },
-  {
-   "contexts": [
-    "sight"
-   ],
-   "en": "I have a booking for nine o'clock",
-   "it": "Ho una prenotazione per le nove",
-   "say": "oh OO-na preh-no-tat-see-OH-neh pair leh NO-veh"
-  },
-  {
-   "contexts": [
-    "sight"
-   ],
-   "en": "Where is the entrance?",
-   "it": "Dov'è l'ingresso?",
-   "say": "doh-VEH leen-GRESS-o"
-  },
-  {
-   "contexts": [
-    "sight"
-   ],
-   "en": "What time do you close?",
-   "it": "A che ora chiudete?",
-   "say": "ah keh OH-ra kyoo-DEH-teh"
-  },
-  {
-   "contexts": [
-    "sight"
-   ],
-   "en": "May I take photos?",
-   "it": "Posso fare foto?",
-   "say": "POSS-o FAH-reh FO-to"
-  },
-  {
-   "contexts": [
-    "sight"
-   ],
-   "en": "Stairs or lift?",
-   "it": "Scale o ascensore?",
-   "say": "SKAH-leh o ash-en-SO-reh",
-   "tip": "For the St Peter's dome ticket."
-  },
-  {
-   "contexts": [
-    "taxi"
-   ],
-   "en": "To this address, please",
-   "it": "A questo indirizzo, per favore",
-   "say": "ah KWES-to een-dee-REET-so",
-   "tip": "Show the address on your phone."
-  },
-  {
-   "contexts": [
-    "taxi"
-   ],
-   "en": "To Fiumicino airport. It's the fixed fare, isn't it?",
-   "it": "All'aeroporto di Fiumicino. È la tariffa fissa, vero?",
-   "say": "al-la-eh-ro-POR-to dee fyoo-mee-CHEE-no. eh la ta-REEF-fa FEESS-a, VEH-ro"
-  },
-  {
-   "contexts": [
-    "taxi"
-   ],
-   "en": "How much will it be, roughly?",
-   "it": "Quanto costa, più o meno?",
-   "say": "KWAN-to KOS-ta, pyoo o MEH-no"
-  },
-  {
-   "contexts": [
-    "taxi"
-   ],
-   "en": "Can I have a receipt?",
-   "it": "Posso avere la ricevuta?",
-   "say": "POSS-o ah-VEH-reh la ree-cheh-VOO-ta",
-   "tip": "Useful for work expenses."
-  },
-  {
-   "contexts": [
-    "taxi"
-   ],
-   "en": "You can stop here",
-   "it": "Può fermarsi qui",
-   "say": "pwo fair-MAR-see kwee"
-  },
-  {
-   "contexts": [
-    "hotel"
-   ],
-   "en": "I have a reservation under {name}",
-   "it": "Ho una prenotazione a nome {name}",
-   "say": "oh OO-na preh-no-tat-see-OH-neh ah NO-meh"
-  },
-  {
-   "contexts": [
-    "hotel"
-   ],
-   "en": "Can I leave my bags here?",
-   "it": "Posso lasciare i bagagli qui?",
-   "say": "POSS-o la-SHAH-reh ee ba-GAL-yee kwee",
-   "tip": "For Saturday morning at Albergo Abruzzi."
-  },
-  {
-   "contexts": [
-    "hotel"
-   ],
-   "en": "Could you book a taxi for eight tomorrow morning?",
-   "it": "Può prenotare un taxi per domani mattina alle otto?",
-   "say": "pwo preh-no-TAH-reh oon taxi pair do-MAH-nee mat-TEE-na AL-leh OT-to",
-   "tip": "For Saturday evening at Albergo Abruzzi."
-  },
-  {
-   "contexts": [
-    "hotel"
-   ],
-   "en": "What time is breakfast?",
-   "it": "A che ora è la colazione?",
-   "say": "ah keh OH-ra eh la ko-lat-see-OH-neh"
-  },
-  {
-   "contexts": [
-    "work"
-   ],
-   "en": "Pleased to meet you",
-   "it": "Piacere",
-   "say": "pya-CHEH-reh"
-  },
-  {
-   "contexts": [
-    "work"
-   ],
-   "en": "I work in social services in Ireland",
-   "it": "Lavoro nei servizi sociali in Irlanda",
-   "say": "la-VO-ro nay sair-VEET-see so-CHAH-lee een eer-LAN-da"
-  },
-  {
-   "contexts": [
-    "work"
-   ],
-   "en": "Congratulations!",
-   "it": "Complimenti!",
-   "say": "kom-plee-MEN-tee"
-  },
-  {
-   "contexts": [
-    "trouble"
-   ],
-   "en": "I'm lost",
-   "it": "Mi sono perso",
-   "say": "mee SO-no PAIR-so"
-  },
-  {
-   "contexts": [
-    "trouble"
-   ],
-   "en": "I need help",
-   "it": "Ho bisogno di aiuto",
-   "say": "oh bee-ZON-yo dee eye-OO-to"
-  },
-  {
-   "contexts": [
-    "trouble"
-   ],
-   "en": "Is there a pharmacy near here?",
-   "it": "C'è una farmacia qui vicino?",
-   "say": "cheh OO-na far-ma-CHEE-a kwee vee-CHEE-no"
-  },
-  {
-   "contexts": [
-    "trouble"
-   ],
-   "en": "Emergency number",
-   "it": "112",
-   "say": "",
-   "tip": "Works from any phone across the EU."
-  }
- ]
+  "phrases": [
+    {
+      "contexts": [
+        "basics"
+      ],
+      "en": "Good morning / Good evening",
+      "it": "Buongiorno / Buonasera",
+      "say": "bwon-JOR-no / bwon-ah-SEH-ra",
+      "tip": "Say it when you walk into any shop, bar or church. Buonasera from mid-afternoon."
+    },
+    {
+      "contexts": [
+        "basics"
+      ],
+      "en": "Please / Thank you",
+      "it": "Per favore / Grazie",
+      "say": "pair fa-VO-reh / GRAHT-see-eh"
+    },
+    {
+      "contexts": [
+        "basics"
+      ],
+      "en": "Excuse me (to get attention)",
+      "it": "Scusi",
+      "say": "SKOO-zee"
+    },
+    {
+      "contexts": [
+        "basics"
+      ],
+      "en": "Excuse me (to get past)",
+      "it": "Permesso",
+      "say": "pair-MESS-o"
+    },
+    {
+      "contexts": [
+        "basics"
+      ],
+      "en": "Do you speak English?",
+      "it": "Parla inglese?",
+      "say": "PAR-la een-GLEH-zeh"
+    },
+    {
+      "contexts": [
+        "basics"
+      ],
+      "en": "I don't understand",
+      "it": "Non capisco",
+      "say": "non ka-PEES-ko"
+    },
+    {
+      "contexts": [
+        "basics"
+      ],
+      "en": "Where is…?",
+      "it": "Dov'è…?",
+      "say": "doh-VEH"
+    },
+    {
+      "contexts": [
+        "basics",
+        "sight"
+      ],
+      "en": "Where is the toilet?",
+      "it": "Dov'è il bagno?",
+      "say": "doh-VEH eel BAN-yo"
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "A table for one, please",
+      "it": "Un tavolo per uno, per favore",
+      "say": "oon TAH-vo-lo pair OO-no"
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "I have a booking under {name}",
+      "it": "Ho una prenotazione a nome {name}",
+      "say": "oh OO-na preh-no-tat-see-OH-neh ah NO-meh"
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "Do you have a table without a booking?",
+      "it": "Avete un tavolo senza prenotazione?",
+      "say": "ah-VEH-teh oon TAH-vo-lo SEN-tsa preh-no-tat-see-OH-neh"
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "What do you recommend?",
+      "it": "Cosa mi consiglia?",
+      "say": "KO-za mee kon-SEEL-ya"
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "What's the fish of the day?",
+      "it": "Qual è il pesce del giorno?",
+      "say": "kwal-EH eel PEH-sheh del JOR-no"
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "I'll have…",
+      "it": "Prendo…",
+      "say": "PREN-do"
+    },
+    {
+      "contexts": [
+        "eat",
+        "drink"
+      ],
+      "en": "A glass of the house white / red",
+      "it": "Un bicchiere di bianco / rosso della casa",
+      "say": "oon beek-YEH-reh dee BYAN-ko / ROSS-o DEL-la KA-za"
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "Still / sparkling water",
+      "it": "Acqua naturale / frizzante",
+      "say": "AK-wa na-too-RAH-leh / freet-SAN-teh"
+    },
+    {
+      "contexts": [
+        "eat",
+        "drink"
+      ],
+      "en": "The bill, please",
+      "it": "Il conto, per favore",
+      "say": "eel KON-to",
+      "tip": "It won't come until you ask."
+    },
+    {
+      "contexts": [
+        "eat",
+        "drink",
+        "quick",
+        "sweet"
+      ],
+      "en": "Can I pay by card?",
+      "it": "Posso pagare con la carta?",
+      "say": "POSS-o pa-GAH-reh kon la KAR-ta"
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "It was delicious",
+      "it": "Era buonissimo",
+      "say": "EH-ra bwon-EESS-ee-mo"
+    },
+    {
+      "contexts": [
+        "quick"
+      ],
+      "en": "A slice of this one, please",
+      "it": "Un pezzo di questa, per favore",
+      "say": "oon PET-so dee KWES-ta",
+      "tip": "Pizza by the slice is sold by weight. Show the size with your hands."
+    },
+    {
+      "contexts": [
+        "quick"
+      ],
+      "en": "A bit more / That's enough",
+      "it": "Un po' di più / Basta così",
+      "say": "oon po dee PYOO / BAS-ta ko-ZEE"
+    },
+    {
+      "contexts": [
+        "quick",
+        "sweet"
+      ],
+      "en": "To take away / To eat here",
+      "it": "Da portare via / Da mangiare qui",
+      "say": "da por-TAH-reh VEE-a / da man-JAH-reh kwee"
+    },
+    {
+      "contexts": [
+        "quick"
+      ],
+      "en": "One supplì, please",
+      "it": "Un supplì, per favore",
+      "say": "oon soop-LEE"
+    },
+    {
+      "contexts": [
+        "sweet"
+      ],
+      "en": "A coffee, please",
+      "it": "Un caffè, per favore",
+      "say": "oon kaf-FEH",
+      "tip": "That's an espresso. Often you pay at the till first, then show the receipt at the bar."
+    },
+    {
+      "contexts": [
+        "sweet"
+      ],
+      "en": "A cappuccino and a pastry",
+      "it": "Un cappuccino e un cornetto",
+      "say": "oon kap-oo-CHEE-no eh oon kor-NET-to"
+    },
+    {
+      "contexts": [
+        "sweet"
+      ],
+      "en": "A small cup, two flavours",
+      "it": "Una coppetta piccola, due gusti",
+      "say": "OO-na kop-PET-ta PEEK-ko-la, DOO-eh GOOS-tee"
+    },
+    {
+      "contexts": [
+        "sweet"
+      ],
+      "en": "With whipped cream?  Yes, please",
+      "it": "Con panna?  Sì, grazie",
+      "say": "kon PAN-na"
+    },
+    {
+      "contexts": [
+        "drink",
+        "music"
+      ],
+      "en": "A beer, please",
+      "it": "Una birra, per favore",
+      "say": "OO-na BEER-ra"
+    },
+    {
+      "contexts": [
+        "drink"
+      ],
+      "en": "A spritz / a negroni",
+      "it": "Uno spritz / un negroni",
+      "say": "OO-no spritz / oon neh-GRO-nee"
+    },
+    {
+      "contexts": [
+        "drink",
+        "music"
+      ],
+      "en": "Another one, please",
+      "it": "Un altro, per favore",
+      "say": "oon AL-tro"
+    },
+    {
+      "contexts": [
+        "music"
+      ],
+      "en": "Is there live music tonight?",
+      "it": "C'è musica dal vivo stasera?",
+      "say": "cheh MOO-zee-ka dal VEE-vo sta-SEH-ra"
+    },
+    {
+      "contexts": [
+        "music"
+      ],
+      "en": "What time does it start?",
+      "it": "A che ora comincia?",
+      "say": "ah keh OH-ra ko-MEEN-cha"
+    },
+    {
+      "contexts": [
+        "music"
+      ],
+      "en": "Is there a cover charge?",
+      "it": "Si paga l'ingresso?",
+      "say": "see PAH-ga leen-GRESS-o"
+    },
+    {
+      "contexts": [
+        "sight"
+      ],
+      "en": "One ticket, please",
+      "it": "Un biglietto, per favore",
+      "say": "oon beel-YET-to"
+    },
+    {
+      "contexts": [
+        "sight",
+        "eat"
+      ],
+      "en": "I have a booking for {time}",
+      "it": "Ho una prenotazione per {time}",
+      "say": "oh OO-na preh-no-tat-see-OH-neh pair…",
+      "tip": "Opened from a step in the plan, this uses that step's booked or planned time."
+    },
+    {
+      "contexts": [
+        "sight"
+      ],
+      "en": "Where is the entrance?",
+      "it": "Dov'è l'ingresso?",
+      "say": "doh-VEH leen-GRESS-o"
+    },
+    {
+      "contexts": [
+        "sight"
+      ],
+      "en": "What time do you close?",
+      "it": "A che ora chiudete?",
+      "say": "ah keh OH-ra kyoo-DEH-teh"
+    },
+    {
+      "contexts": [
+        "sight"
+      ],
+      "en": "May I take photos?",
+      "it": "Posso fare foto?",
+      "say": "POSS-o FAH-reh FO-to"
+    },
+    {
+      "contexts": [
+        "sight"
+      ],
+      "en": "Stairs or lift?",
+      "it": "Scale o ascensore?",
+      "say": "SKAH-leh o ash-en-SO-reh",
+      "tip": "For the St Peter's dome ticket."
+    },
+    {
+      "contexts": [
+        "taxi"
+      ],
+      "en": "To this address, please",
+      "it": "A questo indirizzo, per favore",
+      "say": "ah KWES-to een-dee-REET-so",
+      "tip": "Show the address on your phone."
+    },
+    {
+      "contexts": [
+        "taxi"
+      ],
+      "en": "To Fiumicino airport. It's the fixed fare, isn't it?",
+      "it": "All'aeroporto di Fiumicino. È la tariffa fissa, vero?",
+      "say": "al-la-eh-ro-POR-to dee fyoo-mee-CHEE-no. eh la ta-REEF-fa FEESS-a, VEH-ro"
+    },
+    {
+      "contexts": [
+        "taxi"
+      ],
+      "en": "How much will it be, roughly?",
+      "it": "Quanto costa, più o meno?",
+      "say": "KWAN-to KOS-ta, pyoo o MEH-no"
+    },
+    {
+      "contexts": [
+        "taxi"
+      ],
+      "en": "Can I have a receipt?",
+      "it": "Posso avere la ricevuta?",
+      "say": "POSS-o ah-VEH-reh la ree-cheh-VOO-ta",
+      "tip": "Useful for work expenses."
+    },
+    {
+      "contexts": [
+        "taxi"
+      ],
+      "en": "You can stop here",
+      "it": "Può fermarsi qui",
+      "say": "pwo fair-MAR-see kwee"
+    },
+    {
+      "contexts": [
+        "hotel"
+      ],
+      "en": "I have a reservation under {name}",
+      "it": "Ho una prenotazione a nome {name}",
+      "say": "oh OO-na preh-no-tat-see-OH-neh ah NO-meh"
+    },
+    {
+      "contexts": [
+        "hotel"
+      ],
+      "en": "Can I leave my bags here?",
+      "it": "Posso lasciare i bagagli qui?",
+      "say": "POSS-o la-SHAH-reh ee ba-GAL-yee kwee",
+      "tip": "For Saturday morning at Albergo Abruzzi."
+    },
+    {
+      "contexts": [
+        "hotel"
+      ],
+      "en": "Could you book a taxi for eight tomorrow morning?",
+      "it": "Può prenotare un taxi per domani mattina alle otto?",
+      "say": "pwo preh-no-TAH-reh oon taxi pair do-MAH-nee mat-TEE-na AL-leh OT-to",
+      "tip": "For Saturday evening at Albergo Abruzzi."
+    },
+    {
+      "contexts": [
+        "hotel"
+      ],
+      "en": "What time is breakfast?",
+      "it": "A che ora è la colazione?",
+      "say": "ah keh OH-ra eh la ko-lat-see-OH-neh"
+    },
+    {
+      "contexts": [
+        "work"
+      ],
+      "en": "Pleased to meet you",
+      "it": "Piacere",
+      "say": "pya-CHEH-reh"
+    },
+    {
+      "contexts": [
+        "work"
+      ],
+      "en": "I work in social services in Ireland",
+      "it": "Lavoro nei servizi sociali in Irlanda",
+      "say": "la-VO-ro nay sair-VEET-see so-CHAH-lee een eer-LAN-da"
+    },
+    {
+      "contexts": [
+        "work"
+      ],
+      "en": "Congratulations!",
+      "it": "Complimenti!",
+      "say": "kom-plee-MEN-tee"
+    },
+    {
+      "contexts": [
+        "trouble"
+      ],
+      "en": "I'm lost",
+      "it": "Mi sono perso / persa",
+      "say": "mee SO-no PAIR-so / PAIR-sa",
+      "tip": "Perso if you're a man, persa if you're a woman."
+    },
+    {
+      "contexts": [
+        "trouble"
+      ],
+      "en": "I need help",
+      "it": "Ho bisogno di aiuto",
+      "say": "oh bee-ZON-yo dee eye-OO-to"
+    },
+    {
+      "contexts": [
+        "trouble"
+      ],
+      "en": "Is there a pharmacy near here?",
+      "it": "C'è una farmacia qui vicino?",
+      "say": "cheh OO-na far-ma-CHEE-a kwee vee-CHEE-no"
+    },
+    {
+      "contexts": [
+        "trouble"
+      ],
+      "en": "Emergency number",
+      "it": "112",
+      "say": "",
+      "tip": "Works from any phone across the EU."
+    },
+    {
+      "contexts": [
+        "drink",
+        "sweet"
+      ],
+      "en": "Do I pay at the till first?",
+      "it": "Si paga prima alla cassa?",
+      "say": "see PAH-ga PREE-ma AL-la KAS-sa"
+    },
+    {
+      "contexts": [
+        "drink",
+        "sweet"
+      ],
+      "en": "At the bar / at a table",
+      "it": "Al banco / al tavolo",
+      "say": "al BAN-ko / al TAH-vo-lo",
+      "tip": "Standing at the bar usually costs less than sitting at a table."
+    },
+    {
+      "contexts": [
+        "work"
+      ],
+      "en": "Where is the cloakroom?",
+      "it": "Dov'è il guardaroba?",
+      "say": "doh-VEH eel gwar-da-RO-ba"
+    },
+    {
+      "contexts": [
+        "work"
+      ],
+      "en": "Where can I get a headset for the interpretation?",
+      "it": "Dove posso prendere le cuffie per la traduzione?",
+      "say": "DOH-veh POSS-o PREN-deh-reh leh KOOF-fyeh pair la tra-doot-see-OH-neh"
+    },
+    {
+      "contexts": [
+        "work"
+      ],
+      "en": "Is this seat free?",
+      "it": "È libero questo posto?",
+      "say": "eh LEE-beh-ro KWES-to POS-to"
+    },
+    {
+      "contexts": [
+        "sight"
+      ],
+      "en": "One ticket for the dome, with the lift",
+      "it": "Un biglietto per la cupola, con l'ascensore",
+      "say": "oon beel-YET-to pair la KOO-po-la, kon lash-en-SO-reh"
+    },
+    {
+      "contexts": [
+        "numbers"
+      ],
+      "en": "One, two, three, four, five",
+      "it": "Uno, due, tre, quattro, cinque",
+      "say": "OO-no, DOO-eh, treh, KWAT-tro, CHEEN-kweh"
+    },
+    {
+      "contexts": [
+        "numbers"
+      ],
+      "en": "Six, seven, eight, nine, ten",
+      "it": "Sei, sette, otto, nove, dieci",
+      "say": "say, SET-teh, OT-to, NO-veh, DYEH-chee"
+    },
+    {
+      "contexts": [
+        "numbers"
+      ],
+      "en": "Eleven, twelve",
+      "it": "Undici, dodici",
+      "say": "OON-dee-chee, DOH-dee-chee"
+    },
+    {
+      "contexts": [
+        "numbers"
+      ],
+      "en": "Twenty, thirty, forty, fifty",
+      "it": "Venti, trenta, quaranta, cinquanta",
+      "say": "VEN-tee, TREN-ta, kwa-RAN-ta, cheen-KWAN-ta"
+    },
+    {
+      "contexts": [
+        "numbers",
+        "taxi"
+      ],
+      "en": "Fifty-five euros",
+      "it": "Cinquantacinque euro",
+      "say": "cheen-kwan-ta-CHEEN-kweh EH-oo-ro",
+      "tip": "The fixed airport fare."
+    },
+    {
+      "contexts": [
+        "numbers",
+        "basics"
+      ],
+      "en": "How much is it?",
+      "it": "Quanto costa?",
+      "say": "KWAN-to KOS-ta"
+    },
+    {
+      "contexts": [
+        "numbers"
+      ],
+      "en": "At nine o'clock / at half past nine",
+      "it": "Alle nove / alle nove e mezza",
+      "say": "AL-leh NO-veh / AL-leh NO-veh eh MED-za",
+      "tip": "Timetables and tickets use the 24-hour clock, so 21:00 is written and often said as ventuno."
+    },
+    {
+      "contexts": [
+        "numbers"
+      ],
+      "en": "At one o'clock",
+      "it": "All'una",
+      "say": "al-LOO-na"
+    },
+    {
+      "contexts": [
+        "numbers"
+      ],
+      "en": "At a quarter to eight",
+      "it": "Alle otto meno un quarto",
+      "say": "AL-leh OT-to MEH-no oon KWAR-to"
+    },
+    {
+      "contexts": [
+        "numbers"
+      ],
+      "en": "Half an hour / an hour",
+      "it": "Mezz'ora / un'ora",
+      "say": "med-ZOH-ra / oon-OH-ra"
+    },
+    {
+      "contexts": [
+        "numbers"
+      ],
+      "en": "Today / tomorrow / tonight",
+      "it": "Oggi / domani / stasera",
+      "say": "OD-jee / do-MAH-nee / sta-SEH-ra"
+    },
+    {
+      "contexts": [
+        "basics"
+      ],
+      "en": "Go ahead / you're welcome / can I help?",
+      "it": "Prego",
+      "say": "PREH-go",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "basics"
+      ],
+      "en": "One moment",
+      "it": "Un attimo",
+      "say": "oon AT-tee-mo",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "basics"
+      ],
+      "en": "I'm sorry",
+      "it": "Mi dispiace",
+      "say": "mee dees-PYAH-cheh",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "Have you booked?",
+      "it": "Ha prenotato?",
+      "say": "ah preh-no-TAH-to",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "How many of you?",
+      "it": "Quanti siete?",
+      "say": "KWAN-tee SYEH-teh",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "We're full",
+      "it": "Siamo pieni / Siamo al completo",
+      "say": "SYAH-mo PYEH-nee / al kom-PLEH-to",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "To drink?",
+      "it": "Da bere?",
+      "say": "da BEH-reh",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "Still or sparkling?",
+      "it": "Naturale o frizzante?",
+      "say": "na-too-RAH-leh o freet-SAN-teh",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "Anything else?",
+      "it": "Altro?",
+      "say": "AL-tro",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "eat"
+      ],
+      "en": "Dessert or coffee?",
+      "it": "Dolce o caffè?",
+      "say": "DOL-cheh o kaf-FEH",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "eat",
+        "drink",
+        "quick",
+        "sweet"
+      ],
+      "en": "Cash or card?",
+      "it": "Contanti o carta?",
+      "say": "kon-TAN-tee o KAR-ta",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "drink"
+      ],
+      "en": "What will you have?",
+      "it": "Cosa prende?",
+      "say": "KO-za PREN-deh",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "drink",
+        "sweet"
+      ],
+      "en": "At the bar or at a table?",
+      "it": "Al banco o al tavolo?",
+      "say": "al BAN-ko o al TAH-vo-lo",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "sweet",
+        "quick"
+      ],
+      "en": "You pay at the till first",
+      "it": "Deve fare lo scontrino alla cassa",
+      "say": "DEH-veh FAH-reh lo skon-TREE-no AL-la KAS-sa",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "sweet"
+      ],
+      "en": "Cone or cup?",
+      "it": "Cono o coppetta?",
+      "say": "KO-no o kop-PET-ta",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "quick"
+      ],
+      "en": "To take away or eat here?",
+      "it": "Da portare via o da mangiare qui?",
+      "say": "da por-TAH-reh VEE-a o da man-JAH-reh kwee",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "quick"
+      ],
+      "en": "Shall I heat it up?",
+      "it": "La scaldo?",
+      "say": "la SKAL-do",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "sight",
+        "hotel"
+      ],
+      "en": "Your ID, please",
+      "it": "Un documento, per favore",
+      "say": "oon do-koo-MEN-to",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "sight"
+      ],
+      "en": "Do you have a booking?",
+      "it": "Ha la prenotazione?",
+      "say": "ah la preh-no-tat-see-OH-neh",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "sight"
+      ],
+      "en": "Sold out",
+      "it": "Tutto esaurito",
+      "say": "TOOT-to eh-zow-REE-to",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "sight"
+      ],
+      "en": "We close in half an hour",
+      "it": "Chiudiamo tra mezz'ora",
+      "say": "kyoo-DYAH-mo tra med-ZOH-ra",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "taxi"
+      ],
+      "en": "Where to?",
+      "it": "Dove andiamo?",
+      "say": "DOH-veh an-DYAH-mo",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "hotel"
+      ],
+      "en": "The city tax",
+      "it": "La tassa di soggiorno",
+      "say": "la TAS-sa dee sod-JOR-no",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "music"
+      ],
+      "en": "Entry is free",
+      "it": "L'ingresso è libero",
+      "say": "leen-GRESS-o eh LEE-beh-ro",
+      "hear": true
+    },
+    {
+      "contexts": [
+        "music"
+      ],
+      "en": "You have to buy a drink",
+      "it": "C'è la consumazione obbligatoria",
+      "say": "cheh la kon-soo-mat-see-OH-neh ob-blee-ga-TOH-rya",
+      "hear": true
+    }
+  ]
 }
