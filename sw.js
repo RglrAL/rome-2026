@@ -7,7 +7,7 @@
 "use strict";
 
 var SHELL = "rome-shell-v1", FONTS = "rome-fonts-v1", TILES = "rome-tiles-v1";
-var FILES = ["index.html", "vendor/leaflet/leaflet.css", "vendor/leaflet/leaflet.js",
+var FILES = ["index.html", "vendor/leaflet/leaflet.css", "vendor/leaflet/leaflet.js", "vendor/protomaps-leaflet/protomaps-leaflet.js",
              "manifest.webmanifest", "icons/icon-192.png", "icons/icon-180.png", "phrases.json", "menu.json", "place-tags.json", "how-rome-works.json", "bus-81.json", "taxi.json"];
 var FONT_CSS = "https://fonts.googleapis.com/css2?family=Marcellus&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap";
 var WEEK = 7 * 24 * 60 * 60 * 1000, MAX_TILES = 2500, PAGE_WAIT = 3000;
@@ -26,10 +26,38 @@ function saveFonts() {
   }).catch(function () {});   // fonts are optional: the page has system fallbacks
 }
 
+/* the offline map of central Rome: one 8.5 MB file. Optional, so a failed download never blocks the install. */
+var MAPFILE = "rome.pmtiles";
+function saveMap() {
+  return caches.open(SHELL).then(function (c) {
+    return c.match(MAPFILE).then(function (hit) {
+      if (hit) return;
+      return fetch(new Request(MAPFILE, { cache: "reload" })).then(function (res) { if (res.ok && res.status === 200) return c.put(MAPFILE, res); });
+    });
+  }).catch(function () {});
+}
+/* the map library asks for byte ranges of that file; answer them from the saved copy */
+function mapRange(e) {
+  return caches.open(SHELL).then(function (cache) {
+    return cache.match(MAPFILE).then(function (hit) {
+      if (!hit) { e.waitUntil(saveMap()); return fetch(e.request); }
+      var r = /bytes=(\d+)-(\d*)/.exec(e.request.headers.get("range") || "");
+      if (!r) return hit;
+      return hit.blob().then(function (b) {
+        var from = +r[1], to = r[2] ? Math.min(+r[2], b.size - 1) : b.size - 1;
+        return new Response(b.slice(from, to + 1), { status: 206, headers: {
+          "Content-Type": "application/octet-stream", "Accept-Ranges": "bytes",
+          "Content-Range": "bytes " + from + "-" + to + "/" + b.size, "Content-Length": String(to - from + 1) } });
+      });
+    });
+  });
+}
+
 self.addEventListener("install", function (e) {
   e.waitUntil(Promise.all([
     caches.open(SHELL).then(function (c) { return c.addAll(FILES.map(function (f) { return new Request(f, { cache: "reload" }); })); }),
-    saveFonts()
+    saveFonts(),
+    saveMap()
   ]).then(function () { return self.skipWaiting(); }));
 });
 
@@ -117,6 +145,7 @@ self.addEventListener("fetch", function (e) {
   if (url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com") { e.respondWith(cacheFirst(e, FONTS)); return; }
   if (url.origin !== self.location.origin) return;
   if (req.mode === "navigate") { e.respondWith(page(e)); return; }
+  if (/\.pmtiles$/.test(url.pathname)) { e.respondWith(mapRange(e)); return; }
   if (/\.json$/.test(url.pathname)) { e.respondWith(fresh(e)); return; }
   e.respondWith(cacheFirst(e, SHELL));
 });

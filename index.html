@@ -451,7 +451,7 @@ html.maplock{overflow:hidden}
       <figure class="mapbox" id="mapbox">
         <div id="lmap" hidden></div>
         <svg id="map" role="img" aria-label="Sketch map of the day’s stops"></svg>
-        <figcaption><span id="mapcap"></span><span id="mapmsg" role="status"></span><button type="button" class="textbtn" id="nearbtn">What’s near me?</button><button type="button" class="textbtn" data-spare="1" style="display:block;margin:6px 0 0;font-size:.85rem;font-weight:600;color:var(--ink)">I’ve got some time</button></figcaption>
+        <figcaption><span id="mapcap"></span><span id="mapmsg" role="status"></span><button type="button" class="textbtn" id="mapmode" hidden style="display:block;margin:6px 0 0;font-size:.85rem;font-weight:600;color:var(--ink);text-align:left"></button><button type="button" class="textbtn" id="nearbtn">What’s near me?</button><button type="button" class="textbtn" data-spare="1" style="display:block;margin:6px 0 0;font-size:.85rem;font-weight:600;color:var(--ink)">I’ve got some time</button></figcaption>
       </figure>
     </div>
     <section aria-live="polite">
@@ -592,6 +592,7 @@ html.maplock{overflow:hidden}
 </div>
 
 <script src="vendor/leaflet/leaflet.js"></script>
+<script src="vendor/protomaps-leaflet/protomaps-leaflet.js"></script>
 <script>
 (function(){
 "use strict";
@@ -1598,7 +1599,27 @@ document.getElementById("chips").addEventListener("click",function(e){
 var lmapEl=document.getElementById("lmap"), mapbox=document.getElementById("mapbox"), mapmsg=document.getElementById("mapmsg");
 var lmap=null, stopLayer=null, pinLayer=null, lmarks={}, showPins=load("showpins",true);
 var ROME=[[41.76,12.20],[41.98,12.62]];
-var NOTILES="Some of this area isn’t saved on this phone, so the street map has gaps. The markers and your position still work.";
+/* two base maps: OpenStreetMap's online tiles, and a map of central Rome stored with the app (rome.pmtiles)
+   that needs no signal. The app starts online and switches by itself when tiles stop arriving. */
+var onlineLayer=null, offlineLayer=null, mapMode="", tileFails=0, mapPinned=false, FORCEMAP=(/[?&]map=(offline|online)/.exec(location.search)||[])[1]||"";
+var OFFBOX=[[41.868,12.425],[41.925,12.535]];
+function setMapMode(m){
+  if(!lmap) return;
+  if(m==="offline" && !(window.protomapsL && protomapsL.leafletLayer)) m="online";       // library missing: nothing to switch to
+  if(m===mapMode) return;
+  mapMode=m; tileFails=0;
+  if(m==="offline"){
+    if(!offlineLayer) offlineLayer=protomapsL.leafletLayer({url:"rome.pmtiles",flavor:"light",lang:"en",maxDataZoom:15,maxZoom:19,bounds:OFFBOX,
+      attribution:'&copy; <a target="_blank" rel="noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a target="_blank" rel="noopener" href="https://protomaps.com">Protomaps</a>'});
+    if(lmap.hasLayer(onlineLayer)) lmap.removeLayer(onlineLayer);
+    offlineLayer.addTo(lmap);
+  } else {
+    if(offlineLayer && lmap.hasLayer(offlineLayer)) lmap.removeLayer(offlineLayer);
+    onlineLayer.addTo(lmap);
+  }
+  var b=document.getElementById("mapmode");
+  if(b){ b.hidden=!(window.protomapsL && protomapsL.leafletLayer); b.textContent = m==="offline" ? "Offline map of central Rome. Switch to the online map" : "Switch to the offline map"; }
+}
 var PINLIST=[];
 AREAS.forEach(function(ar){ ar.pins.forEach(function(p){ if(typeof p[4]==="number") PINLIST.push({n:p[0],ty:p[1],d:p[2],q:(p[3]||p[0])+", Roma",lat:p[4],lon:p[5]}); }); });
 MUSIC.forEach(function(m){ if(m.ad) PINLIST.forEach(function(p){ if(p.n===m.n) p.ad=m.ad; }); });
@@ -1661,17 +1682,12 @@ function dot(html,size,anchorY){ return L.divIcon({className:"mkw",html:html,ico
 function initL(){
   map.setAttribute("hidden",""); lmapEl.hidden=false;
   lmap=L.map(lmapEl,{zoomControl:false,minZoom:12,maxZoom:19,maxBounds:ROME,maxBoundsViscosity:0.8});
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,crossOrigin:true,attribution:'&copy; <a target="_blank" rel="noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'})
-    .on("tileerror",function(){
-      // no signal and this area was never viewed: draw the river so the markers still have a setting
-      if(!lmap.getPane("backdrop")){
-        lmap.createPane("backdrop").style.zIndex=150;
-        L.polyline(RIVER,{pane:"backdrop",className:"riverline",weight:14,lineCap:"round",lineJoin:"round",interactive:false}).addTo(lmap);
-      }
-      if(!mapmsg.textContent) say(NOTILES);
-    })
-    .on("loading",function(){ if(mapmsg.textContent===NOTILES) say(""); })
-    .addTo(lmap);
+  onlineLayer=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,crossOrigin:true,attribution:'&copy; <a target="_blank" rel="noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'})
+    .on("tileerror",function(){ if(++tileFails>=2) setMapMode("offline"); })
+    .on("load",function(){ tileFails=0; });
+  setMapMode((FORCEMAP==="offline" || navigator.onLine===false) ? "offline" : "online");
+  window.addEventListener("online",function(){ if(!mapPinned) setMapMode("online"); });
+  window.addEventListener("offline",function(){ setMapMode("offline"); });
   L.control.zoom({position:"bottomleft"}).addTo(lmap);
   lmap.attributionControl.setPrefix(false);
   pinLayer=L.layerGroup(); stopLayer=L.layerGroup().addTo(lmap);
@@ -1774,6 +1790,8 @@ function onMapBtn(e){
     else stopLocate();
   }
 }
+
+document.getElementById("mapmode").addEventListener("click",function(){ mapPinned=true; setMapMode(mapMode==="offline"?"online":"offline"); });
 
 /* live location: only starts when asked, never leaves the device */
 var watchId=null, meMark=null, meRing=null, meCentre=false;
@@ -2667,7 +2685,8 @@ renderChecks(); renderBooks(); route(); wxFetch();
 if("serviceWorker" in navigator && (location.protocol==="https:" || location.hostname==="localhost" || location.hostname==="127.0.0.1")){
   navigator.serviceWorker.register("sw.js").catch(function(){});
   navigator.serviceWorker.ready.then(function(){ return caches.open("rome-shell-v1"); }).then(function(c){ return c.match("index.html"); })
-    .then(function(hit){ if(hit) document.getElementById("offpill").hidden=false; }).catch(function(){});
+    .then(function(hit){ if(hit) document.getElementById("offpill").hidden=false; return caches.match("rome.pmtiles"); })
+    .then(function(m){ if(m) document.getElementById("offpill").textContent="Saved for offline use, map included"; }).catch(function(){});
 }
 })();
 </script>
