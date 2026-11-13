@@ -74,7 +74,7 @@ button{font:inherit;color:inherit}
 
 /* day layout */
 .tabs nav.sub{padding:0 0 8px;gap:6px}
-.subtab{flex:0 0 auto;text-decoration:none;padding:4px 13px;border:1px solid var(--line);border-radius:999px;font-size:.86rem;font-weight:600;background:var(--surface)}
+.subtab{flex:0 0 auto;text-decoration:none;padding:4px 11px;border:1px solid var(--line);border-radius:999px;font-size:.86rem;font-weight:600;background:var(--surface)}
 .subtab[aria-current="page"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .day{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;padding:26px 0 40px}
 @media (min-width:900px){
@@ -300,6 +300,18 @@ html.maplock{overflow:hidden}
 .phr .acts{display:flex;gap:8px;margin-top:8px}
 .phr .acts button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:.84rem;font-weight:600;cursor:pointer;min-height:36px}
 .namerow{max-width:420px}
+.tipchk{display:inline-block;font-size:.72rem;font-weight:700;border:1.5px solid currentColor;border-radius:999px;padding:0 7px;margin-left:6px;vertical-align:1px;color:var(--muted)}
+.gloss small{display:block;font-size:.8rem;color:var(--muted);margin-top:3px}
+.busbox{margin:10px 0 0;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--travel);border-radius:12px;max-width:640px;font-size:.93rem}
+.busbox h3{margin:0 0 6px;font-size:1.05rem}
+.busbox p{margin:6px 0 0}
+.busbox ul{margin:8px 0 0;padding:0;list-style:none}
+.busbox li{padding:6px 0;border-top:1px solid var(--line)}
+.busbox li b{font-weight:600}
+.busline{stroke:var(--travel);stroke-opacity:.9}
+.bstop{width:10px;height:10px;border-radius:2px;background:var(--travel);border:2px solid var(--bg);box-shadow:0 1px 2px rgba(0,0,0,.35)}
+.popbus{font-size:.84rem;margin-top:3px}
+.popbus:empty{display:none}
 .gloss{list-style:none;margin:0;padding:0;max-width:640px}
 .gloss li{padding:9px 0;border-top:1px solid var(--line)}
 .gloss b{font-weight:600;font-size:1.02rem}
@@ -383,6 +395,12 @@ html.maplock{overflow:hidden}
     <p>Every live music place among your pins. Pick a night to see what each one had listed and how far it is from that night’s hotel. Listings were read from each place’s own site on 13 November and can change, so check the link on the day.</p>
     <div class="seg pinseg" id="musicnights" role="group" aria-label="Night"></div>
     <div id="musiclist"></div>
+  </div>
+  <div class="pinsview" id="tipsview" hidden>
+    <h2>How Rome works</h2>
+    <p>The unwritten rules, and bus 81, which runs from near Hotel Isa to the Colosseum.</p>
+    <div id="tipslist"></div>
+    <p class="refnote">Tips marked “check first” describe arrangements that change. Where a tip says it was confirmed, that was on 13 November 2026.</p>
   </div>
   <div class="pinsview" id="menuview" hidden>
     <h2>Menu decoder</h2>
@@ -596,7 +614,7 @@ var ALT_AT={"Train and metro":"lepanto","An early night":"isa","Vatican Museums 
   "Add the Palatine":"palatino","See it from above instead":"camp","Cut it short":"aranci","Sant’Ignazio":"Chiesa di Sant’Ignazio di Loyola","Tazza d’Oro":"tazza",
   "Stay by the hotel: Pancrazio dal 1922":"Ristorante Pancrazio dal 1922","Stay by the hotel: Saltimbocca":"Saltimbocca ristorante","Stay by the hotel: Il Corallo":"Il Corallo",
   "Armando al Pantheon":"armando","La Botticella":"La Botticella of Poggi Giovanni",
-  "All’Antico Vinaio":null,"Alla Bucaniera or Marea":null,"Leave it for Friday":null};
+  "All’Antico Vinaio":null,"Alla Bucaniera or Marea":null,"Leave it for Friday":null,"Bus 81 for the second leg":"abr"};
 var ALT_KEEP={"Standard ticket":1};   // alternatives that keep the step's fixed time
 
 /* ---------- days ---------- */
@@ -702,7 +720,8 @@ var DAYS = [
   rain:"The Capitoline Museums cover two hours indoors, with a covered view over the Forum.",
   items:[
    {t:"07:45",c:"stay",p:"isa",title:"Breakfast and check out of Hotel Isa",note:"City tax of €22.50 per room is paid at the desk."},
-   {t:"08:15",drv:["abr","col"],c:"travel",p:"abr",title:"Taxi to Albergo Abruzzi, then on to the Colosseum",note:"Ten minutes to the Pantheon to leave your bags (check-in is from 14:00), then ten more to the Colosseum. Ask the driver to wait."},
+   {t:"08:15",drv:["abr","col"],c:"travel",p:"abr",title:"Taxi to Albergo Abruzzi, then on to the Colosseum",note:"Ten minutes to the Pantheon to leave your bags (check-in is from 14:00), then ten more to the Colosseum. Ask the driver to wait.",
+    alts:[A("Bus 81 for the second leg","Once the bags are dropped, walk four minutes to the Rinascimento stop and take the 81 nine stops to Celio Vibenna, beside the Colosseum. A local transport strike is reported for this Saturday, so have the taxi as the fallback.",0,"Corso del Rinascimento, Roma")]},
    {t:"09:00",e:"10:30",fix:1,lv:"08:15",lvd:"By taxi from Hotel Isa, leaving your bags at Albergo Abruzzi on the way.",c:"free",p:"col",title:"Colosseum, Full Experience Attic ticket",note:"The ticket takes you to the top tier as well as the main levels, in groups of 25, with 90 minutes inside. About €24 on colosseo.it. Slots are released 30 days ahead, so book now. It includes the Forum and Palatine.",
     alts:[A("Standard ticket","About €18, still timed entry, without the upper tier. Take this if the attic slots have gone.",1,"Colosseo, Roma"),
           A("Outside only","Walk the perimeter and the Arch of Constantine and put the time into San Clemente and the Forum.",0,"Arco di Costantino, Roma")]},
@@ -929,9 +948,9 @@ function renderMusic(){
   document.getElementById("musiclist").innerHTML=musicRows(d,0);
 }
 function showView(id){
-  ["dayview","pinsview","musicview","phrasesview","menuview"].forEach(function(v){ document.getElementById(v).hidden = v!==id; });
+  ["dayview","pinsview","musicview","phrasesview","menuview","tipsview"].forEach(function(v){ document.getElementById(v).hidden = v!==id; });
   DAYS.forEach(function(x){ document.getElementById("tab-"+x.id).removeAttribute("aria-current"); });
-  ["pins","music","phrases","menu"].forEach(function(t){ var el=document.getElementById("tab-"+t); if(t+"view"===id) el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current"); });
+  ["pins","music","phrases","menu","tips"].forEach(function(t){ var el=document.getElementById("tab-"+t); if(t+"view"===id) el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current"); });
 }
 function pinLook(n){ var t=LOOKPIN[n]; if(!t) return ""; return t.charAt(0)==="@" ? (LOOK[t.slice(1)]||LOOKPIN[t.slice(1)]||"") : t; }
 function lookText(k){ return LOOK[k] || (P[k] ? pinLook(P[k].n) : ""); }
@@ -1193,7 +1212,7 @@ DAYS.forEach(function(d){
 
 (function(){
   var a=document.createElement("a");
-  [["pins","Pins"],["music","Music"],["phrases","Phrases"],["menu","Menu"]].forEach(function(t){
+  [["pins","Pins"],["music","Music"],["phrases","Phrases"],["menu","Menu"],["tips","Tips"]].forEach(function(t){
     a=document.createElement("a");
     a.className="subtab"; a.href="#"+t[0]; a.id="tab-"+t[0]; a.textContent=t[1];
     document.getElementById("tabs2").appendChild(a);
@@ -1329,7 +1348,7 @@ function render(id){
       (it.lv && it.lv!==it.t?'<p class="leave">'+esc(it.lvl||"Leave by")+' '+it.lv+(it.ti?' Irish time':'')+'.'+(it.lvd?' '+esc(it.lvd):'')+'</p>':'')+
       (it.drv && !it.swapped?'<p class="drv">'+it.drv.map(function(k){ return '<button type="button" data-drv="'+k+'">Show the driver: '+esc(driverInfo(k).name)+'</button>'; }).join("")+'</p>':'')+
       lightLine(d,it)+rainLine(d,it)+
-      '<p class="useful"><button type="button" class="textbtn" data-phr="'+ctxOf(it)+'" data-ptime="'+(it.bk?((it.bks.s==="done"&&/^\d\d:\d\d$/.test(it.bks.slot))?it.bks.slot:it.t):"")+'" data-pdrv="'+(it.drv&&!it.swapped?it.drv.join(","):"")+'">Useful phrases here</button></p>'+
+      '<p class="useful"><button type="button" class="textbtn" data-phr="'+ctxOf(it)+'" data-ptime="'+(it.bk?((it.bks.s==="done"&&/^\d\d:\d\d$/.test(it.bks.slot))?it.bks.slot:it.t):"")+'" data-pdrv="'+(it.drv&&!it.swapped?it.drv.join(","):"")+'" data-pplace="'+(it.p||"")+'">Phrases and tips</button></p>'+
       bookLine(it)+
       (it.warn?'<p class="warn"><span class="wflag">Check</span>'+esc(it.warn)+'</p>':'')+
       (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+(it.p?aboutHtml(aboutFor(it.p),"p"):'')+musicStep(d,it)+look+altsHtml(it)+'</div></li>';
@@ -1454,7 +1473,7 @@ function renderPins(){
       list.map(function(p){
         var q=(p[3]||p[0])+", Roma";
         return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(q)+'">'+esc(p[0])+'</a><span class="ty">'+TYPES[p[1]]+'</span>'+(p[2]?'<span class="ds">'+esc(p[2])+'</span>':'')+aboutHtml(ABOUT[p[0]],"span")+
-          '<span class="ds macts">'+(useL&&typeof p[4]==="number"?'<button type="button" class="textbtn" data-mapat="'+p[4]+','+p[5]+'">Show on map</button>':'')+'<button type="button" class="textbtn" data-phr="'+p[1]+'">Useful phrases</button></span>'+lookHtml(pinLook(p[0]))+'</li>';
+          '<span class="ds macts">'+(useL&&typeof p[4]==="number"?'<button type="button" class="textbtn" data-mapat="'+p[4]+','+p[5]+'">Show on map</button>':'')+'<button type="button" class="textbtn" data-phr="'+p[1]+'" data-pplace="'+esc(p[0])+'">Phrases and tips</button></span>'+lookHtml(pinLook(p[0]))+'</li>';
       }).join("")+'</ul></div>';
   });
   document.getElementById("areas").innerHTML=html||'<p class="daynote">Nothing of that type in your list.</p>';
@@ -1512,7 +1531,7 @@ function renderNear(){
     var how=m<40?(nearFrom==="me"?"You’re here":"Next door"):Math.max(1,Math.round(m*1.3/80))+" min walk · "+far+" "+compass(o.lat,o.lon,p.lat,p.lon);
     return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(p.q)+'">'+esc(p.n)+'</a><span class="ty">'+how+' · '+(p.label||TYPES[p.ty])+'</span>'+
       (p.plan?'<span class="ds used">On your plan: '+esc(p.plan)+'</span>':'')+(p.d?'<span class="ds">'+esc(p.d)+'</span>':'')+aboutHtml((p.k&&aboutFor(p.k))||ABOUT[p.n],"span")+
-      '<span class="ds macts">'+(useL?'<button type="button" class="textbtn" data-mapat="'+p.lat+','+p.lon+'">Show on map</button>':'')+'<button type="button" class="textbtn" data-phr="'+(p.ty==="base"?(p.label==="Awards venue"?"work":"hotel"):p.ty)+'">Useful phrases</button></span>'+lookHtml((p.k&&LOOK[p.k])||pinLook(p.n))+'</li>';
+      '<span class="ds macts">'+(useL?'<button type="button" class="textbtn" data-mapat="'+p.lat+','+p.lon+'">Show on map</button>':'')+'<button type="button" class="textbtn" data-phr="'+(p.ty==="base"?(p.label==="Awards venue"?"work":"hotel"):p.ty)+'" data-pplace="'+esc(p.k||p.n)+'">Phrases and tips</button></span>'+lookHtml((p.k&&LOOK[p.k])||pinLook(p.n))+'</li>';
   }).join("")+'</ul>'+(list.length>nearLimit?'<button type="button" class="textbtn" id="nearmore">Show more</button>':'');
 }
 document.getElementById("pinmode").addEventListener("click",function(e){
@@ -1545,6 +1564,38 @@ var NOTILES="Some of this area isn’t saved on this phone, so the street map ha
 var PINLIST=[];
 AREAS.forEach(function(ar){ ar.pins.forEach(function(p){ if(typeof p[4]==="number") PINLIST.push({n:p[0],ty:p[1],d:p[2],q:(p[3]||p[0])+", Roma",lat:p[4],lon:p[5]}); }); });
 MUSIC.forEach(function(m){ if(m.ad) PINLIST.forEach(function(p){ if(p.n===m.n) p.ad=m.ad; }); });
+/* ---------- bus 81: route and stops from bus-81.json ---------- */
+var BUS=null, showBus=load("showbus",false), busLayer=null;
+function busDir(d){ return /Malatesta/.test(d.to) ? "Malatesta, the Colosseum direction" : "Piazza del Risorgimento, the Prati direction"; }
+function busNear(d,lat,lon){ var bi=-1,bm=1e9; d.stops.forEach(function(s,i){ var m=metres(lat,lon,s[1],s[2]); if(m<bm){ bm=m; bi=i; } }); return {i:bi,m:bm,s:d.stops[bi]}; }
+function busHint(o,lat,lon){                 // a ride on the 81 between two points, when both are near stops in the right order
+  if(!BUS || !o) return "";
+  var best=null;
+  BUS.dirs.forEach(function(d){
+    var a=busNear(d,o.lat,o.lon), b=busNear(d,lat,lon);
+    if(a.m>450 || b.m>450 || b.i-a.i<3) return;
+    var w=a.m+b.m; if(!best || w<best.w) best={d:d,a:a,b:b,w:w};
+  });
+  if(!best) return "";
+  function wm(m){ return Math.max(1,Math.round(m*1.3/80)); }
+  return "Or bus 81 towards "+busDir(best.d)+": board at "+best.a.s[0]+" ("+wm(best.a.m)+" min walk), "+(best.b.i-best.a.i)+" stops to "+best.b.s[0]+", then "+wm(best.b.m)+" min on foot.";
+}
+function drawBus(){
+  if(!lmap) return;
+  if(busLayer){ lmap.removeLayer(busLayer); busLayer=null; }
+  if(!showBus || !BUS) return;
+  busLayer=L.layerGroup();
+  BUS.dirs.forEach(function(d){
+    L.polyline(d.line,{className:"busline",weight:4,interactive:false}).addTo(busLayer);
+    d.stops.forEach(function(st){
+      L.marker([st[1],st[2]],{icon:dot('<span class="bstop"></span>',22,-5),title:st[0]+" (bus 81)",alt:st[0]})
+        .bindPopup(withDist(st[1],st[2],'<b>'+esc(st[0])+'</b><br><span class="popty">Bus 81 stop, towards '+esc(busDir(d))+'</span><div class="popdist"></div>'),{maxWidth:240,autoPanPaddingTopLeft:[8,54],autoPanPaddingBottomRight:[8,8]})
+        .addTo(busLayer);
+    });
+  });
+  busLayer.addTo(lmap);
+}
+fetch("bus-81.json").then(function(r){ return r.json(); }).then(function(j){ BUS=j; drawBus(); if(!document.getElementById("tipsview").hidden) renderTips(); }).catch(function(){});
 function metres(a,b,c,d){ var k=Math.cos(41.9*Math.PI/180), y=(a-c)*111320, x=(b-d)*111320*k; return Math.sqrt(x*x+y*y); }
 function say(t){ mapmsg.textContent=t||""; }
 function ll(id){ return [P[id].lat,P[id].lon]; }
@@ -1572,12 +1623,14 @@ function initL(){
     var d=L.DomUtil.create("div","mapbtns");
     d.innerHTML='<button type="button" data-a="me" aria-pressed="false">Locate me</button>'+
       '<button type="button" data-a="pins" aria-pressed="'+showPins+'">Pins</button>'+
+      '<button type="button" data-a="bus" aria-pressed="'+showBus+'">Bus 81</button>'+
       '<button type="button" data-a="full" aria-pressed="false">Full screen</button>';
     L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d);
     d.addEventListener("click",onMapBtn);
     return d;
   }});
   lmap.addControl(new Ctl());
+  drawBus();
   lmapEl.addEventListener("click",function(e){
     var b=e.target.closest&&e.target.closest("button[data-plan]"); if(!b) return;
     if(mapbox.classList.contains("mapfull")) setFull(false);
@@ -1630,7 +1683,14 @@ function howFar(lat,lon){
   var far=m<950?Math.max(10,Math.round(m/10)*10)+" m":(m/1000).toFixed(1)+" km", w=Math.max(1,Math.round(m*1.3/80));
   return "About "+w+" min on foot, "+far+" "+compass(o.lat,o.lon,lat,lon)+" of "+from+"."+(w>30?" A taxi may suit better.":"");
 }
-function withDist(lat,lon,html){ return function(){ return html.replace('<div class="popdist"></div>','<div class="popdist">'+esc(howFar(lat,lon))+'</div>'); }; }
+function withDist(lat,lon,html){ return function(){
+  var o=howFarFrom(), far=howFar(lat,lon), bus=(o && metres(o.lat,o.lon,lat,lon)*1.3/80>=12) ? busHint(o,lat,lon) : "";
+  return html.replace('<div class="popdist"></div>','<div class="popdist">'+esc(far)+'</div><div class="popbus">'+esc(bus)+'</div>');
+}; }
+function howFarFrom(){
+  if(mePos && inRomeLL(mePos.lat,mePos.lon)) return mePos;
+  return current ? P[(current.id==="sat"||current.id==="sun")?"abr":"isa"] : null;
+}
 function setFull(on){
   var c=lmap.getCenter();
   mapbox.classList.toggle("mapfull",on); document.documentElement.classList.toggle("maplock",on);
@@ -1646,6 +1706,8 @@ function onMapBtn(e){
   if(a==="pins"){
     showPins=!showPins; save("showpins",showPins); b.setAttribute("aria-pressed",showPins);
     if(showPins) pinLayer.addTo(lmap); else lmap.removeLayer(pinLayer);
+  } else if(a==="bus"){
+    showBus=!showBus; save("showbus",showBus); b.setAttribute("aria-pressed",showBus); drawBus();
   } else if(a==="full"){
     setFull(!mapbox.classList.contains("mapfull"));
   } else if(a==="me"){
@@ -1921,6 +1983,7 @@ function phrText(t,o,lang){
 }
 /* which phrases suit a place: its type, or what kind of step it is */
 function ctxOf(it){
+  if(it.c==="travel") return "taxi";
   if(it.p){
     if(P[it.p].hotel) return "hotel";
     if(it.p==="venue") return "work";
@@ -1945,7 +2008,9 @@ function phrHtml(ctx,o){
       (p.say&&!dyn?'<span class="say">'+(p.hear?'Sounds like: ':'Say: ')+esc(p.say)+'</span>':'')+(p.tip?'<span class="tip">'+esc(p.tip)+'</span>':'')+
       '<span class="acts">'+(p.hear?'':'<button type="button" data-showphr="'+i+'">Show</button>')+(speak?'<button type="button" data-hear="'+i+'"'+(itVoice?'':' hidden')+'>Hear it</button>':'')+'</span></li>';
   }
-  var top=(o&&o.drv&&o.drv.length)?'<p class="useful">'+o.drv.map(function(k){ var di=driverInfo(k); return di?'<button type="button" class="pick" style="--c:var(--ink)" data-drv="'+k+'">Show the driver: '+esc(di.name)+'</button> ':''; }).join("")+'</p>':'';
+  var tl2=(o&&o.tips)?tipsFor(ctx,o.place):[];
+  var tipsTop=tl2.length?'<h3 class="phrsec" style="margin-top:6px">Good to know here</h3><ul class="gloss">'+tl2.map(tipLi).join("")+'</ul><p class="useful"><button type="button" class="textbtn" id="totips">All the tips</button></p><h3 class="phrsec">Phrases</h3>':'';
+  var top=tipsTop+((o&&o.drv&&o.drv.length)?'<p class="useful">'+o.drv.map(function(k){ var di=driverInfo(k); return di?'<button type="button" class="pick" style="--c:var(--ink)" data-drv="'+k+'">Show the driver: '+esc(di.name)+'</button> ':''; }).join("")+'</p>':'');
   if(ctx==="eat"||ctx==="quick"||ctx==="sweet"||ctx==="drink") top+='<p class="useful"><button type="button" class="pick" style="--c:var(--ink)" id="tomenu">Menu decoder</button></p>';
   return top+phrItems(ctx).map(function(g,gi){
     var say=g.l.filter(function(p){ return !p.hear; }), hear=g.l.filter(function(p){ return p.hear; });
@@ -1966,14 +2031,19 @@ var phrPanel=document.getElementById("phrpanel");
 var panelOpts=null;
 function openPhrases(ctx,o){
   panelOpts=o||null;
-  phrLoad(function(){
+  var n=3; function go(){ if(--n) return; openPhrases2(ctx); }
+  phrLoad(go); tipsLoad(go); tagsLoad(go);
+}
+function openPhrases2(ctx){
+  (function(){
     document.getElementById("phrtitle").textContent="Useful here: "+((PHR&&PHR.contexts[ctx])||"phrases");
     document.getElementById("phrpanellist").innerHTML=phrHtml(ctx,panelOpts);
     phrPanel.hidden=false; phrPanel.scrollTop=0; document.documentElement.classList.add("maplock");
-  });
+  })();
 }
 function closePhrases(){ phrPanel.hidden=true; if(!mapbox.classList.contains("mapfull")) document.documentElement.classList.remove("maplock"); }
 document.getElementById("phrclose").addEventListener("click",closePhrases);
+document.addEventListener("click",function(e){ if(e.target.id==="totips"){ if(!phrPanel.hidden) closePhrases(); location.hash="#tips"; window.scrollTo(0,document.querySelector(".tabs").offsetTop); } });
 document.addEventListener("click",function(e){ if(e.target.id==="tomenu"){ if(!phrPanel.hidden) closePhrases(); location.hash="#menu"; window.scrollTo(0,document.querySelector(".tabs").offsetTop); } });
 document.getElementById("phrchips").addEventListener("click",function(e){
   var b=e.target.closest("button[data-ctx]"); if(!b) return; phrCtx=b.getAttribute("data-ctx"); renderPhrases();
@@ -1985,7 +2055,7 @@ document.addEventListener("click",function(e){
   var t=e.target.closest&&e.target.closest("button[data-phr],button[data-showphr],button[data-hear]"); if(!t) return;
   if(t.hasAttribute("data-phr")){
     var dv=t.getAttribute("data-pdrv");
-    openPhrases(t.getAttribute("data-phr"),{time:t.getAttribute("data-ptime")||"",drv:dv?dv.split(","):[]}); return;
+    openPhrases(t.getAttribute("data-phr"),{time:t.getAttribute("data-ptime")||"",drv:dv?dv.split(","):[],tips:1,place:t.getAttribute("data-pplace")||""}); return;
   }
   var o=t.closest("#phrpanel")?panelOpts:null;
   var p=PHR && PHR.phrases[+(t.getAttribute("data-showphr")||t.getAttribute("data-hear"))]; if(!p) return;
@@ -1997,6 +2067,58 @@ document.addEventListener("click",function(e){
   }catch(err){}
 });
 document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !phrPanel.hidden && driverEl.hidden) closePhrases(); });
+
+/* ---------- how Rome works: tips from how-rome-works.json, plus the bus 81 card ---------- */
+var TIPS=null;
+function tipsLoad(done){
+  if(TIPS){ done(); return; }
+  fetch("how-rome-works.json").then(function(r){ return r.json(); }).then(function(j){ TIPS=j; done(); }).catch(function(){ done(); });
+}
+function tipLi(t){
+  return '<li><b>'+esc(t.title)+'</b>'+(t.check?'<span class="tipchk">Check first</span>':'')+'<span>'+esc(t.text)+'</span>'+(t.checked?'<small>'+esc(t.checked)+'</small>':'')+'</li>';
+}
+function busCard(){
+  if(!BUS) return "";
+  function near(k,di){ var d=BUS.dirs[di], n=busNear(d,P[k].lat,P[k].lon); return n.m<=450 ? n.s[0]+" ("+Math.max(1,Math.round(n.m*1.3/80))+" min walk)" : ""; }
+  var toCol=/Malatesta/.test(BUS.dirs[0].to)?0:1, toPrati=1-toCol;
+  var rows=[["isa","Hotel Isa"],["zanzara","La Zanzara and Fonclea"],["abr","Albergo Abruzzi and the Pantheon"],["camp","Capitoline Hill"],["marc","Theatre of Marcellus"],["circo","Circus Maximus"],["col","Colosseum"],["clem","San Clemente"]];
+  return '<div class="busbox"><h3>Bus 81</h3>'+
+    '<p>ATAC line 81 runs between Piazza del Risorgimento in Prati and Malatesta, by way of Piazza Cavour, Corso del Rinascimento, Largo Argentina, Piazza Venezia, the Circus Maximus and the Colosseum. It links most of your Saturday route to Hotel Isa without a change.</p>'+
+    '<p><b>How often:</b> timetable sites give roughly every 15 to 20 minutes, from about 05:30 to midnight. I couldn’t confirm that on ATAC’s own site, so trust the display at the stop.</p>'+
+    '<p><b>Paying:</b> €1.50 for 100 minutes. Tap a contactless card or phone on the reader as you board, or validate a paper ticket.</p>'+
+    '<p><b>Saturday 21:</b> a public transport strike is reported for some local operators that day. Check before relying on the bus.</p>'+
+    '<ul>'+rows.map(function(r){
+      var a=near(r[0],toCol), b=near(r[0],toPrati); if(!a&&!b) return "";
+      return '<li><b>'+r[1]+'</b><br>'+(a?'Towards the Colosseum: '+esc(a)+'. ':'')+(b?'Towards Prati: '+esc(b)+'.':'')+'</li>';
+    }).join("")+'</ul>'+
+    '<p>Turn on “Bus 81” on any day’s map to see the route and every stop. Map popups suggest the bus when it suits the trip.</p>'+
+    '<p><a target="_blank" rel="noopener" href="https://www.atac.roma.it/">atac.roma.it</a> has the live service and strike notices.</p></div>';
+}
+function renderTips(){
+  showView("tipsview"); current=null;
+  tipsLoad(function(){
+    var box=document.getElementById("tipslist");
+    if(!TIPS){ box.innerHTML='<p class="daynote">The tips couldn’t be loaded. They need one visit with signal to be saved on this device.</p>'; return; }
+    box.innerHTML=TIPS.sections.map(function(sec){
+      return '<h3 class="phrsec">'+esc(sec.section)+'</h3>'+(sec.section==="Getting around"?busCard():'')+'<ul class="gloss">'+sec.items.map(tipLi).join("")+'</ul>';
+    }).join("");
+  });
+}
+/* one or two tips for a place: ones naming it, then ones for its kind (church), then general ones for its context */
+function tipsFor(ctx,place){
+  if(!TIPS) return [];
+  var pk=place&&P[place]?place:"", names=[place||""]; if(pk){ names.push(P[pk].n); if(PALIAS[pk]) names.push(PALIAS[pk]); }
+  names=names.map(nkey);
+  var moods=[], hours=""; if(TAGS && place){ var tg=(pk&&TAGS.k[pk]) || names.map(function(n){ return TAGS.n[n]; }).filter(Boolean)[0]; if(tg){ moods=tg.moods||[]; hours=tg.hours||""; } }
+  var a=[],b=[],c=[];
+  TIPS.sections.forEach(function(sec){ sec.items.forEach(function(t){
+    if(t.places){ if(t.places.some(function(x){ return x===pk || names.indexOf(nkey(x))>=0; })) a.push(t); return; }
+    if(t.page_only) return;
+    if(t.moods){ if(t.moods.some(function(m){ return moods.indexOf(m)>=0; }) && (!t.hours || t.hours.indexOf(hours)>=0)) b.push(t); return; }
+    if(t.contexts.indexOf(ctx)>=0) c.push(t);
+  }); });
+  return a.concat(b,c).slice(0,2);
+}
 
 /* ---------- menu decoder, from menu.json ---------- */
 var MENU=null;
@@ -2278,6 +2400,7 @@ function route(){
   if(h==="music"){ renderMusic(); return; }
   if(h==="phrases"){ renderPhrases(); return; }
   if(h==="menu"){ renderMenu(); return; }
+  if(h==="tips"){ renderTips(); return; }
   var ok=DAYS.some(function(d){return d.id===h;});
   render(ok?h:(todayId||"wed"));
 }

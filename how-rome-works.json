@@ -1,0 +1,304 @@
+{
+ "about": "Offline 'How Rome works' card. 'contexts' use the same keys as phrases.json so a tip can be shown on matching places. Items with check=true describe arrangements that change; verify before relying on them. 'places' pins a tip to named places (pin names or app keys); 'moods' to a kind of place from place-tags.json; 'page_only' keeps it off places because the app already says it there; 'checked' records what was confirmed and when. 'hours' narrows a mood tip to places with that hours rule in place-tags.json.",
+ "sections": [
+  {
+   "section": "Coffee",
+   "items": [
+    {
+     "title": "Standing is cheaper",
+     "text": "Coffee at the bar counter costs a good deal less than the same coffee brought to a table, and around the big squares the gap is wider. Locals drink it standing in two minutes.",
+     "contexts": [
+      "sweet"
+     ],
+     "page_only": true
+    },
+    {
+     "title": "Pay first, then order",
+     "text": "In busy bars you pay at the till, then take the receipt to the counter and say what you ordered.",
+     "contexts": [
+      "sweet"
+     ],
+     "page_only": true
+    },
+    {
+     "title": "What the words mean",
+     "text": "“Un caffè” is an espresso. “Latte” on its own gets you a glass of milk. Cappuccino is a morning drink, though nobody will refuse you one later.",
+     "contexts": [
+      "sweet"
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Eating out",
+   "items": [
+    {
+     "title": "Meal times are fixed",
+     "text": "Lunch runs from about 12:30 to 15:00 and dinner from about 19:30. Most kitchens shut in between, so a 16:00 lunch means a sandwich or a slice.",
+     "contexts": [
+      "eat",
+      "quick"
+     ]
+    },
+    {
+     "title": "Extras on the bill",
+     "text": "Expect a line for “pane” (bread) of a euro or three per person, or sometimes “servizio” of 10 to 15 percent. Either should be printed on the menu. It isn’t a scam; it’s how the bill works.",
+     "contexts": [
+      "eat"
+     ]
+    },
+    {
+     "title": "Tipping",
+     "text": "Not expected. Round up, or leave a few euros in cash if the service was good. Leave nothing extra if “servizio” is already on the bill.",
+     "contexts": [
+      "eat",
+      "drink",
+      "taxi"
+     ]
+    },
+    {
+     "title": "The bill doesn’t come until you ask",
+     "text": "Sitting for an hour after the plates are cleared is normal. Ask for “il conto” when you want to go.",
+     "contexts": [
+      "eat"
+     ],
+     "page_only": true
+    },
+    {
+     "title": "Water",
+     "text": "Tap water is safe but restaurants don’t usually serve it. You’ll be asked “naturale o frizzante?” and charged for a bottle.",
+     "contexts": [
+      "eat"
+     ]
+    },
+    {
+     "title": "Courses",
+     "text": "Pasta is a first course, not a side. Ordering only a pasta, or only a main, is fine. Vegetables come separately as “contorni”.",
+     "contexts": [
+      "eat"
+     ]
+    },
+    {
+     "title": "Closing days",
+     "text": "Most restaurants shut one day a week, often Sunday or Monday, and it varies by place. Check before walking across town.",
+     "contexts": [
+      "eat"
+     ]
+    },
+    {
+     "title": "Pizza by the slice",
+     "text": "Sold by weight. Point, show the size you want with your hands, and say “basta così” when it’s enough.",
+     "contexts": [
+      "quick"
+     ],
+     "page_only": true
+    }
+   ]
+  },
+  {
+   "section": "Churches and sights",
+   "items": [
+    {
+     "title": "Cover shoulders and knees",
+     "text": "Enforced at St Peter’s and the Pantheon and expected everywhere else. In November it rarely matters, but hats come off.",
+     "contexts": [
+      "sight"
+     ],
+     "moods": [
+      "church"
+     ]
+    },
+    {
+     "title": "Churches shut over lunch",
+     "text": "Most close from about 12:30 to 15:30 or 16:00. The big basilicas stay open through the day.",
+     "contexts": [
+      "sight"
+     ],
+     "moods": [
+      "church"
+     ],
+     "hours": [
+      "church"
+     ]
+    },
+    {
+     "title": "Bring one-euro coins",
+     "text": "Famous paintings in churches are often lit by a coin box. The Caravaggios in San Luigi dei Francesi were for years, though the lighting there has since been renewed, so carry a euro coin and see.",
+     "contexts": [
+      "sight"
+     ],
+     "places": [
+      "Church of Saint Louis of the French"
+     ]
+    },
+    {
+     "title": "Names on tickets",
+     "text": "Tickets for the Colosseum and Vatican Museums carry your name and are checked against photo ID. Bring it.",
+     "contexts": [
+      "sight"
+     ],
+     "places": [
+      "Colosseum",
+      "Sistine Chapel",
+      "vatmus",
+      "col"
+     ]
+    },
+    {
+     "title": "Don’t sit on the Spanish Steps",
+     "text": "Sitting or eating on them is banned and fined. The same goes for paddling in any fountain.",
+     "contexts": [
+      "sight"
+     ],
+     "places": [
+      "Spanish Steps",
+      "Piazza di Spagna"
+     ]
+    },
+    {
+     "title": "Trevi Fountain access",
+     "text": "Since February 2026 the area right at the basin’s edge is ticketed for visitors: €2, bought online or by card at the entrance, within set hours. The view from the piazza is free at any time.",
+     "contexts": [
+      "sight"
+     ],
+     "check": true,
+     "checked": "Ticket and price from the city's heritage office and Rome news sites, 13 November 2026. Sources disagree on the opening hour, so check before going.",
+     "places": [
+      "Trevi Fountain"
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Getting around",
+   "items": [
+    {
+     "title": "Taxis come from ranks, not kerbs",
+     "text": "Official taxis are white with a roof sign and a licence number on the door. Hailing one rarely works; walk to a rank or use the FreeNow or itTaxi apps. Ignore anyone who approaches you offering a ride.",
+     "contexts": [
+      "taxi"
+     ]
+    },
+    {
+     "title": "The meter, and the airport exception",
+     "text": "In the city the meter runs. Between Fiumicino and anywhere inside the Aurelian Walls it’s a fixed €55 for the car, supplements included. Say “tariffa fissa” before you set off.",
+     "contexts": [
+      "taxi"
+     ],
+     "checked": "Fare confirmed on Rome's mobility agency and airport sites, 13 November 2026.",
+     "page_only": true
+    },
+    {
+     "title": "Ask about cards before you get in",
+     "text": "Taxis are supposed to take cards, and some terminals are mysteriously broken. “Posso pagare con la carta?” at the start saves an argument.",
+     "contexts": [
+      "taxi"
+     ]
+    },
+    {
+     "title": "Metro and buses",
+     "text": "A single ticket, the BIT, costs €1.50 and lasts 100 minutes, with one metro ride in that time. You can tap a contactless bank card or phone on the reader in place of a ticket, at the same fare. A paper ticket has to be validated when you board.",
+     "contexts": [
+      "taxi"
+     ],
+     "checked": "Fare and contactless payment confirmed on ATAC's site, 13 November 2026."
+    },
+    {
+     "title": "Stamp paper train tickets",
+     "text": "A paper regional train ticket has to be validated in the small machine on the platform before boarding, or you can be fined. Trenitalia says its digital regional tickets validate themselves at the train’s scheduled departure.",
+     "contexts": [
+      "taxi"
+     ],
+     "checked": "Paper rule and digital wording from Trenitalia's regional page, 13 November 2026."
+    },
+    {
+     "title": "Crossing the road",
+     "text": "Cars won’t stop while you wait. Step out steadily at a crossing, keep a constant pace, and they will go around you.",
+     "contexts": [
+      "basics"
+     ]
+    },
+    {
+     "title": "Cobbles",
+     "text": "The black basalt cobbles are slippery when wet and hard on thin soles. Wear shoes with grip.",
+     "contexts": [
+      "basics"
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Practical",
+   "items": [
+    {
+     "title": "Drinking fountains",
+     "text": "The cast-iron street fountains run constantly with cold drinking water. Block the spout with a finger and it arcs out of the small hole on top. Carry a bottle and refill it.",
+     "contexts": [
+      "basics",
+      "sight"
+     ]
+    },
+    {
+     "title": "Toilets",
+     "text": "Public ones are scarce. Any bar will let you use theirs if you buy a coffee at the counter first. Museums and big sights have them inside the ticket line.",
+     "contexts": [
+      "basics",
+      "sight"
+     ]
+    },
+    {
+     "title": "Plugs",
+     "text": "Italy uses two- and three-pin round plugs, so Irish chargers need an adapter. Voltage is the same.",
+     "contexts": [
+      "hotel"
+     ]
+    },
+    {
+     "title": "Your phone",
+     "text": "EU roaming rules mean your Irish plan works at home rates. Check your data cap before you go.",
+     "contexts": [
+      "basics"
+     ],
+     "check": true
+    },
+    {
+     "title": "City tax",
+     "text": "Hotels charge it per person per night and collect it separately at check-out, even on a prepaid room.",
+     "contexts": [
+      "hotel"
+     ]
+    },
+    {
+     "title": "Pickpockets",
+     "text": "They work the crowded places: Metro line A, Termini, the Trevi Fountain, the bus to the Vatican. Phone and wallet in a front pocket, bag in front of you.",
+     "contexts": [
+      "basics"
+     ]
+    },
+    {
+     "title": "Pharmacies",
+     "text": "Look for the green cross. Pharmacists give advice for minor things, and one in each area stays open at night on a rota posted on every pharmacy door.",
+     "contexts": [
+      "trouble"
+     ]
+    },
+    {
+     "title": "Emergencies",
+     "text": "Dial 112 for anything. It’s free, and operators can usually help in English.",
+     "contexts": [
+      "trouble"
+     ]
+    },
+    {
+     "title": "November light",
+     "text": "It’s dark soon after 17:00. Plan viewpoints for before sunset, around 16:45, and indoor things for after. Each day’s tab has the exact times.",
+     "contexts": [
+      "basics",
+      "sight"
+     ],
+     "page_only": true
+    }
+   ]
+  }
+ ]
+}

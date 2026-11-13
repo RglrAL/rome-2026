@@ -8,7 +8,7 @@
 
 var SHELL = "rome-shell-v1", FONTS = "rome-fonts-v1", TILES = "rome-tiles-v1";
 var FILES = ["index.html", "vendor/leaflet/leaflet.css", "vendor/leaflet/leaflet.js",
-             "manifest.webmanifest", "icons/icon-192.png", "icons/icon-180.png", "phrases.json", "menu.json", "place-tags.json"];
+             "manifest.webmanifest", "icons/icon-192.png", "icons/icon-180.png", "phrases.json", "menu.json", "place-tags.json", "how-rome-works.json", "bus-81.json"];
 var FONT_CSS = "https://fonts.googleapis.com/css2?family=Marcellus&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap";
 var WEEK = 7 * 24 * 60 * 60 * 1000, MAX_TILES = 2500, PAGE_WAIT = 3000;
 
