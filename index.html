@@ -830,7 +830,8 @@ function musicRows(d,limit){
       (onPlan[m.n]?'<span class="ds used">On your plan at '+onPlan[m.n]+'</span>':'')+
       '<span class="ds">'+(r.on?'<b>Listed for '+day+':</b> '+r.on.map(esc).join("; ")+'.':(m.chk?'Nothing listed for '+day+' when checked.':'Listings not read. Use the link.'))+'</span>'+
       (ab?'<span class="ds">'+esc(ab)+'</span>':'')+
-      '<span class="ds macts"><a target="_blank" rel="noopener" href="'+m.u+'">What’s on</a><a target="_blank" rel="noopener" href="'+mapsUrl(m.q||(r.sp&&r.sp.q)||m.n+", Roma")+'">Open in Maps</a>'+(drv?'<button type="button" class="textbtn" data-drv="'+drv+'">Show the driver</button>':'')+'</span>'+
+      '<span class="ds macts"><a target="_blank" rel="noopener" href="'+m.u+'">What’s on</a><a target="_blank" rel="noopener" href="'+mapsUrl(m.q||(r.sp&&r.sp.q)||m.n+", Roma")+'">Open in Maps</a>'+(useL&&r.sp?'<button type="button" class="textbtn" data-mapat="'+r.sp.lat+','+r.sp.lon+'" data-day="'+d.id+'">Show on map</button>':'')+
+      (drv?'<button type="button" class="textbtn" data-drv="'+drv+'">Show the driver</button>':'')+'</span>'+
       '<span class="ds lsrc">Opens '+esc(m.s)+'.</span></li>';
   }).join("")+'</ul>';
 }
@@ -1862,6 +1863,32 @@ document.getElementById("music").addEventListener("click",function(e){
   if(e.target.id!=="allmusic") return;
   if(current) musicNight=current.id;
   location.hash="#music"; window.scrollTo(0,document.querySelector(".tabs").offsetTop);
+});
+
+/* "Show on map" from a list: open that day's map and focus the place, whether it is a numbered stop or a pin dot */
+function focusOnMap(lat,lon){
+  if(!lmap) return;
+  mapbox.scrollIntoView({block:"start"});
+  var hit=null;
+  Object.keys(lmarks).forEach(function(id){ var p=lmarks[id].getLatLng(); if(!hit && metres(lat,lon,p.lat,p.lng)<20) hit=id; });
+  if(hit){ setHot(hit,false); return; }
+  if(!showPins){
+    showPins=true; save("showpins",true); pinLayer.addTo(lmap);
+    var b=lmapEl.querySelector('button[data-a="pins"]'); if(b) b.setAttribute("aria-pressed",true);
+  }
+  var mk=null;
+  pinLayer.eachLayer(function(l){ var p=l.getLatLng(); if(!mk && metres(lat,lon,p.lat,p.lng)<5) mk=l; });
+  lmap.setView([lat,lon],Math.max(lmap.getZoom(),16),{animate:false});
+  if(mk) mk.openPopup();
+}
+document.addEventListener("click",function(e){
+  var b=e.target.closest&&e.target.closest("button[data-mapat]"); if(!b) return;
+  var at=b.getAttribute("data-mapat").split(","), day=b.getAttribute("data-day");
+  if(!current || current.id!==day){
+    try{ history.replaceState(null,"","#"+day); }catch(err){}
+    render(day);
+  }
+  setTimeout(function(){ focusOnMap(+at[0],+at[1]); },60);
 });
 
 /* ---------- routing ---------- */
