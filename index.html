@@ -2094,7 +2094,8 @@ function sparePick(){
       if(!booked) return; labs.push("You have this booked.");
     } else if(t.booking==="advised") labs.push("Better booked ahead.");
     var isView=t.moods.indexOf("view")>=0, open=t.moods.indexOf("square")>=0||t.moods.indexOf("fountain")>=0;
-    if(isView && (arrive>=d.sun.dusk||arrive<d.sun.rise) && !open) return;                     // no view in the dark
+    var dark=arrive>=d.sun.dusk||arrive<d.sun.rise;
+    if(isView && dark && (!open || spare.mood==="view")) return;                               // no view in the dark; a lit square still suits a wander
     if(t.type==="music"||(want&&want[0]==="music")){
       var mu=MUSIC.filter(function(x){ return nkey(x.n)===nkey(p.n) || (p.k&&x.k===p.k); })[0], on=mu&&mu.on&&mu.on[d.id];
       if(!on) return; labs.push("Listed tonight: "+on.join("; ")+".");
