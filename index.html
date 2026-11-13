@@ -120,6 +120,8 @@ button{font:inherit;color:inherit}
 .look{margin:10px 0 0;max-width:62ch}
 .look summary{cursor:pointer;font-size:.9rem;font-weight:600;color:var(--c);width:max-content;max-width:100%;padding:2px 0}
 .look p{margin:6px 0 2px;font-size:.92rem}
+#music h3{font-size:1rem;font-weight:600;margin:26px 0 2px}
+#music>p{margin:0 0 4px;font-size:.9rem;color:var(--muted);max-width:62ch}
 .about{display:block;margin:6px 0 0;font-size:.9rem;max-width:62ch}
 .pinlist .about{margin-top:3px;font-size:.88rem}
 .alts .about{margin-top:4px;font-size:.88rem}
@@ -348,6 +350,7 @@ html.maplock{overflow:hidden}
         <li><i style="background:var(--stay)"></i>Hotel</li>
       </ul>
       <ol class="tl" id="tl"></ol>
+      <div id="music"></div>
       <div id="daynote"></div>
     </section>
   </div>
@@ -756,6 +759,37 @@ function aboutHtml(a,tag){
   var host=a.u ? a.u.replace(/^https?:\/\/(www\.)?/,"").replace(/\/.*$/,"") : "";
   return '<'+tag+' class="about">'+(a.t?esc(a.t)+' ':'')+(a.b?esc(a.b)+' ':'')+(a.u?'<a target="_blank" rel="noopener" href="'+esc(a.u)+'">'+esc(host)+'</a>':'')+'</'+tag+'>';
 }
+/* ---------- tonight's music: links to each live-music place's own listings. Checked on 13 November 2026 ---------- */
+var MUSIC=[
+ {n:"Fonclea",k:"fonclea",u:"https://www.fonclea.it/concerti.php",s:"fonclea.it, concerts coming up"},
+ {n:"Saxophone Live Pub",u:"https://www.facebook.com/Saxophonelivepub",s:"its Facebook page, as it has no website of its own"},
+ {n:"Alcazar Live",k:"alcazar",u:"https://alcazarlive.it/#PROGRAM",s:"alcazarlive.it, programme"},
+ {n:"Gregory’s Jazz Club",u:"https://www.gregorysjazz.com/events/",s:"gregorysjazz.com, events"}
+];
+function musicSpot(m){
+  if(m.k) return P[m.k];
+  for(var i=0;i<PINLIST.length;i++) if(PINLIST[i].n===m.n) return PINLIST[i];
+  return null;
+}
+function musicFor(pk){
+  for(var i=0;i<MUSIC.length;i++) if(MUSIC[i].k===pk || (P[pk] && P[pk].n===MUSIC[i].n)) return MUSIC[i];
+  return null;
+}
+function musicHtml(d,items){
+  if(d.id==="sun") return "";
+  var h=P[d.id==="sat"?"abr":"isa"], onPlan={};
+  items.forEach(function(it){ var m=it.p && musicFor(it.p); if(m) onPlan[m.n]=it.t; });
+  var rows=MUSIC.map(function(m){ var sp=musicSpot(m); return {m:m,dist:sp?metres(h.lat,h.lon,sp.lat,sp.lon):1e9}; })
+    .sort(function(a,b){ return (onPlan[b.m.n]?1:0)-(onPlan[a.m.n]?1:0) || a.dist-b.dist; });
+  return '<h3>Live music tonight</h3><p>The four music places on your list, with the one on tonight’s plan first and then the nearest to '+esc(h.n)+'. The links open each place’s own listings. This page doesn’t know what is on.</p><ul class="pinlist near">'+
+    rows.map(function(r){
+      var w=Math.max(1,Math.round(r.dist*1.3/80));
+      return '<li><a target="_blank" rel="noopener" href="'+r.m.u+'">'+esc(r.m.n)+': what’s on</a>'+
+        '<span class="ty">'+(w>30?(r.dist/1000).toFixed(1)+' km from '+esc(h.n)+', so a taxi':w+' min walk from '+esc(h.n))+'</span>'+
+        (onPlan[r.m.n]?'<span class="ds used">On tonight’s plan at '+onPlan[r.m.n]+'</span>':'')+
+        '<span class="ds">Opens '+esc(r.m.s)+'.</span></li>';
+    }).join("")+'</ul>';
+}
 function pinLook(n){ var t=LOOKPIN[n]; if(!t) return ""; return t.charAt(0)==="@" ? (LOOK[t.slice(1)]||LOOKPIN[t.slice(1)]||"") : t; }
 function lookText(k){ return LOOK[k] || (P[k] ? pinLook(P[k].n) : ""); }
 function lookHtml(t){ return t ? '<details class="look"><summary>What to look at</summary><p>'+esc(t)+'</p></details>' : ""; }
@@ -1136,10 +1170,11 @@ function render(id){
       lightLine(d,it)+rainLine(d,it)+
       bookLine(it)+
       (it.warn?'<p class="warn"><span class="wflag">Check</span>'+esc(it.warn)+'</p>':'')+
-      (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+(it.p?aboutHtml(aboutFor(it.p),"p"):'')+look+altsHtml(it)+'</div></li>';
+      (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+(it.p?aboutHtml(aboutFor(it.p),"p"):'')+(it.p&&musicFor(it.p)?'<p class="about">What’s on: <a target="_blank" rel="noopener" href="'+musicFor(it.p).u+'">'+esc(musicFor(it.p).s)+'</a></p>':'')+look+altsHtml(it)+'</div></li>';
   }).join("");
 
   paintToday();
+  document.getElementById("music").innerHTML=musicHtml(d,items);
   document.getElementById("daynote").innerHTML = d.note ? '<p class="daynote">'+d.note+'</p>' : "";
   drawMap(items,nums);
 }
