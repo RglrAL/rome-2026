@@ -111,6 +111,10 @@ button{font:inherit;color:inherit}
 .late button{min-height:36px;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 13px;font-size:.85rem;font-weight:600;cursor:pointer}
 .todaybox p.latenote{margin:0 0 8px;font-size:.88rem;color:var(--muted)}
 .sunline{margin:10px 0 0;font-size:.88rem;color:var(--muted)}
+#wxline{margin-top:4px}
+.rainbox{margin:12px 0 0;padding:12px 14px;border:1px solid var(--ink);border-radius:12px;font-size:.93rem;max-width:66ch}
+.rainbox b{font-weight:600}
+.warn .pick{margin:6px 0 0;display:block}
 .light{margin:6px 0 0;font-size:.9rem;max-width:62ch}
 .lflag{display:inline-block;font-size:.74rem;font-weight:600;border:1px solid var(--line);color:var(--muted);padding:0 8px;border-radius:999px;margin-right:6px;vertical-align:1px}
 .look{margin:10px 0 0;max-width:62ch}
@@ -328,6 +332,8 @@ html.maplock{overflow:hidden}
         <h2 id="dtitle"></h2>
         <p id="dsum"></p>
         <p class="sunline" id="sunline"></p>
+        <p class="sunline" id="wxline"></p>
+        <div id="wxrain"></div>
       </div>
       <div id="choice"></div>
       <ul class="legend" aria-label="Colour key">
@@ -417,7 +423,7 @@ html.maplock{overflow:hidden}
         </dl>
       </div>
     </div>
-    <p class="foot">Flight, hotel and programme times come from your confirmations and the ESN programme page. Opening hours, ticket prices and taxi fares were checked on 13 November 2026 and can change, so confirm when you book. Restaurants and bars, including your pins, haven’t been checked for this week’s opening hours. Walking times are estimates. Sun times are calculated for central Rome and are good to a minute or two; golden hour here means the sun is less than 6° above the horizon. The “What to look at” notes were checked against Wikipedia on 13 November 2026.</p>
+    <p class="foot">Flight, hotel and programme times come from your confirmations and the ESN programme page. Opening hours, ticket prices and taxi fares were checked on 13 November 2026 and can change, so confirm when you book. Restaurants and bars, including your pins, haven’t been checked for this week’s opening hours. Walking times are estimates. Sun times are calculated for central Rome and are good to a minute or two; golden hour here means the sun is less than 6° above the horizon. The forecast comes from <a target="_blank" rel="noopener" href="https://open-meteo.com/">Open-Meteo</a> when you have signal, and the last one loaded is kept on this device. The “What to look at” notes were checked against Wikipedia on 13 November 2026.</p>
   </div>
 </section>
 
@@ -497,7 +503,8 @@ var ALT_KEEP={"Standard ticket":1};   // alternatives that keep the step's fixed
 var DAYS = [
 /* fix:1 = a fixed time. lv = when to leave for it (lvl replaces the "Leave by" label, lvd adds how).
    ti:1 / ei:1 = the start / end time is Irish time, an hour behind Rome.
-   view:1 = a viewpoint: the step gets a line about the light.
+   view:1 = a viewpoint: the step gets a line about the light. out:1 = outdoors. ra = which alternative is the indoor one.
+   Viewpoints, outdoor steps and steps with an indoor alternative get a rain line when the forecast is wet.
    sb = the step must start before this time (sbl says why); used by the running-late warnings. */
  {id:"wed",date:"2026-11-18",tab:"Wed 18",gist:"Arrive",title:"Wednesday: Dublin to Rome",
   sum:"A travel day. You land at 17:00 Rome time, so the evening is dinner in Prati and live music if you still have the energy.",
@@ -522,8 +529,9 @@ var DAYS = [
   sum:"Work starts at 17:00 and runs to 23:00. The morning is architecture within a mile of the hotel, unless you take the study visit.",
   choice:{key:"thu",text:"Study visit, 11:00 to 13:00: TOBIA-DAMA, a model for accessible healthcare, at Policlinico Umberto I on the far side of the city."},
   note:"<b>If it rains:</b> swap the dome for the Vatican Museums. The castle is mostly indoors apart from the terrace.",
+  rain:"Swap the dome for the Vatican Museums. The castle is mostly indoors apart from the terrace.",
   items:[
-   {v:"skip",t:"08:30",e:"10:45",view:1,c:"free",p:"stp",title:"St Peter’s Basilica and the dome climb",note:"The basilica is free, with an airport-style security queue in the square. The dome is ticketed: €17 by stairs or €22 with the lift when booked ahead on the basilica’s official site, or €10 and €15 at the kiosk if you’d rather queue. It’s 551 steps, or 320 with the lift, and the last stretch between the two shells of the dome is narrow and slanted. Shoulders and knees covered.",
+   {v:"skip",t:"08:30",e:"10:45",view:1,ra:0,c:"free",p:"stp",title:"St Peter’s Basilica and the dome climb",note:"The basilica is free, with an airport-style security queue in the square. The dome is ticketed: €17 by stairs or €22 with the lift when booked ahead on the basilica’s official site, or €10 and €15 at the kiosk if you’d rather queue. It’s 551 steps, or 320 with the lift, and the last stretch between the two shells of the dome is narrow and slanted. Shoulders and knees covered.",
     alts:[A("Vatican Museums and Sistine Chapel","The big-museum alternative. Timed ticket from tickets.museivaticani.va, €20 plus €5 booking fee, name must match your ID. Allow three hours, which means dropping the castle.",1,"Musei Vaticani, Viale Vaticano, Roma"),
           A("Basilica without the climb","Skip the stairs, see the nave, Michelangelo’s Pietà and the grottoes. All free.",1,"Basilica di San Pietro, Città del Vaticano")]},
    {v:"skip",t:"11:15",e:"12:45",c:"free",p:"csa",title:"Castel Sant’Angelo and its bridge",note:"Ten minutes’ walk down Via della Conciliazione. Hadrian’s mausoleum turned papal fortress: climb the spiral ramp to the terrace for the view back to the dome you’ve just been up. Entry is about €16. Finish on Ponte Sant’Angelo among Bernini’s angels.",
@@ -541,7 +549,7 @@ var DAYS = [
     alts:[A("Be.Re. + Trapizzino","Craft beer and stuffed pizza pockets on Piazza del Risorgimento.",1),
           A("Vuliò","Puglian street food, quick and cheap.",1,"Vuliò, Via degli Scipioni 55, Roma")]},
    {t:"14:30",c:"stay",p:"isa",title:"Back at the hotel to rest and change",note:"The ceremony is seated banquet-style with a three-course dinner, so pack something smart."},
-   {t:"16:40",drv:["venue"],c:"travel",title:"Walk to the venue",note:"About 18 minutes, past Castel Sant’Angelo and along the river. A taxi is five minutes if it’s raining."},
+   {t:"16:40",out:1,drv:["venue"],c:"travel",title:"Walk to the venue",note:"About 18 minutes, past Castel Sant’Angelo and along the river. A taxi is five minutes if it’s raining."},
    {t:"17:00",e:"18:00",fix:1,lv:"16:40",lvd:"About 18 minutes on foot from Hotel Isa.",c:"work",p:"venue",title:"Check-in and welcome reception",note:"Cloakroom, interpretation headsets and a welcome drink."},
    {t:"18:00",e:"20:30",c:"work",p:"venue",title:"Awards ceremony",note:"Welcome from Christian Fillet and Massimiliano Maselli, a keynote from Sinead Kane, then eleven awards presented by Alfonso Lara Montero and Jane Dudman. Closing remarks from Ruth Paserman of the European Commission."},
    {t:"20:30",e:"23:00",c:"work",p:"venue",title:"Dinner",note:"Three courses at the venue."},
@@ -551,14 +559,15 @@ var DAYS = [
   sum:"The programme ends with lunch at 14:00. The venue sits at the foot of the Gianicolo, so the afternoon walks up to the viewpoint and down into Trastevere for the evening.",
   choice:{key:"fri",text:"Study visit, 15:00 to 17:00: restorative justice at the Astrea Restorative Justice Centre. The programme page doesn’t give its address, so check the session details with ESN."},
   note:"<b>If it rains:</b> take the churches loop under the Gianicolo step instead, then a taxi to Trastevere for dinner.",
+  rain:"Take the churches loop under the Gianicolo step instead, then a taxi to Trastevere for dinner.",
   items:[
-   {t:"08:40",drv:["venue"],c:"travel",title:"Walk to the venue",note:"About 18 minutes from the hotel."},
+   {t:"08:40",out:1,drv:["venue"],c:"travel",title:"Walk to the venue",note:"About 18 minutes from the hotel."},
    {t:"09:00",e:"09:30",fix:1,lv:"08:40",lvd:"About 18 minutes on foot from Hotel Isa.",c:"work",p:"venue",title:"Check-in opens"},
    {t:"09:30",e:"10:45",c:"work",p:"venue",title:"Panel discussion and partner presentations",note:"Led by EY and the Regional Government of Lazio, on how technology and AI are changing social service delivery and the workforce."},
    {t:"10:45",e:"11:15",c:"work",p:"venue",title:"Coffee break"},
    {t:"11:15",e:"13:00",c:"work",p:"venue",title:"Walking Practice Fair",note:"Nominated projects and partner exhibition stands."},
    {t:"13:00",e:"14:00",c:"work",p:"venue",title:"Buffet lunch",note:"The closing session of the event."},
-   {v:"skip",t:"14:15",e:"15:15",view:1,sb:"16:45",sbl:"sunset",c:"free",p:"gian",title:"Climb the Gianicolo",note:"From the venue it’s a 25-minute uphill walk along the Passeggiata del Gianicolo to Piazzale Garibaldi, the widest view over the city’s domes and rooftops.",
+   {v:"skip",t:"14:15",e:"15:15",view:1,ra:0,sb:"16:45",sbl:"sunset",c:"free",p:"gian",title:"Climb the Gianicolo",note:"From the venue it’s a 25-minute uphill walk along the Passeggiata del Gianicolo to Piazzale Garibaldi, the widest view over the city’s domes and rooftops.",
     alts:[A("Baroque churches loop","For architecture rather than a climb: cross Ponte Sant’Angelo to Sant’Agnese in Agone on Piazza Navona (Borromini), San Luigi dei Francesi (three Caravaggios, shut over lunch until mid-afternoon) and Sant’Ignazio (the painted false dome). About 25 minutes of walking in all.",1,"Chiesa di Sant'Agnese in Agone, Piazza Navona, Roma"),
           A("Castel Sant’Angelo","If you didn’t get to it on Thursday. Five minutes from the venue.",0,"Castel Sant'Angelo, Roma"),
           A("Villa Borghese","A taxi to the park for a walk under the pines and the Pincio terrace at sunset.",1)]},
@@ -590,6 +599,7 @@ var DAYS = [
  {id:"sat",date:"2026-11-21",tab:"Sat 21",gist:"Your day",title:"Saturday: ancient Rome, the Aventine and Monti",
   sum:"No work. You change hotels first thing, then walk from the Colosseum to the Orange Garden for sunset. It’s roughly 9 km on foot, and every leg has a shorter option.",
   note:"<b>Swap the whole day:</b> the Aqueduct Park from your draft, if you wake up wanting open country instead of ruins and crowds. <b>If it rains:</b> the Capitoline Museums cover two hours indoors, with a covered view over the Forum.",
+  rain:"The Capitoline Museums cover two hours indoors, with a covered view over the Forum.",
   items:[
    {t:"07:45",c:"stay",p:"isa",title:"Breakfast and check out of Hotel Isa",note:"City tax of €22.50 per room is paid at the desk."},
    {t:"08:15",drv:["abr","col"],c:"travel",p:"abr",title:"Taxi to Albergo Abruzzi, then on to the Colosseum",note:"Ten minutes to the Pantheon to leave your bags (check-in is from 14:00), then ten more to the Colosseum. Ask the driver to wait."},
@@ -600,7 +610,7 @@ var DAYS = [
    {t:"12:00",c:"free",p:"piazzetta",title:"Lunch in Monti at La Nuova Piazzetta",note:"Your pin, on a lane between the Colosseum and Via Cavour. Go as it opens to get a table.",
     alts:[A("La Taverna dei Fori Imperiali","Family-run trattoria a few minutes away. Book.",0,"La Taverna dei Fori Imperiali, Via della Madonna dei Monti 9, Roma"),
           A("Santa Maria Maggiore","Not lunch, but ten minutes north if you want the fifth-century mosaics.",1,"Basilica Papale di Santa Maria Maggiore, Roma")]},
-   {t:"13:15",e:"14:30",sb:"15:30",sbl:"last entry to the Forum",c:"free",p:"forum",title:"Through the Roman Forum",note:"Your Colosseum ticket covers it. Walk the Via Sacra west and leave by the exit under the Capitoline. Last entry in winter is 15:30.",
+   {t:"13:15",e:"14:30",out:1,sb:"15:30",sbl:"last entry to the Forum",c:"free",p:"forum",title:"Through the Roman Forum",note:"Your Colosseum ticket covers it. Walk the Via Sacra west and leave by the exit under the Capitoline. Last entry in winter is 15:30.",
     alts:[A("Add the Palatine","Another 45 minutes uphill for the view down over the Forum. Skip the Circus Maximus later to make room.",0,"Palatino, Roma"),
           A("See it from above instead","Skip going in and look down on the Forum from the terrace behind the Capitoline. Free.",0,"Piazza del Campidoglio, Roma")]},
    {t:"14:35",c:"free",p:"camp",title:"Capitoline Hill",note:"Michelangelo’s piazza, then walk round the back of the central palace for the classic view along the Forum.",
@@ -608,7 +618,7 @@ var DAYS = [
           A("Pizza Florida","A slice at Largo Argentina, eight minutes north, if lunch was light.",1,"Pizza Florida, Via Florida, Roma")]},
    {t:"15:05",c:"free",p:"marc",title:"Theatre of Marcellus",note:"Down the steps and five minutes on: a Roman theatre with Renaissance apartments built on top. You pass it on the way south.",
     alts:[A("Ponte Fabricio","Three minutes further to the river and the bridge to Tiber Island.",1)]},
-   {t:"15:25",c:"free",p:"circo",title:"Along the Circus Maximus",note:"The chariot track is now a long grass valley under the Palatine. Walk its length to the foot of the Aventine."},
+   {t:"15:25",out:1,c:"free",p:"circo",title:"Along the Circus Maximus",note:"The chariot track is now a long grass valley under the Palatine. Walk its length to the foot of the Aventine."},
    {t:"15:50",e:"16:50",view:1,sb:"16:45",sbl:"sunset",c:"free",p:"aranci",title:"Aventine Hill and the Orange Garden",note:"Santa Sabina, a near-intact fifth-century basilica, is beside the garden, and the keyhole view of St Peter’s is two minutes further. Sunset from the garden terrace is around 16:45. It’s free and open until about 18:00.",
     alts:[A("Cut it short","Take a taxi from the Capitoline straight to the Orange Garden and skip the two stops between.",0,"Giardino degli Aranci, Roma")]},
    {t:"17:00",drv:["abr"],c:"travel",title:"Taxi to Albergo Abruzzi",note:"About ten minutes. On foot it’s 30, by way of the river and the Ghetto."},
@@ -839,6 +849,48 @@ function lightLine(d,it){
   return '<p class="light"><span class="lflag">Light</span>'+txt+'</p>';
 }
 
+/* ---------- weather: Open-Meteo forecast for central Rome. The last one loaded is kept on the device ---------- */
+var WXURL="https://api.open-meteo.com/v1/forecast?latitude=41.8967&longitude=12.4822&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&hourly=precipitation_probability&timezone=Europe%2FRome&start_date="+DAYS[0].date+"&end_date="+DAYS[DAYS.length-1].date;
+var WET=60, wx=load("wx",null);          // wx = {at: when loaded, days: {date: {code, hi, lo, h: [chance of rain per hour]}}}
+function wxDay(d){ var w=wx && wx.days && wx.days[d.date]; return w && w.code!=null ? w : null; }
+function wxSky(c){
+  return c===0?"clear":c<=2?"partly cloudy":c===3?"overcast":c<=48?"fog":c<=57?"drizzle":c<=67?"rain":c<=77?"snow":c<=82?"showers":c<=86?"snow showers":"thunderstorms";
+}
+function rainAt(d,from,to){               // highest chance of rain between two times, or null if unknown
+  var w=wxDay(d), m=null; if(!w) return null;
+  for(var h=Math.floor(from/60); h<=Math.floor((to-1)/60) && h<24; h++) if(w.h[h]!=null) m=Math.max(m===null?0:m,w.h[h]);
+  return m;
+}
+function wxPaint(d){
+  var line=document.getElementById("wxline"), box=document.getElementById("wxrain"), w=wxDay(d);
+  box.innerHTML="";
+  if(!w){ line.textContent = wx ? "No forecast for this day yet." : "No forecast loaded yet. It loads when you have signal."; return; }
+  var parts=[["morning",420,720],["afternoon",720,1080],["evening",1080,1380]], worst=parts[0], txt=[];
+  parts.forEach(function(p){ p[3]=rainAt(d,p[1],p[2]); if(p[3]!==null){ txt.push(p[0]+" "+p[3]+"%"); if(p[3]>(worst[3]||0)) worst=p; } });
+  var when=""; try{ when=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Rome",weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date(wx.at)); }catch(e){}
+  line.textContent="Forecast: "+wxSky(w.code)+", "+Math.round(w.lo)+" to "+Math.round(w.hi)+"°C. Chance of rain: "+txt.join(", ")+"."+(when?" Loaded "+when+".":"");
+  if(worst[3]>=WET) box.innerHTML='<p class="rainbox"><b>Rain is likely, mostly in the '+worst[0]+' ('+worst[3]+'%).</b>'+(d.rain?' '+esc(d.rain):'')+'</p>';
+}
+function rainLine(d,it){
+  if(!(it.view || it.out || it.ra!=null) || it.swapped) return "";
+  var p=rainAt(d,st(it),en(it,null)); if(p===null || p<WET) return "";
+  var a=it.ra!=null && it.alts && it.alts[it.ra];
+  return '<p class="warn"><span class="wflag">Rain</span>'+p+'% chance of rain during this slot.'+
+    (a?' The indoor option is '+esc(a.n)+'.<button type="button" class="pick" data-swap="'+it.ra+'" data-idx="'+it.idx+'">Choose this</button>':'')+'</p>';
+}
+function wxFetch(){
+  if(!window.fetch || !now.date || now.date>DAYS[DAYS.length-1].date) return;
+  if(navigator.onLine===false || (wx && Date.now()-wx.at<3*3600*1000)) return;
+  fetch(WXURL).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){
+    var days={};
+    j.daily.time.forEach(function(dt,i){ days[dt]={code:j.daily.weather_code[i],hi:j.daily.temperature_2m_max[i],lo:j.daily.temperature_2m_min[i],h:[]}; });
+    j.hourly.time.forEach(function(t,i){ var d=days[t.slice(0,10)]; if(d) d.h[+t.slice(11,13)]=j.hourly.precipitation_probability[i]; });
+    wx={at:Date.now(),days:days}; save("wx",wx);
+    if(!current) return;
+    if(tl.querySelector("details[open]")) wxPaint(current); else render(current.id);   // don't close what's being read
+  }).catch(function(){});
+}
+
 var now = romeNow();
 var todayId = null;
 DAYS.forEach(function(d){ if(d.date===now.date) todayId=d.id; });
@@ -972,6 +1024,7 @@ function render(id){
   });
   document.getElementById("dtitle").textContent=d.title;
   document.getElementById("dsum").textContent=d.sum;
+  wxPaint(d);
   document.getElementById("sunline").textContent="Sunrise "+hm(d.sun.rise)+" · golden hour from "+hm(d.sun.gpm)+" · sunset "+hm(d.sun.set)+" · dark by "+hm(d.sun.dusk);
 
   var ch=document.getElementById("choice");
@@ -1004,7 +1057,7 @@ function render(id){
       (it.swapped?'<p class="instead">Instead of: '+esc(it.swapped)+'.<button type="button" class="textbtn" data-swap="-1" data-idx="'+it.idx+'">Back to the original</button></p>':'')+
       (it.lv && it.lv!==it.t?'<p class="leave">'+esc(it.lvl||"Leave by")+' '+it.lv+(it.ti?' Irish time':'')+'.'+(it.lvd?' '+esc(it.lvd):'')+'</p>':'')+
       (it.drv && !it.swapped?'<p class="drv">'+it.drv.map(function(k){ return '<button type="button" data-drv="'+k+'">Show the driver: '+esc(driverInfo(k).name)+'</button>'; }).join("")+'</p>':'')+
-      lightLine(d,it)+
+      lightLine(d,it)+rainLine(d,it)+
       bookLine(it)+
       (it.warn?'<p class="warn"><span class="wflag">Check</span>'+esc(it.warn)+'</p>':'')+
       (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+look+altsHtml(it)+'</div></li>';
@@ -1077,7 +1130,7 @@ function tick(){
     if(t) location.hash="#"+t.id;
     location.reload(); return;
   }
-  now=n; paintToday();
+  now=n; paintToday(); wxFetch();
 }
 setInterval(tick,30000);
 document.addEventListener("visibilitychange",function(){ if(!document.hidden) tick(); });
@@ -1636,7 +1689,7 @@ if(todayId && !FAKE && load("lastday","")!==now.date){
   save("lastday",now.date);
   if(location.hash!=="#"+todayId){ try{ history.replaceState(null,"","#"+todayId); }catch(e){ location.hash="#"+todayId; } }
 }
-renderChecks(); renderBooks(); route();
+renderChecks(); renderBooks(); route(); wxFetch();
 
 /* ---------- offline: the service worker saves the app, and map tiles as they are viewed ---------- */
 if("serviceWorker" in navigator && (location.protocol==="https:" || location.hostname==="localhost" || location.hostname==="127.0.0.1")){
