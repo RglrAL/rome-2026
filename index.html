@@ -334,7 +334,7 @@ html.maplock{overflow:hidden}
   </div>
   <div class="pinsview" id="musicview" hidden>
     <h2>Live music</h2>
-    <p>Every live music place on your list, plus five more that aren’t pins. Pick a night to see what each one had listed and how far it is from that night’s hotel. Listings were read from each place’s own site on 13 November and can change, so check the link on the day.</p>
+    <p>Every live music place among your pins. Pick a night to see what each one had listed and how far it is from that night’s hotel. Listings were read from each place’s own site on 13 November and can change, so check the link on the day.</p>
     <div class="seg pinseg" id="musicnights" role="group" aria-label="Night"></div>
     <div id="musiclist"></div>
   </div>
@@ -897,6 +897,7 @@ var AREAS = [
   ["T’SaBaR bar","drink","","T'SaBaR bar",41.90651,12.46157],
   ["Paparazzo Bar & Rooftop","drink","Hotel rooftop bar on Via Federico Cesi.","",41.90753,12.47094],
   ["Saxophone Live Pub","music","Live music pub.","",41.90749,12.45633],
+  ["Alexanderplatz Jazz Club","music","Jazz club running since 1984, with live jazz from 21:30.","Alexanderplatz Jazz Club, Via Ostia 9",41.90885,12.45378],
   ["MiVà","eat","Restaurant on Via Ezio.","",41.90924,12.46632],
   ["VIDA Prati","eat","Restaurant and bar on Via Belli, a minute from Hotel Isa.","",41.90682,12.46939]]},
  {n:"Trastevere",w:"Friday evening’s neighbourhood.",pins:[
@@ -904,6 +905,7 @@ var AREAS = [
   ["Samovar","drink","","",41.88869,12.47055],
   ["Lettere Caffè","drink","Bookish café-bar.","",41.88581,12.47257],
   ["Alcazar Live","music","Friday’s late option, in a converted cinema.","",41.88727,12.47208],
+  ["Big Mama","music","Long-running blues club. Its website was showing an error when checked, so confirm it is open.","Big Mama, Vicolo di San Francesco a Ripa 18",41.88583,12.47196],
   ["Otello","eat","Roman classics in a courtyard.","Otello in Trastevere",41.89040,12.46911],
   ["Tonnarello","eat","Very popular. Expect a queue.","",41.88894,12.46791],
   ["La Canonica","eat","Italian, on Vicolo del Piede.","",41.89002,12.47009],
@@ -927,6 +929,9 @@ var AREAS = [
   ["Roman Forum","sight","Saturday 13:15, on the same ticket.","Foro Romano",41.89164,12.48673],
   ["La Nuova Piazzetta","eat","Saturday’s lunch pick.","",41.89336,12.48917],
   ["Drink Kong","drink","Saturday’s late option. Book.","",41.89514,12.49787],
+  ["Charity Café","music","Jazz and blues bar on Via Panisperna. Its own site wouldn’t load when checked.","Charity Café, Via Panisperna 68",41.89662,12.49148],
+  ["Blackmarket Hall","music","Cocktail bar with an events calendar.","Blackmarket Hall, Via de' Ciancaleoni 31",41.89630,12.49310,1],
+  ["The Fiddler’s Elbow","music","Irish pub near Santa Maria Maggiore. Guides mention an open mic on Thursdays.","Fiddler's Elbow, Via dell'Olmata 43",41.89631,12.49728],
   ["Papal Basilica of Saint Mary Major","sight","Fifth-century mosaics, ten minutes north of Monti.","Basilica Papale di Santa Maria Maggiore",41.89763,12.49847]]},
  {n:"Campo de’ Fiori and Piazza Navona",w:"Five to ten minutes from Albergo Abruzzi. Good for Saturday night if you stay local.",pins:[
   ["Piazza Navona","sight","","",41.89893,12.47312],
@@ -1443,7 +1448,7 @@ var ROME=[[41.76,12.20],[41.98,12.62]];
 var NOTILES="Some of this area isn’t saved on this phone, so the street map has gaps. The markers and your position still work.";
 var PINLIST=[];
 AREAS.forEach(function(ar){ ar.pins.forEach(function(p){ if(typeof p[4]==="number") PINLIST.push({n:p[0],ty:p[1],d:p[2],q:(p[3]||p[0])+", Roma",lat:p[4],lon:p[5]}); }); });
-MUSIC.forEach(function(m){ if(m.lat) PINLIST.push({n:m.n,ty:"music",d:m.t,q:m.q,ad:m.ad,lat:m.lat,lon:m.lon,extra:1}); });
+MUSIC.forEach(function(m){ if(m.ad) PINLIST.forEach(function(p){ if(p.n===m.n) p.ad=m.ad; }); });
 function metres(a,b,c,d){ var k=Math.cos(41.9*Math.PI/180), y=(a-c)*111320, x=(b-d)*111320*k; return Math.sqrt(x*x+y*y); }
 function say(t){ mapmsg.textContent=t||""; }
 function ll(id){ return [P[id].lat,P[id].lon]; }
