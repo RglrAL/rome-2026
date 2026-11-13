@@ -384,6 +384,8 @@ html.maplock{overflow:hidden}
 .bkline b{font-weight:600}
 .bkline .textbtn{margin:0 0 0 8px;font-size:.88rem}
 .fstat a{display:block;padding:5px 0}
+.bkbox{display:block;width:100%;max-width:560px;box-sizing:border-box;min-height:120px;margin:8px 0;padding:10px 12px;font:inherit;font-size:.85rem;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
+#bkrestore{margin-top:10px}
 .bigtel{display:block;font-size:1.7rem;font-weight:700;line-height:1.2}
 .telgo{display:inline-block;margin:4px 0 2px;padding:7px 16px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-weight:600;font-size:.9rem;text-decoration:none}
 #help .ref a[href^="tel:"]:not(.bigtel){white-space:nowrap;display:inline-block;padding:6px 0}
@@ -661,6 +663,21 @@ main.wrap{padding-bottom:84px}
         </dl>
       </div>
     </div>
+    <h3 class="subh" id="keep">Keep a copy of what you’ve typed in</h3>
+    <p class="refnote" style="margin-top:0">Your references, numbers, booking details and ticks live only in this browser. Copy them somewhere safe, such as a note or a message to yourself, in case the phone clears them or you move to another device.</p>
+    <div class="chips">
+      <button type="button" id="bkcopy">Copy my details</button><button type="button" id="bkshare" hidden>Send them somewhere</button>
+    </div>
+    <p class="refnote" id="bkmsg" role="status"></p>
+    <textarea id="bkout" class="bkbox" readonly hidden aria-label="Your details, to copy"></textarea>
+    <details class="alts" id="bkrestore">
+      <summary>Put them back from a copy</summary>
+      <p class="refnote">Paste the whole copy, or just its last line, then press the button. It replaces what is saved here now.</p>
+      <textarea id="bkin" class="bkbox" aria-label="Paste your copy here" autocomplete="off" spellcheck="false"></textarea>
+      <div class="chips"><button type="button" id="bkput">Put them back</button></div>
+      <p class="refnote" id="bkinmsg" role="status"></p>
+    </details>
+    <p class="refnote" id="bkkeep"></p>
     <p class="foot">Flight, hotel and programme times come from your confirmations and the ESN programme page. The status links need signal: Flightradar24 opens straight on your flight, Ryanair’s page asks for the flight number and date and is the one to trust if they disagree. Opening hours, ticket prices and taxi fares were checked on 13 November 2026 and can change, so confirm when you book. Restaurants and bars, including your pins, haven’t been checked for this week’s opening hours. Walking times are estimates. Sun times are calculated for central Rome and are good to a minute or two; golden hour here means the sun is less than 6° above the horizon. The forecast comes from <a target="_blank" rel="noopener" href="https://open-meteo.com/">Open-Meteo</a> when you have signal, and the last one loaded is kept on this device. The “What to look at” notes were checked against Wikipedia on 13 November 2026. Notes about restaurants, bars and music venues repeat only what each place’s own website said on that date; places with no working site of their own have none.</p>
   </div>
 </section>
@@ -928,6 +945,7 @@ var CHECKS = [
  ["sat","Book Saturday night","A table in Monti and Drink Kong, or Armando al Pantheon if you’d rather stay by the hotel."],
  ["abr","Find your Albergo Abruzzi confirmation","It isn’t in this itinerary yet. Have the booking number to hand for Saturday."],
  ["help","Add your insurer’s and bank’s emergency numbers","Under “If something goes wrong” on this tab. Pack your European Health Insurance Card too."],
+ ["copy","Copy your typed-in details somewhere safe","Once the references and numbers are in, use “Keep a copy” at the foot of this tab."],
  ["id","Passport and photo ID","Needed for the flight and for named tickets."],
  ["pack","Pack for the ceremony, the stairs and the rain","Something smart for Thursday night, proper walking shoes for the dome and Saturday, covered shoulders and knees for churches, and an umbrella. Late November in Rome is usually 8 to 17°C with showers."],
  ["taxi","On Saturday, ask Albergo Abruzzi to book Sunday’s 08:00 taxi",""],
@@ -2134,6 +2152,57 @@ var privEls=document.querySelectorAll("input[data-priv]");
     [].forEach.call(privEls,function(o){ if(o!==el && o.getAttribute("data-priv")===k) o.value=el.value; });
   });
 });
+
+/* ---------- a copy of everything typed in, to keep outside the browser, and a way to put it back ---------- */
+var PRIVLAB={flightref:"Flight booking reference",isaref:"Hotel Isa booking number",isapay:"Hotel Isa balance to pay",abrref:"Albergo Abruzzi booking number",
+  insphone:"Travel insurer’s emergency number",inspolicy:"Travel insurance policy number",cardphone:"Bank’s lost-card number",firstname:"First name",surname:"Surname"};
+var KEEPRE=/^rome26:(priv:|bk:|checks$|swap:|visit:|skip|choice)/;
+function backupText(){
+  var lines=["Rome trip, 18 to 22 November 2026: my details","Copied "+new Date().toLocaleDateString("en-IE",{day:"numeric",month:"long",year:"numeric"}),""], data={}, i, k;
+  Object.keys(PRIVLAB).forEach(function(p){ var v=load("priv:"+p,""); if(v) lines.push(PRIVLAB[p]+": "+v); });
+  BOOK.forEach(function(b){ var st=bookState(b); if(st.s==="done"||st.ref) lines.push(b.n+": "+(st.s==="done"?"booked":"not booked")+(st.slot?", "+st.slot:"")+(st.ref?", confirmation "+st.ref:"")); });
+  try{ for(i=0;i<localStorage.length;i++){ k=localStorage.key(i); if(KEEPRE.test(k)) data[k.slice(7)]=localStorage.getItem(k); } }catch(e){}
+  if(lines.length===3) lines.push("(Nothing typed in yet.)");
+  lines.push("","To put these back into the app, paste this line under Trip, Keep a copy:","R26:"+btoa(unescape(encodeURIComponent(JSON.stringify(data)))));
+  return lines.join("\n");
+}
+function backupDone(how){
+  save("backupat",Date.now());
+  document.getElementById("bkmsg").textContent=how; keepNote();
+}
+function backupShow(t){ var o=document.getElementById("bkout"); o.hidden=false; o.value=t; o.focus(); o.select(); }
+function keepNote(){
+  var at=load("backupat",0), el=document.getElementById("bkkeep"), parts=[];
+  if(at) parts.push("Last copied on "+new Date(at).toLocaleDateString("en-IE",{weekday:"long",day:"numeric",month:"long"})+".");
+  if(keepNote.kept===true) parts.push("This browser has agreed not to clear what’s saved here.");
+  else if(keepNote.kept===false) parts.push("This browser may clear what’s saved here if it runs short of space or the app goes unused, so keep a copy.");
+  el.textContent=parts.join(" ");
+}
+document.getElementById("bkcopy").addEventListener("click",function(){
+  var t=backupText();
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(function(){ backupDone("Copied. Paste it into a note or a message to yourself."); },function(){ backupShow(t); backupDone("Couldn’t copy by itself. Select the text below and copy it."); });
+  else{ backupShow(t); backupDone("Select the text below and copy it."); }
+});
+if(navigator.share){
+  document.getElementById("bkshare").hidden=false;
+  document.getElementById("bkshare").addEventListener("click",function(){
+    navigator.share({title:"Rome trip details",text:backupText()}).then(function(){ backupDone("Sent."); },function(){});
+  });
+}
+document.getElementById("bkput").addEventListener("click",function(){
+  var msg=document.getElementById("bkinmsg"), m=/R26:([A-Za-z0-9+\/=]+)/.exec(document.getElementById("bkin").value.replace(/\s+(?=[A-Za-z0-9+\/=]*$)/g,"")), data, n=0;
+  if(!m){ msg.textContent="That doesn’t contain a line starting R26:. Paste the copy again."; return; }
+  try{ data=JSON.parse(decodeURIComponent(escape(atob(m[1])))); }catch(e){ msg.textContent="That line is damaged or incomplete. Paste the whole of it."; return; }
+  try{
+    Object.keys(data).forEach(function(k){ if(KEEPRE.test("rome26:"+k) && typeof data[k]==="string"){ JSON.parse(data[k]); localStorage.setItem("rome26:"+k,data[k]); n++; } });
+  }catch(e){ msg.textContent="Couldn’t save on this device."; return; }
+  msg.textContent="Put back "+n+(n===1?" item":" items")+". Reloading…";
+  setTimeout(function(){ location.reload(); },900);
+});
+if(navigator.storage && navigator.storage.persist){
+  navigator.storage.persisted().then(function(p){ return p || navigator.storage.persist(); }).then(function(p){ keepNote.kept=!!p; keepNote(); },function(){});
+}
+keepNote();
 
 /* a typed-in phone number gets a Call link beside it */
 [].forEach.call(document.querySelectorAll("input[data-tel]"),function(el){
