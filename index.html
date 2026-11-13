@@ -368,6 +368,7 @@ html.maplock{overflow:hidden}
   <div class="pinsview" id="phrasesview" hidden>
     <h2>Italian phrases</h2>
     <p>Short phrases for the places on this trip. “Show” fills the screen with the Italian, to hold up to someone. “Hear it” uses your phone’s own Italian voice, where it has one.</p>
+    <p class="namerow"><label for="phrfirst">Your first name, for introducing yourself</label><input class="priv" id="phrfirst" data-priv="firstname" placeholder="Add on this device" autocomplete="off" spellcheck="false"></p>
     <p class="namerow"><label for="phrname">Your surname, for the booking phrases</label><input class="priv" id="phrname" data-priv="surname" placeholder="Add on this device" autocomplete="off" spellcheck="false"></p>
     <div class="chips" id="phrchips" role="group" aria-label="Situation"></div>
     <div id="phrlist"></div>
@@ -1876,7 +1877,7 @@ function itNum(n){ if(n<20) return IT_N[n]; var t=IT_T[Math.floor(n/10)], u=n%10
 function itTime(t){ var a=t.split(":"), h=+a[0], m=+a[1]; return (h===1?"l’una":h===0?"mezzanotte":"le "+itNum(h))+(m?" e "+itNum(m):""); }
 function phrText(t,o,lang){
   var time=o&&o.time;
-  return t.replace(/\{name\}/g, load("priv:surname","")||"…")
+  return t.replace(/\{name\}/g, load("priv:surname","")||"…").replace(/\{first\}/g, load("priv:firstname","")||"…")
           .replace(/\{time\}/g, lang==="it" ? (time?itTime(time):"le nove") : (time||"nine o’clock"));
 }
 /* which phrases suit a place: its type, or what kind of step it is */
@@ -1936,7 +1937,9 @@ document.getElementById("phrclose").addEventListener("click",closePhrases);
 document.getElementById("phrchips").addEventListener("click",function(e){
   var b=e.target.closest("button[data-ctx]"); if(!b) return; phrCtx=b.getAttribute("data-ctx"); renderPhrases();
 });
-document.getElementById("phrname").addEventListener("change",function(){ if(!document.getElementById("phrasesview").hidden) renderPhrases(); });
+["phrname","phrfirst"].forEach(function(id){
+  document.getElementById(id).addEventListener("change",function(){ if(!document.getElementById("phrasesview").hidden) renderPhrases(); });
+});
 document.addEventListener("click",function(e){
   var t=e.target.closest&&e.target.closest("button[data-phr],button[data-showphr],button[data-hear]"); if(!t) return;
   if(t.hasAttribute("data-phr")){

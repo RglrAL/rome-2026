@@ -1,5 +1,5 @@
 {
-  "note": "Phrase contexts match the app's place types: eat, quick, sweet, drink, music, sight, hotel, work. 'taxi' attaches to travel steps; 'basics' and 'trouble' show everywhere. 'say' is a rough English respelling with the stressed syllable in capitals. Entries with \"hear\": true are things said to you. {name} and {time} are filled in by the app.",
+  "note": "Phrase contexts match the app's place types: eat, quick, sweet, drink, music, sight, hotel, work. 'taxi' attaches to travel steps; 'basics' and 'trouble' show everywhere. 'say' is a rough English respelling with the stressed syllable in capitals. Entries with \"hear\": true are things said to you. {name}, {first} and {time} are filled in by the app.",
   "contexts": {
     "basics": "Basics",
     "eat": "Restaurants",
@@ -872,8 +872,8 @@
       "contexts": [
         "chat"
       ],
-      "en": "My name is… And you?",
-      "it": "Mi chiamo… E tu?",
+      "en": "My name is {first}. And you?",
+      "it": "Mi chiamo {first}. E tu?",
       "say": "mee KYAH-mo… eh too",
       "tip": "Tu is normal with people your own age in a bar. With someone older, say E Lei?"
     },
