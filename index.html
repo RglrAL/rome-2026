@@ -120,6 +120,8 @@ button{font:inherit;color:inherit}
 .look{margin:10px 0 0;max-width:62ch}
 .look summary{cursor:pointer;font-size:.9rem;font-weight:600;color:var(--c);width:max-content;max-width:100%;padding:2px 0}
 .look p{margin:6px 0 2px;font-size:.92rem}
+.pinlist .look{margin-top:6px}
+.pinlist .look summary{color:var(--ink)}
 .leave{margin:6px 0 0;font-size:.9rem;font-weight:600;max-width:62ch}
 .legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:18px 0 0;padding:0;list-style:none;font-size:.82rem;color:var(--muted)}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
@@ -684,6 +686,32 @@ var LOOK={
  venue:"The awards are in the Corsia Sistina, the main hall of the hospital of Santo Spirito, rebuilt by Pope Sixtus IV after a fire in 1471, in time for the Jubilee of 1475. It is a single hall about 100 metres long and 12 wide, divided into two wings by an octagonal lantern tower. The fresco cycle around the walls tells the origins of the hospital under Innocent III and then the life of Sixtus IV. “Sassia” recalls the Saxons who once lived in this quarter."
 };
 
+LOOK.vatmus="Founded by Pope Julius II in the early 16th century. The visitor route takes in the Raphael Rooms and the Sistine Chapel. The double spiral staircase, two ramps wound together, was designed by Giuseppe Momo in 1932.";
+LOOK.arco="Dedicated in 315 to mark Constantine’s victory at the Battle of the Milvian Bridge in 312, it is the largest Roman triumphal arch, 21 metres high and nearly 26 wide. Much of its sculpture was taken from earlier monuments to Trajan, Hadrian and Marcus Aurelius, with the portrait heads replaced by his own.";
+LOOK.palatino="In Roman legend this is where the she-wolf found Romulus and Remus, in the cave called the Lupercal, and where Romulus founded the city. The ruins on top include the Domus Flavia and the Domus Augustana.";
+/* the same for pins, by pin name. "@key" reuses a note from LOOK. Checked the same way. */
+var LOOKPIN={
+ "Saint Peter’s Basilica":"@stp","Colosseum":"@col","Roman Forum":"@forum","Theatre of Marcellus":"@marc",
+ "Sistine Chapel":"Named for Pope Sixtus IV, who had it built between 1473 and 1481. In his reign a team including Botticelli, Perugino and Ghirlandaio frescoed the walls with scenes from the Life of Moses and the Life of Christ. Michelangelo painted the ceiling between 1508 and 1512 and came back for the Last Judgment on the altar wall, finished in 1541.",
+ "Church of St Callixtus":"A small church built over the place where Pope Callixtus I is said to have been martyred around 222 AD. The first building dates from the 8th century, under Pope Gregory III, and it has been rebuilt twice since.",
+ "Ponte Fabricio":"Built in 62 BC, it is the oldest bridge still standing in Rome, crossing from the east bank to Tiber Island. Its other name, Ponte dei Quattro Capi, means the bridge of the four heads.",
+ "Altar of the Fatherland":"The Vittoriano was built between 1885 and 1935 to a design by Giuseppe Sacconi, in honour of Victor Emmanuel II, the first king of unified Italy. It was conceived as a modern forum on three levels joined by stairways, under a long colonnade. The Altar of the Fatherland itself holds the shrine of the Italian Unknown Soldier.",
+ "Papal Basilica of Saint Mary Major":"The present church dates from the 5th century, and the inscription on the triumphal arch names Pope Sixtus III, who consecrated it in 434. The 14th-century bell tower is the highest in Rome, at about 75 metres. The coffered ceiling, to a design by Giuliano da Sangallo, is said to be gilded with gold brought back by Columbus. Bernini’s tomb is here, just outside the basilica’s own Sistine Chapel.",
+ "Piazza Navona":"The piazza keeps the long oval of the 1st-century Stadium of Domitian it was built over. Bernini’s Fountain of the Four Rivers, designed in 1651, stands in the middle: its figures are the Nile, the Danube, the Ganges and the Río de la Plata, one for each continent the papacy had reached.",
+ "Chiesa di Sant’Agnese in Agone":"Begun in 1652 under Girolamo Rainaldi and his son Carlo, with Borromini as the other main architect after a series of quarrels. The concave façade was Carlo Rainaldi’s answer to steps that would otherwise have jutted into the piazza. The church stands where Saint Agnes is said to have been martyred in the Stadium of Domitian.",
+ "Church of Saint Louis of the French":"The national church of France in Rome, designed by Giacomo della Porta and finished in 1589. The Contarelli Chapel holds Caravaggio’s three canvases on Saint Matthew, painted from 1599: the Calling on the left wall, the Inspiration above the altar, and the Martyrdom.",
+ "Campo de’ Fiori":"The name means field of flowers. The statue in the middle is Giordano Bruno, the philosopher burned alive here for heresy on 17 February 1600. Ettore Ferrari’s monument was put up on the spot in 1889.",
+ "Chiesa di Sant’Ignazio di Loyola":"Built between 1626 and 1650 as the chapel of the Jesuits’ Roman College. Around 1685 Andrea Pozzo, a Jesuit lay brother, painted the nave ceiling so that the vault seems to open into the sky; a marble disc in the floor marks the spot where the illusion works best. There was no money for a real dome, so the dome over the crossing is painted too.",
+ "Trevi Fountain":"Designed by Nicola Salvi and completed by Giuseppe Pannini in 1762, it is 26.3 metres high and 49 wide, built onto the back of Palazzo Poli. It marks the end of the Acqua Vergine, the revived ancient aqueduct, and takes its name from the three roads, tre vie, that meet here. The central figure is Oceanus, by Pietro Bracci.",
+ "Spanish Steps":"135 steps up the 29-metre slope from Piazza di Spagna to the church of Trinità dei Monti, to the design by Francesco de Sanctis that won a competition in 1717. At the bottom, the Barcaccia fountain, finished between 1627 and 1629 by Pietro Bernini, is shaped like a boat. Legend says a flood of the Tiber in 1598 left one stranded in the square.",
+ "Piazza di Spagna":"@Spanish Steps",
+ "Piazza del Popolo":"Laid out in its present neoclassical form by Giuseppe Valadier between 1811 and 1822. The obelisk in the centre is Egyptian, carved under Seti I and Ramesses II and brought from Heliopolis; Pope Sixtus V had it moved here from the Circus Maximus. The twin churches, Santa Maria in Montesanto (1679) and Santa Maria dei Miracoli (1681), mark the junctions of the roads into the city.",
+ "Villa Borghese":"At 80 hectares it is the third-largest public park in Rome. It began as the grounds of the villa built for Scipione Borghese to house his art collection, and the gardens as they are now were remade in the late 19th century. The Pincio terrace, laid out by Valadier, looks out over Piazza del Popolo."
+};
+function pinLook(n){ var t=LOOKPIN[n]; if(!t) return ""; return t.charAt(0)==="@" ? (LOOK[t.slice(1)]||LOOKPIN[t.slice(1)]||"") : t; }
+function lookText(k){ return LOOK[k] || (P[k] ? pinLook(P[k].n) : ""); }
+function lookHtml(t){ return t ? '<details class="look"><summary>What to look at</summary><p>'+esc(t)+'</p></details>' : ""; }
+
 /* ---------- things to book. day + p (or title) ties each to its step. Status, time and confirmation stay on this device.
    stay:1 = booking it doesn't move the step's time. Links were checked on 13 November 2026. */
 var BOOK=[
@@ -1045,7 +1073,7 @@ function render(id){
   var looked={};
   tl.innerHTML=items.map(function(it,i){
     var look="";
-    if(it.p && LOOK[it.p] && !it.swapped && !looked[it.p]){ looked[it.p]=1; look='<details class="look"><summary>What to look at</summary><p>'+esc(LOOK[it.p])+'</p></details>'; }
+    if(it.p && !looked[it.p] && lookText(it.p)){ looked[it.p]=1; look=lookHtml(lookText(it.p)); }
     var pl = it.p?P[it.p]:null, where="";
     if(pl) where='<p class="where">'+(nums[it.p]?'<span class="num">'+nums[it.p]+'</span>':'')+
       '<a target="_blank" rel="noopener" href="'+mapsUrl(it.swapped?it.q:pl.q)+'">'+esc(pl.n)+', open in Maps</a>'+(useL?'<button type="button" class="textbtn" data-show="'+it.p+'">Show on map</button>':'')+'</p>';
@@ -1177,7 +1205,7 @@ function renderPins(){
     html+='<div class="area"><h3>'+esc(ar.n)+'</h3><p>'+esc(ar.w)+'</p><ul class="pinlist">'+
       list.map(function(p){
         var q=(p[3]||p[0])+", Roma";
-        return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(q)+'">'+esc(p[0])+'</a><span class="ty">'+TYPES[p[1]]+'</span>'+(p[2]?'<span class="ds">'+esc(p[2])+'</span>':'')+'</li>';
+        return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(q)+'">'+esc(p[0])+'</a><span class="ty">'+TYPES[p[1]]+'</span>'+(p[2]?'<span class="ds">'+esc(p[2])+'</span>':'')+lookHtml(pinLook(p[0]))+'</li>';
       }).join("")+'</ul></div>';
   });
   document.getElementById("areas").innerHTML=html||'<p class="daynote">Nothing of that type in your list.</p>';
@@ -1201,8 +1229,8 @@ function nearList(){
     if(!PTY[k] && !label) return;
     var dup=null;
     if(!label) out.forEach(function(o){ if(!dup && metres(o.lat,o.lon,pl.lat,pl.lon)<20) dup=o; });
-    if(dup){ if(plan) dup.plan=plan; return; }
-    out.push({n:pl.n,ty:PTY[k]||"base",label:label,d:"",q:pl.q,lat:pl.lat,lon:pl.lon,plan:plan});
+    if(dup){ if(plan) dup.plan=plan; if(!dup.k) dup.k=k; return; }
+    out.push({n:pl.n,k:k,ty:PTY[k]||"base",label:label,d:"",q:pl.q,lat:pl.lat,lon:pl.lon,plan:plan});
   });
   return NEARLIST=out;
 }
@@ -1233,7 +1261,7 @@ function renderNear(){
     var p=x.p, m=x.m, far=m<950?Math.max(10,Math.round(m/10)*10)+" m":(m/1000).toFixed(1)+" km";
     var how=m<40?(nearFrom==="me"?"You’re here":"Next door"):Math.max(1,Math.round(m*1.3/80))+" min walk · "+far+" "+compass(o.lat,o.lon,p.lat,p.lon);
     return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(p.q)+'">'+esc(p.n)+'</a><span class="ty">'+how+' · '+(p.label||TYPES[p.ty])+'</span>'+
-      (p.plan?'<span class="ds used">On your plan: '+esc(p.plan)+'</span>':'')+(p.d?'<span class="ds">'+esc(p.d)+'</span>':'')+'</li>';
+      (p.plan?'<span class="ds used">On your plan: '+esc(p.plan)+'</span>':'')+(p.d?'<span class="ds">'+esc(p.d)+'</span>':'')+lookHtml((p.k&&LOOK[p.k])||pinLook(p.n))+'</li>';
   }).join("")+'</ul>'+(list.length>nearLimit?'<button type="button" class="textbtn" id="nearmore">Show more</button>':'');
 }
 document.getElementById("pinmode").addEventListener("click",function(e){
