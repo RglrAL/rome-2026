@@ -383,6 +383,7 @@ html.maplock{overflow:hidden}
 .bkline{margin:6px 0 0;font-size:.9rem;max-width:62ch}
 .bkline b{font-weight:600}
 .bkline .textbtn{margin:0 0 0 8px;font-size:.88rem}
+.fstat a{display:block;padding:5px 0}
 .bigtel{display:block;font-size:1.7rem;font-weight:700;line-height:1.2}
 .telgo{display:inline-block;margin:4px 0 2px;padding:7px 16px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-weight:600;font-size:.9rem;text-decoration:none}
 #help .ref a[href^="tel:"]:not(.bigtel){white-space:nowrap;display:inline-block;padding:6px 0}
@@ -614,6 +615,7 @@ main.wrap{padding-bottom:84px}
           <dt>Flight</dt><dd>Ryanair FR9611</dd>
           <dt>Departs</dt><dd>Dublin 13:00</dd>
           <dt>Arrives</dt><dd>Rome Fiumicino 17:00</dd>
+          <dt>Status</dt><dd class="fstat"><a target="_blank" rel="noopener" href="https://www.flightradar24.com/data/flights/fr9611">FR9611 on Flightradar24</a><a target="_blank" rel="noopener" href="https://www.ryanair.com/ie/en/lp/travel-updates">Ryanair’s status page</a><a target="_blank" rel="noopener" href="https://www.dublinairport.com/flight-information/live-departures">Dublin Airport departures</a></dd>
           <dt>Reference</dt><dd><input class="priv" data-priv="flightref" aria-label="Flight booking reference" placeholder="Add on this device" autocomplete="off" autocapitalize="characters" spellcheck="false"></dd>
         </dl>
       </div>
@@ -623,6 +625,7 @@ main.wrap{padding-bottom:84px}
           <dt>Flight</dt><dd>Ryanair FR9612</dd>
           <dt>Departs</dt><dd>Rome Fiumicino 11:05</dd>
           <dt>Arrives</dt><dd>Dublin 13:20</dd>
+          <dt>Status</dt><dd class="fstat"><a target="_blank" rel="noopener" href="https://www.flightradar24.com/data/flights/fr9612">FR9612 on Flightradar24</a><a target="_blank" rel="noopener" href="https://www.ryanair.com/ie/en/lp/travel-updates">Ryanair’s status page</a><a target="_blank" rel="noopener" href="https://www.adr.it/web/aeroporti-di-roma-en/pax-fco-real-time-flights">Fiumicino live flights</a></dd>
           <dt>Reference</dt><dd><input class="priv" data-priv="flightref" aria-label="Flight booking reference" placeholder="Add on this device" autocomplete="off" autocapitalize="characters" spellcheck="false"></dd>
         </dl>
       </div>
@@ -658,7 +661,7 @@ main.wrap{padding-bottom:84px}
         </dl>
       </div>
     </div>
-    <p class="foot">Flight, hotel and programme times come from your confirmations and the ESN programme page. Opening hours, ticket prices and taxi fares were checked on 13 November 2026 and can change, so confirm when you book. Restaurants and bars, including your pins, haven’t been checked for this week’s opening hours. Walking times are estimates. Sun times are calculated for central Rome and are good to a minute or two; golden hour here means the sun is less than 6° above the horizon. The forecast comes from <a target="_blank" rel="noopener" href="https://open-meteo.com/">Open-Meteo</a> when you have signal, and the last one loaded is kept on this device. The “What to look at” notes were checked against Wikipedia on 13 November 2026. Notes about restaurants, bars and music venues repeat only what each place’s own website said on that date; places with no working site of their own have none.</p>
+    <p class="foot">Flight, hotel and programme times come from your confirmations and the ESN programme page. The status links need signal: Flightradar24 opens straight on your flight, Ryanair’s page asks for the flight number and date and is the one to trust if they disagree. Opening hours, ticket prices and taxi fares were checked on 13 November 2026 and can change, so confirm when you book. Restaurants and bars, including your pins, haven’t been checked for this week’s opening hours. Walking times are estimates. Sun times are calculated for central Rome and are good to a minute or two; golden hour here means the sun is less than 6° above the horizon. The forecast comes from <a target="_blank" rel="noopener" href="https://open-meteo.com/">Open-Meteo</a> when you have signal, and the last one loaded is kept on this device. The “What to look at” notes were checked against Wikipedia on 13 November 2026. Notes about restaurants, bars and music venues repeat only what each place’s own website said on that date; places with no working site of their own have none.</p>
   </div>
 </section>
 </div>
@@ -772,7 +775,7 @@ var DAYS = [
   sum:"A travel day. You land at 17:00 Rome time, so the evening is dinner in Prati and live music if you still have the energy.",
   items:[
    {t:"11:00",ti:1,c:"travel",title:"Be at Dublin Airport",note:"Irish time. Ryanair bag drop closes 40 minutes before departure and the gate closes 30 minutes before, so two hours gives you room for security."},
-   {t:"13:00",ti:1,e:"17:00",fix:1,lv:"12:30",lvl:"Gate closes at",loc:"Dublin Airport, Ireland",c:"travel",title:"Flight FR9611 to Rome Fiumicino",note:"Rome is one hour ahead of Dublin, so the flight is about three hours."},
+   {t:"13:00",ti:1,e:"17:00",fix:1,lv:"12:30",lvl:"Gate closes at",loc:"Dublin Airport, Ireland",c:"travel",fs:"fr9611",title:"Flight FR9611 to Rome Fiumicino",note:"Rome is one hour ahead of Dublin, so the flight is about three hours."},
    {t:"17:30",drv:["isa"],c:"travel",title:"Fiumicino to Hotel Isa",note:"A white licensed taxi from the rank takes 45 to 60 minutes at this hour. The fixed fare is €55 to anywhere inside the Aurelian Walls. Prati sits right at the edge of that zone, so agree the fare before you set off.",
     alts:[A("Train and metro","Leonardo Express to Termini (32 minutes, €14), then Metro A four stops to Lepanto and a six-minute walk. Cheaper, and about the same time in bad traffic.",0,"Lepanto metro, Roma")]},
    {t:"18:45",c:"stay",p:"isa",title:"Check in at Hotel Isa",note:"Both rooms are under your name, so give that at the desk. Breakfast is included."},
@@ -909,9 +912,9 @@ var DAYS = [
    {t:"07:00",view:1,c:"free",p:"pan",opt:1,title:"Piazza della Rotonda with nobody in it",note:"Step outside before the crowds. The Pantheon doesn’t open until 09:00, but the square at this hour is worth ten minutes."},
    {t:"07:15",c:"free",p:"tazza",opt:1,title:"Coffee at Tazza d’Oro",note:"One minute from the hotel, if it’s open this early on a Sunday. Otherwise there’s coffee at the airport."},
    {t:"07:40",c:"stay",p:"abr",title:"Check out of Albergo Abruzzi",note:"City tax is paid at the desk."},
-   {t:"08:00",fix:1,lv:"08:00",lvl:"Taxi leaves at",loc:"Albergo Abruzzi, Piazza della Rotonda 69, Roma",drv:["fco"],c:"travel",title:"Taxi to Fiumicino",note:"The Pantheon is inside the Aurelian Walls, so the fixed €55 fare applies. Allow 45 minutes. Ask the hotel on Saturday to book the car."},
+   {t:"08:00",fix:1,lv:"08:00",lvl:"Taxi leaves at",loc:"Albergo Abruzzi, Piazza della Rotonda 69, Roma",drv:["fco"],c:"travel",fs:"fr9612",title:"Taxi to Fiumicino",note:"The Pantheon is inside the Aurelian Walls, so the fixed €55 fare applies. Allow 45 minutes. Ask the hotel on Saturday to book the car."},
    {t:"08:45",c:"travel",title:"At the airport",note:"Bag drop closes 40 minutes before departure and the gate closes at 10:35. Your boarding pass shows the terminal."},
-   {t:"11:05",e:"13:20",ei:1,fix:1,lv:"10:35",lvl:"Gate closes at",loc:"Aeroporto di Roma Fiumicino, Italy",c:"travel",title:"Flight FR9612 to Dublin",note:"Lands 13:20 Irish time."}
+   {t:"11:05",e:"13:20",ei:1,fix:1,lv:"10:35",lvl:"Gate closes at",loc:"Aeroporto di Roma Fiumicino, Italy",c:"travel",fs:"fr9612",title:"Flight FR9612 to Dublin",note:"Lands 13:20 Irish time."}
   ]}
 ];
 
@@ -1488,6 +1491,7 @@ function render(id){
     if(pl||it.swapped) acts+='<a target="_blank" rel="noopener" href="'+mapsUrl(it.swapped?it.q:pl.q)+'">Open in Maps</a>';
     if(pl&&useL) acts+='<button type="button" data-show="'+it.p+'">Show on map</button>';
     acts+='<button type="button" data-phr="'+ctxOf(it)+'" data-ptime="'+(it.bk?((it.bks.s==="done"&&/^\d\d:\d\d$/.test(it.bks.slot))?it.bks.slot:it.t):"")+'" data-pdrv="'+(it.drv&&!it.swapped?it.drv.join(","):"")+'" data-pplace="'+(it.p||"")+'">Phrases and tips</button>';
+    if(it.fs) acts+='<a target="_blank" rel="noopener" href="https://www.flightradar24.com/data/flights/'+it.fs+'">Flight status</a>';
     if(it.drv && !it.swapped) acts+=it.drv.map(function(k){ return '<button type="button" data-drv="'+k+'">Show the driver: '+esc(driverInfo(k).name)+'</button>'; }).join("");
     var more=lightLine(d,it)+(it.p?aboutHtml(aboutFor(it.p),"p"):'')+busStep(it,items[i+1])+(lookT?'<p class="about"><b>What to look at.</b> '+esc(lookT)+'</p>':'');
     return '<li class="item" data-c="'+it.c+'" data-idx="'+it.idx+'" data-end="'+en(it,items[i+1])+'"'+(it.p?' data-p="'+it.p+'"':'')+'>'+
@@ -2486,7 +2490,7 @@ function homePaint(){
   // ---- Sunday morning: home is the airport
   if(tg.air){
     html+='<div class="hcard pick"><h3><span class="best">The plan</span>Taxi to Fiumicino</h3>'+
-      '<p>Flight FR9612 leaves at 11:05 and the gate closes at 10:35. The plan is a taxi from Albergo Abruzzi at 08:00, booked through the hotel on Saturday.</p>'+
+      '<p>Flight FR9612 leaves at 11:05 and the gate closes at 10:35. The plan is a taxi from Albergo Abruzzi at 08:00, booked through the hotel on Saturday. <a target="_blank" rel="noopener" href="https://www.flightradar24.com/data/flights/fr9612">Check the flight’s status</a> before you leave.</p>'+
       '<p>The fare is fixed at €55 from inside the Aurelian Walls. Say <b lang="it">“È la tariffa fissa, vero?”</b> before you set off.</p>'+
       (e.clock>=480?'<p><b>It’s past 08:00.</b> If the booked car hasn’t come, call one now.</p>':'')+taxiActs("fco")+'</div>';
     body.innerHTML=html+'<p class="sparenote">Worked out on this phone, so it works without signal. The taxi apps need data; the phone number only needs a signal to call.</p>'; return;
