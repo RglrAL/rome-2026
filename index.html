@@ -120,6 +120,13 @@ button{font:inherit;color:inherit}
 .look{margin:10px 0 0;max-width:62ch}
 .look summary{cursor:pointer;font-size:.9rem;font-weight:600;color:var(--c);width:max-content;max-width:100%;padding:2px 0}
 .look p{margin:6px 0 2px;font-size:.92rem}
+.pinlist .ds.macts{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:baseline;margin-top:6px}
+.macts a{font-weight:600}
+.macts .textbtn{margin:0;font-size:inherit;font-weight:600;color:inherit}
+.lsrc{color:var(--muted);font-size:.82rem}
+.pinlist.near li>b{font-weight:600;font-size:1rem}
+#music .pillbtn{margin-top:12px}
+#musiclist{margin-top:14px}
 #music h3{font-size:1rem;font-weight:600;margin:26px 0 2px}
 #music>p{margin:0 0 4px;font-size:.9rem;color:var(--muted);max-width:62ch}
 .about{display:block;margin:6px 0 0;font-size:.9rem;max-width:62ch}
@@ -284,9 +291,9 @@ html.maplock{overflow:hidden}
 .priv::placeholder{color:var(--muted);opacity:1;font-size:.92rem}
 .foot{padding:26px 0 44px;color:var(--muted);font-size:.85rem;max-width:70ch}
 @media (max-width:480px){
-  .tab{min-width:0;flex:1 1 auto;padding:7px 6px;white-space:nowrap}
+  .tab{min-width:0;flex:1 1 auto;padding:7px 4px;white-space:nowrap}
   .tabs nav{gap:2px}
-  .tab b{font-size:.95rem}
+  .tab b{font-size:.9rem}
   .tab small{font-size:.72rem}
   .tab .today{display:block;margin:0}
   .item{grid-template-columns:52px minmax(0,1fr);gap:0 10px}
@@ -324,6 +331,12 @@ html.maplock{overflow:hidden}
     </div>
     <div class="chips" id="chips" role="group" aria-label="Filter by type"></div>
     <div id="areas"></div>
+  </div>
+  <div class="pinsview" id="musicview" hidden>
+    <h2>Live music</h2>
+    <p>Every live music place on your list, plus five more that aren’t pins. Pick a night to see what each one had listed and how far it is from that night’s hotel. Listings were read from each place’s own site on 13 November and can change, so check the link on the day.</p>
+    <div class="seg pinseg" id="musicnights" role="group" aria-label="Night"></div>
+    <div id="musiclist"></div>
   </div>
   <div class="day" id="dayview">
     <div id="today"></div>
@@ -645,7 +658,8 @@ var DAYS = [
           A("Jerry Thomas Speakeasy","Near Navona. You need a reservation and the password from their site.",1,"Jerry Thomas Speakeasy, Vicolo Cellini 30, Roma"),
           A("La Botticella","Small pub near Piazza Navona.",1,"La Botticella of Poggi Giovanni, Via di Tor Millina, Roma"),
           A("Trinity College Pub","Irish pub five minutes from the hotel.",1),
-          A("Frigidarium","Gelato and a walk round Piazza Navona instead.",1,"Frigidarium, Via del Governo Vecchio 112, Roma")]}
+          A("Frigidarium","Gelato and a walk round Piazza Navona instead.",1,"Frigidarium, Via del Governo Vecchio 112, Roma"),
+          A("Alcazar Live","Its listings showed a comedy night at 21:00 and a Maurice Fulton DJ set from 23:00 for this Saturday. About 25 minutes’ walk from Albergo Abruzzi, or a short taxi.",1,"Alcazar Live, Via Cardinale Merry del Val 14, Roma")]}
   ]},
  {id:"sun",date:"2026-11-22",tab:"Sun 22",gist:"Home",title:"Sunday: home",
   sum:"An early start. There’s time for the empty piazza and a coffee, and that’s all.",
@@ -760,35 +774,84 @@ function aboutHtml(a,tag){
   return '<'+tag+' class="about">'+(a.t?esc(a.t)+' ':'')+(a.b?esc(a.b)+' ':'')+(a.u?'<a target="_blank" rel="noopener" href="'+esc(a.u)+'">'+esc(host)+'</a>':'')+'</'+tag+'>';
 }
 /* ---------- tonight's music: links to each live-music place's own listings. Checked on 13 November 2026 ---------- */
+var MUSIC_ASOF="13 November";
+/* k = key in P; otherwise matched to a pin by name, or placed by lat/lon when it isn't one of the pins.
+   on = what the venue's own listings showed for each night of the trip when read; chk:1 = those listings were read. */
 var MUSIC=[
- {n:"Fonclea",k:"fonclea",u:"https://www.fonclea.it/concerti.php",s:"fonclea.it, concerts coming up"},
- {n:"Saxophone Live Pub",u:"https://www.facebook.com/Saxophonelivepub",s:"its Facebook page, as it has no website of its own"},
- {n:"Alcazar Live",k:"alcazar",u:"https://alcazarlive.it/#PROGRAM",s:"alcazarlive.it, programme"},
- {n:"Gregory’s Jazz Club",u:"https://www.gregorysjazz.com/events/",s:"gregorysjazz.com, events"}
+ {n:"Fonclea",k:"fonclea",area:"Prati",chk:1,u:"https://www.fonclea.it/concerti.php",s:"fonclea.it, concerts coming up",
+  on:{wed:["Borderline (blues)"],thu:["I Gelosi (1960s and thereabouts)"],fri:["Swingeresse (swing and 1950s)"],sat:["Tree Gees"]}},
+ {n:"Alexanderplatz Jazz Club",area:"Prati",chk:1,lat:41.90885,lon:12.45378,q:"Alexanderplatz Jazz Club, Via Ostia 9, Roma",ad:"Via Ostia, 9",u:"https://www.alexanderplatzjazz.com/",s:"alexanderplatzjazz.com",
+  t:"Jazz club running since 1984. Its site says live jazz from 21:30 and takes bookings by WhatsApp.",
+  on:{wed:["Moreno Viglione"],thu:["Susanna Stivali & Brado Trio"],fri:["Minnie & Lino"],sat:["Emanuele Urso"]}},
+ {n:"Saxophone Live Pub",area:"Prati",u:"https://www.facebook.com/Saxophonelivepub",s:"its Facebook page, as it has no website of its own"},
+ {n:"Alcazar Live",k:"alcazar",area:"Trastevere",chk:1,u:"https://alcazarlive.it/#/events",s:"alcazarlive.it, events",
+  on:{wed:["20:00 Quindie Festival"],
+      fri:["21:00 to 23:00 Omasta, tagged jazz, blues, hip-hop and electronica","22:30 to 03:00 Bella, Italian dance music and Italo disco"],
+      sat:["21:00 to 22:30 Alcazar Comedy Club","23:00 to 03:00 Maurice Fulton DJ set"]}},
+ {n:"Big Mama",area:"Trastevere",lat:41.88583,lon:12.47196,q:"Big Mama, Vicolo di San Francesco a Ripa 18, Roma",ad:"Vicolo di San Francesco a Ripa, 18",u:"http://www.bigmama.it/",s:"bigmama.it, which was showing an error when checked",
+  t:"Long-running blues club. Its website was returning an error when checked, so confirm it is open before going."},
+ {n:"Gregory’s Jazz Club",area:"Spanish Steps",chk:1,u:"https://www.gregorysjazz.com/events/",s:"gregorysjazz.com, events",
+  on:{wed:["19:00 Margherita Miccoli & Francesco Faro","21:30 Gregory’s Night Hawks"],thu:["19:00 Andrea Nuzzo & Filippo Delogu","21:30 Marco Palmisano Trio"],
+      fri:["19:00 Leonardo Borghi & Antonello Sorrentino","21:30 Marco Loddo Quartet"],sat:["19:00 Silvia Manco & Luca Velotti","21:30 Antonella Aprea Quartet"]}},
+ {n:"Charity Café",area:"Monti",lat:41.89662,lon:12.49148,q:"Charity Café, Via Panisperna 68, Roma",ad:"Via Panisperna, 68",u:"https://www.charitycafe.it/",s:"charitycafe.it, which wouldn’t load when checked",
+  t:"Jazz and blues bar. Its own site wouldn’t load when checked; Rome’s tourism site lists gigs there through 2026.",
+  on:{fri:["22:00 Giulia Salsone Jazz 4tet, according to an events listing rather than the bar itself"]}},
+ {n:"Blackmarket Hall",area:"Monti",lat:41.89630,lon:12.49310,q:"Blackmarket Hall, Via de' Ciancaleoni 31, Roma",ad:"Via de’ Ciancaleoni, 31",u:"https://www.blackmarkethall.com/event/",s:"blackmarkethall.com, events",
+  t:"Cocktail bar with an events calendar on its site. The dates shown weren’t current when checked."},
+ {n:"The Fiddler’s Elbow",area:"Monti",lat:41.89631,lon:12.49728,q:"Fiddler's Elbow, Via dell'Olmata 43, Roma",ad:"Via dell’Olmata, 43",u:"https://www.thefiddlerselbow.com/",s:"thefiddlerselbow.com",
+  t:"Irish pub near Santa Maria Maggiore. Guides mention an open mic on Thursdays; its own site hasn’t been updated in years."}
 ];
 function musicSpot(m){
   if(m.k) return P[m.k];
   for(var i=0;i<PINLIST.length;i++) if(PINLIST[i].n===m.n) return PINLIST[i];
-  return null;
+  return m.lat?m:null;
 }
 function musicFor(pk){
   for(var i=0;i<MUSIC.length;i++) if(MUSIC[i].k===pk || (P[pk] && P[pk].n===MUSIC[i].n)) return MUSIC[i];
   return null;
 }
-function musicHtml(d,items){
-  if(d.id==="sun") return "";
+function musicDrv(m){
+  if(m.k) return m.k;
+  for(var i=0;i<PINLIST.length;i++) if(PINLIST[i].n===m.n) return "pin:"+i;
+  return "";
+}
+function musicRows(d,limit){
+  var keep=lateInfo, items=visibleItems(d); lateInfo=keep;
   var h=P[d.id==="sat"?"abr":"isa"], onPlan={};
   items.forEach(function(it){ var m=it.p && musicFor(it.p); if(m) onPlan[m.n]=it.t; });
-  var rows=MUSIC.map(function(m){ var sp=musicSpot(m); return {m:m,dist:sp?metres(h.lat,h.lon,sp.lat,sp.lon):1e9}; })
-    .sort(function(a,b){ return (onPlan[b.m.n]?1:0)-(onPlan[a.m.n]?1:0) || a.dist-b.dist; });
-  return '<h3>Live music tonight</h3><p>The four music places on your list, with the one on tonight’s plan first and then the nearest to '+esc(h.n)+'. The links open each place’s own listings. This page doesn’t know what is on.</p><ul class="pinlist near">'+
-    rows.map(function(r){
-      var w=Math.max(1,Math.round(r.dist*1.3/80));
-      return '<li><a target="_blank" rel="noopener" href="'+r.m.u+'">'+esc(r.m.n)+': what’s on</a>'+
-        '<span class="ty">'+(w>30?(r.dist/1000).toFixed(1)+' km from '+esc(h.n)+', so a taxi':w+' min walk from '+esc(h.n))+'</span>'+
-        (onPlan[r.m.n]?'<span class="ds used">On tonight’s plan at '+onPlan[r.m.n]+'</span>':'')+
-        '<span class="ds">Opens '+esc(r.m.s)+'.</span></li>';
-    }).join("")+'</ul>';
+  var rows=MUSIC.map(function(m){ var sp=musicSpot(m); return {m:m,sp:sp,dist:sp?metres(h.lat,h.lon,sp.lat,sp.lon):1e9,on:(m.on&&m.on[d.id])||null}; })
+    .sort(function(a,b){ return (onPlan[b.m.n]?1:0)-(onPlan[a.m.n]?1:0) || (b.on?1:0)-(a.on?1:0) || a.dist-b.dist; });
+  if(limit) rows=rows.slice(0,limit);
+  var day=d.title.split(":")[0];
+  return '<ul class="pinlist near">'+rows.map(function(r){
+    var m=r.m, w=Math.max(1,Math.round(r.dist*1.3/80)), ab=m.t || ((m.k&&aboutFor(m.k))||ABOUT[m.n]||{}).t || "", drv=musicDrv(m);
+    return '<li><b>'+esc(m.n)+'</b>'+
+      '<span class="ty">'+esc(m.area)+' · '+(w>30?(r.dist/1000).toFixed(1)+' km from '+esc(h.n)+', so a taxi':w+' min walk from '+esc(h.n))+'</span>'+
+      (onPlan[m.n]?'<span class="ds used">On your plan at '+onPlan[m.n]+'</span>':'')+
+      '<span class="ds">'+(r.on?'<b>Listed for '+day+':</b> '+r.on.map(esc).join("; ")+'.':(m.chk?'Nothing listed for '+day+' when checked.':'Listings not read. Use the link.'))+'</span>'+
+      (ab?'<span class="ds">'+esc(ab)+'</span>':'')+
+      '<span class="ds macts"><a target="_blank" rel="noopener" href="'+m.u+'">What’s on</a><a target="_blank" rel="noopener" href="'+mapsUrl(m.q||(r.sp&&r.sp.q)||m.n+", Roma")+'">Open in Maps</a>'+(drv?'<button type="button" class="textbtn" data-drv="'+drv+'">Show the driver</button>':'')+'</span>'+
+      '<span class="ds lsrc">Opens '+esc(m.s)+'.</span></li>';
+  }).join("")+'</ul>';
+}
+var MUSICNOTE="Listings were read from each place’s own site on "+MUSIC_ASOF+" and can change, so check the link on the day.";
+function musicHtml(d){
+  if(d.id==="sun") return "";
+  return '<h3>Live music tonight</h3><p>The four most likely for tonight: anything on your plan, then places with something listed, then the nearest. '+MUSICNOTE+'</p>'+
+    musicRows(d,4)+'<button type="button" class="pillbtn" id="allmusic">All live music</button>';
+}
+var musicNight=null;
+function renderMusic(){
+  showView("musicview"); current=null;
+  if(!musicNight) musicNight=(todayId && todayId!=="sun") ? todayId : "wed";
+  var d=DAYS.filter(function(x){ return x.id===musicNight; })[0];
+  document.getElementById("musicnights").innerHTML=DAYS.slice(0,4).map(function(x){ return '<button type="button" data-night="'+x.id+'" aria-pressed="'+(x.id===musicNight)+'">'+esc(x.tab)+'</button>'; }).join("");
+  document.getElementById("musiclist").innerHTML=musicRows(d,0);
+}
+function showView(id){
+  ["dayview","pinsview","musicview"].forEach(function(v){ document.getElementById(v).hidden = v!==id; });
+  DAYS.forEach(function(x){ document.getElementById("tab-"+x.id).removeAttribute("aria-current"); });
+  ["pins","music"].forEach(function(t){ var el=document.getElementById("tab-"+t); if(t+"view"===id) el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current"); });
 }
 function pinLook(n){ var t=LOOKPIN[n]; if(!t) return ""; return t.charAt(0)==="@" ? (LOOK[t.slice(1)]||LOOKPIN[t.slice(1)]||"") : t; }
 function lookText(k){ return LOOK[k] || (P[k] ? pinLook(P[k].n) : ""); }
@@ -1036,6 +1099,10 @@ DAYS.forEach(function(d){
   a.className="tab"; a.href="#pins"; a.id="tab-pins";
   a.innerHTML="<b>Pins</b><small>Saved</small>";
   tabsEl.appendChild(a);
+  a=document.createElement("a");
+  a.className="tab"; a.href="#music"; a.id="tab-music";
+  a.innerHTML="<b>Music</b><small>Live</small>";
+  tabsEl.appendChild(a);
 })();
 
 /* ---------- the plan as shown: study-visit choice, then swaps, then any delay ---------- */
@@ -1125,9 +1192,7 @@ function setLate(add){
 function render(id){
   var d = DAYS.filter(function(x){return x.id===id;})[0] || DAYS[0];
   current=d; hot=null;
-  document.getElementById("pinsview").hidden=true;
-  document.getElementById("dayview").hidden=false;
-  document.getElementById("tab-pins").removeAttribute("aria-current");
+  showView("dayview");
   DAYS.forEach(function(x){
     var t=document.getElementById("tab-"+x.id);
     if(x.id===d.id) t.setAttribute("aria-current","page"); else t.removeAttribute("aria-current");
@@ -1170,11 +1235,11 @@ function render(id){
       lightLine(d,it)+rainLine(d,it)+
       bookLine(it)+
       (it.warn?'<p class="warn"><span class="wflag">Check</span>'+esc(it.warn)+'</p>':'')+
-      (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+(it.p?aboutHtml(aboutFor(it.p),"p"):'')+(it.p&&musicFor(it.p)?'<p class="about">What’s on: <a target="_blank" rel="noopener" href="'+musicFor(it.p).u+'">'+esc(musicFor(it.p).s)+'</a></p>':'')+look+altsHtml(it)+'</div></li>';
+      (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+(it.p?aboutHtml(aboutFor(it.p),"p"):'')+musicStep(d,it)+look+altsHtml(it)+'</div></li>';
   }).join("");
 
   paintToday();
-  document.getElementById("music").innerHTML=musicHtml(d,items);
+  document.getElementById("music").innerHTML=musicHtml(d);
   document.getElementById("daynote").innerHTML = d.note ? '<p class="daynote">'+d.note+'</p>' : "";
   drawMap(items,nums);
 }
@@ -1246,6 +1311,12 @@ function tick(){
 setInterval(tick,30000);
 document.addEventListener("visibilitychange",function(){ if(!document.hidden) tick(); });
 
+function musicStep(d,it){
+  var m=it.p && musicFor(it.p); if(!m) return "";
+  var on=m.on && m.on[d.id];
+  return '<p class="about">'+(on?'<b>Listed for tonight:</b> '+on.map(esc).join("; ")+'. ':(m.chk?'Nothing listed for tonight when checked. ':''))+
+    'What’s on: <a target="_blank" rel="noopener" href="'+m.u+'">'+esc(m.s)+'</a></p>';
+}
 function bookLine(it){
   if(!it.bk || it.bks.s==="skip") return "";
   if(it.bks.s==="done") return '<p class="bkline"><b>Booked'+(it.bks.slot?' for '+esc(it.bks.slot):'')+'.</b>'+(it.bks.ref?' Confirmation '+esc(it.bks.ref)+'.':'')+'</p>';
@@ -1267,11 +1338,7 @@ function altsHtml(it){
 /* ---------- pins view ---------- */
 var pinFilter="all", pinMode=load("pinmode","area"), nearFrom="me", nearLimit=12, nearErr="", nearAt=null;
 function renderPins(){
-  document.getElementById("dayview").hidden=true;
-  document.getElementById("pinsview").hidden=false;
-  current=null;
-  DAYS.forEach(function(x){ document.getElementById("tab-"+x.id).removeAttribute("aria-current"); });
-  document.getElementById("tab-pins").setAttribute("aria-current","page");
+  showView("pinsview"); current=null;
   [].forEach.call(document.querySelectorAll("#pinmode button"),function(b){ b.setAttribute("aria-pressed",b.getAttribute("data-pm")===pinMode); });
   document.getElementById("nearfrom").hidden = pinMode!=="near";
   document.getElementById("pinsintro").textContent = pinMode==="near"
@@ -1300,7 +1367,7 @@ var PTY={stp:"sight",csa:"sight",gian:"sight",paola:"sight",smt:"sight",col:"sig
 var NEARLIST=null;
 function nearList(){
   if(NEARLIST) return NEARLIST;
-  var out=PINLIST.map(function(p){ return {n:p.n,ty:p.ty,d:p.d,q:p.q,lat:p.lat,lon:p.lon,plan:""}; }), when={};
+  var out=PINLIST.map(function(p){ return {n:p.n,ty:p.ty,d:p.d,q:p.q,lat:p.lat,lon:p.lon,plan:"",label:p.extra?"Live music, not a pin":""}; }), when={};
   DAYS.forEach(function(d){ var day=d.tab.split(" ")[0]; d.items.forEach(function(it){
     if(!it.p) return;
     var w=when[it.p]=when[it.p]||[];
@@ -1376,6 +1443,7 @@ var ROME=[[41.76,12.20],[41.98,12.62]];
 var NOTILES="Some of this area isn’t saved on this phone, so the street map has gaps. The markers and your position still work.";
 var PINLIST=[];
 AREAS.forEach(function(ar){ ar.pins.forEach(function(p){ if(typeof p[4]==="number") PINLIST.push({n:p[0],ty:p[1],d:p[2],q:(p[3]||p[0])+", Roma",lat:p[4],lon:p[5]}); }); });
+MUSIC.forEach(function(m){ if(m.lat) PINLIST.push({n:m.n,ty:"music",d:m.t,q:m.q,ad:m.ad,lat:m.lat,lon:m.lon,extra:1}); });
 function metres(a,b,c,d){ var k=Math.cos(41.9*Math.PI/180), y=(a-c)*111320, x=(b-d)*111320*k; return Math.sqrt(x*x+y*y); }
 function say(t){ mapmsg.textContent=t||""; }
 function ll(id){ return [P[id].lat,P[id].lon]; }
@@ -1443,7 +1511,7 @@ function drawLeaflet(items,nums){
   PINLIST.forEach(function(p,pi){
     if(shown.some(function(id){ return metres(p.lat,p.lon,P[id].lat,P[id].lon)<20; })) return;
     L.marker([p.lat,p.lon],{icon:dot('<span class="pk"></span>',24,-6),title:p.n,alt:p.n})
-      .bindPopup('<b>'+esc(p.n)+'</b><br><span class="popty">Your pin · '+TYPES[p.ty]+'</span>'+(p.d?'<br>'+esc(p.d):'')+
+      .bindPopup('<b>'+esc(p.n)+'</b><br><span class="popty">'+(p.extra?'Live music · not one of your pins':'Your pin · '+TYPES[p.ty])+'</span>'+(p.d?'<br>'+esc(p.d):'')+
         '<div class="popact"><button type="button" class="textbtn" data-drv="pin:'+pi+'">Show the driver</button><a target="_blank" rel="noopener" href="'+mapsUrl(p.q)+'">Open in Maps</a></div>',{maxWidth:240,autoPanPaddingTopLeft:[8,54],autoPanPaddingBottomRight:[8,8]})
       .addTo(pinLayer);
   });
@@ -1681,11 +1749,12 @@ var DEN={isa:FARE+" Prati sits at the edge of that zone, so agree the fare befor
 function driverInfo(key){
   if(key==="fco") return {name:"Aeroporto di Fiumicino",ad:"Leonardo da Vinci\nPartenze",fare:"Tariffa fissa: 55 €",en:FARE+" “Partenze” means departures. Your boarding pass shows the terminal.",q:"Aeroporto di Roma Fiumicino"};
   var q, en="";
-  if(key.indexOf("pin:")===0){ var pin=PINLIST[+key.slice(4)]; if(!pin) return null; q=pin.q; en=pin.n; }
+  var pad="";
+  if(key.indexOf("pin:")===0){ var pin=PINLIST[+key.slice(4)]; if(!pin) return null; q=pin.q; en=pin.n; pad=pin.ad||""; }
   else if(P[key]){ q=P[key].q; en=DEN[key]||P[key].n; }
   else return null;
   var parts=q.split(","), name=DNAME[key]||parts[0].trim(), city=/Vaticano/.test(q)?"Città del Vaticano":"Roma";
-  return {name:name,ad:(DAD[key]?DAD[key]+"\n":"")+city,fare:"",en:en,q:q};
+  return {name:name,ad:((DAD[key]||pad)?(DAD[key]||pad)+"\n":"")+city,fare:"",en:en,q:q};
 }
 var driverEl=document.getElementById("driver"), wake=null;
 function openDriver(key){
@@ -1780,10 +1849,21 @@ document.getElementById("icsbtn").addEventListener("click",function(){
   }catch(e){ msg.textContent="This browser couldn’t make the calendar file."; }
 });
 
+document.getElementById("musicnights").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-night]"); if(!b) return;
+  musicNight=b.getAttribute("data-night"); renderMusic();
+});
+document.getElementById("music").addEventListener("click",function(e){
+  if(e.target.id!=="allmusic") return;
+  if(current) musicNight=current.id;
+  location.hash="#music"; window.scrollTo(0,document.querySelector(".tabs").offsetTop);
+});
+
 /* ---------- routing ---------- */
 function route(){
   var h=(location.hash||"").replace("#","");
   if(h==="pins"){ renderPins(); return; }
+  if(h==="music"){ renderMusic(); return; }
   var ok=DAYS.some(function(d){return d.id===h;});
   render(ok?h:(todayId||"wed"));
 }
