@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rome, 18–22 November</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ECEBE7; --surface:#F8F7F4; --ink:#1F2226; --muted:#5A5E64; --line:#D3D1CA;
+  --work:#8A1538; --free:#2A6650; --travel:#8A5E0B; --stay:#36567F;
+  --work-soft:#F1DDE2; --free-soft:#DCEAE3; --travel-soft:#F0E5CC; --stay-soft:#DDE5F0;
+  --map-bg:#E2E0DA; --river:#AFC6CC; --focus:#1F2226;
+  --display:"Marcellus","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --body:"Schibsted Grotesk","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#16181B; --surface:#1F2226; --ink:#ECEBE7; --muted:#A3A7AC; --line:#34383D;
+    --work:#E58AA3; --free:#86C7A9; --travel:#E2B761; --stay:#93B4DE;
+    --work-soft:#3A1F28; --free-soft:#1D332A; --travel-soft:#3A2F17; --stay-soft:#1F2C3D;
+    --map-bg:#1B1E21; --river:#2B414A; --focus:#ECEBE7;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#16181B; --surface:#1F2226; --ink:#ECEBE7; --muted:#A3A7AC; --line:#34383D;
+  --work:#E58AA3; --free:#86C7A9; --travel:#E2B761; --stay:#93B4DE;
+  --work-soft:#3A1F28; --free-soft:#1D332A; --travel-soft:#3A2F17; --stay-soft:#1F2C3D;
+  --map-bg:#1B1E21; --river:#2B414A; --focus:#ECEBE7;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 84px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:inherit;text-underline-offset:3px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* masthead */
+.mast{padding:36px 0 22px}
+.mast h1{font-family:var(--display);font-weight:400;font-size:clamp(2.4rem,7vw,4.2rem);line-height:1.02;letter-spacing:-0.01em;margin:0}
+.mast h1 span{display:block;font-size:.5em;line-height:1.3;color:var(--muted);letter-spacing:0;margin-top:.35em}
+.mast p{margin:14px 0 0;max-width:60ch;color:var(--muted)}
+.status{display:inline-block;margin-top:16px;padding:5px 12px;border:1px solid var(--line);border-radius:999px;font-size:.875rem;font-weight:500;background:var(--surface)}
+
+/* day tabs */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.tabs nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:8px 0}
+.tabs nav::-webkit-scrollbar{display:none}
+.tab{flex:1 0 auto;min-width:92px;text-decoration:none;padding:8px 12px;border-radius:10px;border:1px solid transparent;line-height:1.25}
+.tab b{display:block;font-family:var(--display);font-weight:400;font-size:1.15rem}
+.tab small{display:block;font-size:.8rem;color:var(--muted)}
+.tab:hover{background:var(--surface)}
+.tab[aria-current="page"]{background:var(--ink);color:var(--bg)}
+.tab[aria-current="page"] small{color:inherit;opacity:.75}
+.tab .today{font-size:.7rem;font-weight:700;margin-left:6px;vertical-align:2px}
+
+/* day layout */
+.day{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;padding:26px 0 40px}
+@media (min-width:900px){
+  .day{grid-template-columns:minmax(0,1fr) 430px;gap:40px}
+  .mapcol{order:2}
+  .mapbox{position:sticky;top:calc(env(safe-area-inset-top,0px) + 92px)}
+}
+.dayhead h2{font-family:var(--display);font-weight:400;font-size:clamp(1.7rem,4.5vw,2.3rem);line-height:1.1;margin:0}
+.dayhead p{margin:8px 0 0;color:var(--muted);max-width:62ch}
+
+.choice{margin:20px 0 0;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.choice p{margin:0 0 10px;font-size:.93rem}
+.seg{display:inline-flex;border:1px solid var(--ink);border-radius:999px;overflow:hidden}
+.seg button{background:transparent;border:0;padding:7px 16px;font-size:.9rem;font-weight:600;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:18px 0 0;padding:0;list-style:none;font-size:.82rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+
+/* timeline */
+.tl{list-style:none;margin:18px 0 0;padding:0}
+.item{display:grid;grid-template-columns:62px minmax(0,1fr);gap:0 14px;padding:14px 0;border-top:1px solid var(--line);position:relative}
+.item:last-child{border-bottom:1px solid var(--line)}
+.time{font-variant-numeric:tabular-nums;font-weight:600;font-size:1rem;line-height:1.45}
+.time small{display:block;font-weight:400;color:var(--muted);font-size:.82rem}
+.body{border-left:3px solid var(--c);padding-left:14px;min-width:0}
+.item[data-c="work"]{--c:var(--work);--cs:var(--work-soft)}
+.item[data-c="free"]{--c:var(--free);--cs:var(--free-soft)}
+.item[data-c="travel"]{--c:var(--travel);--cs:var(--travel-soft)}
+.item[data-c="stay"]{--c:var(--stay);--cs:var(--stay-soft)}
+.body h3{margin:0;font-size:1.04rem;font-weight:600;line-height:1.35}
+.kind{display:inline-block;font-size:.74rem;font-weight:600;color:var(--c);background:var(--cs);padding:1px 8px;border-radius:999px;margin-right:6px;vertical-align:1px}
+.flag{display:inline-block;font-size:.74rem;font-weight:700;background:var(--ink);color:var(--bg);padding:1px 8px;border-radius:999px;margin-right:6px;vertical-align:1px}
+.where{margin:5px 0 0;font-size:.9rem;color:var(--muted)}
+.where .num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--c);color:var(--bg);font-size:.72rem;font-weight:700;margin-right:6px;vertical-align:1px}
+.note{margin:6px 0 0;font-size:.93rem;max-width:62ch}
+.item.hot .body{background:var(--cs);border-radius:0 8px 8px 0;padding-top:6px;padding-bottom:6px;margin:-6px 0}
+
+/* map */
+.mapbox{background:var(--map-bg);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.mapbox svg{display:block;width:100%;height:auto;touch-action:manipulation}
+.mapbox figcaption{font-size:.8rem;color:var(--muted);padding:8px 12px 10px;border-top:1px solid var(--line);background:var(--surface)}
+figure{margin:0}
+.pin{cursor:pointer}
+.pin text,.hm text{font-family:var(--body);font-weight:700;font-size:12px;pointer-events:none}
+.lbl{font-family:var(--body);font-size:11.5px;font-weight:500;fill:var(--ink);paint-order:stroke;stroke:var(--map-bg);stroke-width:3px;stroke-linejoin:round}
+.rv{font-family:var(--display);font-size:13px;fill:var(--muted);font-style:italic}
+.pin.hot circle{stroke:var(--ink);stroke-width:3}
+
+
+.opt{display:inline-block;font-size:.74rem;font-weight:600;border:1px solid var(--line);color:var(--muted);padding:0 8px;border-radius:999px;margin-right:6px;vertical-align:1px}
+.alts{margin:10px 0 0;max-width:62ch}
+.alts summary{cursor:pointer;font-size:.9rem;font-weight:600;color:var(--c);width:max-content;max-width:100%;padding:2px 0}
+.alts ul{list-style:none;margin:8px 0 2px;padding:0}
+.alts li{padding:8px 0;border-top:1px dashed var(--line);font-size:.92rem}
+.alts li b{font-weight:600}
+.mine{display:inline-block;font-size:.7rem;font-weight:700;border:1.5px solid currentColor;border-radius:999px;padding:0 7px;margin-left:6px;vertical-align:1px;color:var(--muted)}
+.daynote{margin:18px 0 0;padding:14px 16px;border:1px dashed var(--line);border-radius:12px;font-size:.93rem;max-width:66ch}
+.daynote b{font-weight:600}
+[hidden]{display:none!important}
+.pinsview{padding:26px 0 40px}
+.pinsview h2{font-family:var(--display);font-weight:400;font-size:clamp(1.7rem,4.5vw,2.3rem);line-height:1.1;margin:0}
+.pinsview>p{margin:8px 0 0;color:var(--muted);max-width:62ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px}
+.chips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:.88rem;font-weight:600;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.area{margin-top:28px}
+.area h3{font-family:var(--display);font-weight:400;font-size:1.35rem;margin:0}
+.area>p{margin:2px 0 10px;color:var(--muted);font-size:.9rem}
+.pinlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:0 28px}
+.pinlist li{padding:10px 0;border-top:1px solid var(--line);font-size:.93rem}
+.pinlist a{font-weight:600}
+.pinlist .ty{display:block;font-size:.78rem;color:var(--muted);margin-top:1px}
+.pinlist .ds{display:block;margin-top:2px}
+.pinlist .used{color:var(--free);font-weight:600}
+
+/* lower sections */
+.lower{border-top:1px solid var(--line);padding:34px 0 10px}
+.lower h2{font-family:var(--display);font-weight:400;font-size:1.7rem;margin:0 0 6px}
+.lower>.wrap>p{margin:0 0 16px;color:var(--muted);max-width:62ch}
+.checks{list-style:none;margin:0;padding:0;max-width:760px}
+.checks li{border-top:1px solid var(--line)}
+.checks li:last-child{border-bottom:1px solid var(--line)}
+.checks label{display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px;padding:12px 0;cursor:pointer;align-items:start}
+.checks input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--free)}
+.checks span small{display:block;color:var(--muted);font-size:.88rem}
+.checks input:checked + span{color:var(--muted);text-decoration:line-through}
+.checks input:checked + span small{text-decoration:none}
+.progress{font-size:.9rem;font-weight:600;margin:0 0 12px}
+.textbtn{background:none;border:0;padding:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:.88rem;color:var(--muted);margin-top:12px}
+
+.refs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.ref{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;border-top:4px solid var(--c)}
+.ref h3{margin:0 0 8px;font-size:1.02rem}
+.ref dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;font-size:.92rem}
+.ref dt{color:var(--muted)}
+.ref dd{margin:0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.priv{display:block;width:100%;font:inherit;font-size:1rem;color:inherit;background:transparent;border:0;border-bottom:1px dashed var(--line);border-radius:0;padding:1px 0 2px;margin:0 0 2px}
+.priv::placeholder{color:var(--muted);opacity:1;font-size:.92rem}
+.foot{padding:26px 0 44px;color:var(--muted);font-size:.85rem;max-width:70ch}
+@media (max-width:480px){
+  .tab{min-width:0;flex:1 1 auto;padding:7px 6px;white-space:nowrap}
+  .tabs nav{gap:2px}
+  .tab b{font-size:.95rem}
+  .tab small{font-size:.72rem}
+  .tab .today{display:block;margin:0}
+  .item{grid-template-columns:52px minmax(0,1fr);gap:0 10px}
+  .wrap{padding:0 16px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .item .body{transition:background-color .2s}
+}
+</style>
+</head>
+<body>
+
+<header class="wrap mast">
+  <h1>Rome <span>Wednesday 18 to Sunday 22 November 2026</span></h1>
+  <p>One main plan for each day, built around the awards and your two hotels, with other options under most steps. Your saved places are woven in and listed in full under Pins.</p>
+  <div class="status" id="status" role="status"></div>
+</header>
+
+<div class="tabs"><div class="wrap"><nav id="tabs" aria-label="Days"></nav></div></div>
+
+<main class="wrap">
+  <div class="pinsview" id="pinsview" hidden>
+    <h2>Your pinned places</h2>
+    <p>Everything from your saved list, grouped by neighbourhood so you can see what’s close when plans change. Names open in Maps.</p>
+    <div class="chips" id="chips" role="group" aria-label="Filter by type"></div>
+    <div id="areas"></div>
+  </div>
+  <div class="day" id="dayview">
+    <div class="mapcol">
+      <figure class="mapbox">
+        <svg id="map" role="img" aria-label="Sketch map of the day’s stops"></svg>
+        <figcaption id="mapcap"></figcaption>
+      </figure>
+    </div>
+    <section aria-live="polite">
+      <div class="dayhead">
+        <h2 id="dtitle"></h2>
+        <p id="dsum"></p>
+      </div>
+      <div id="choice"></div>
+      <ul class="legend" aria-label="Colour key">
+        <li><i style="background:var(--work)"></i>Work</li>
+        <li><i style="background:var(--free)"></i>Free time</li>
+        <li><i style="background:var(--travel)"></i>Travel</li>
+        <li><i style="background:var(--stay)"></i>Hotel</li>
+      </ul>
+      <ol class="tl" id="tl"></ol>
+      <div id="daynote"></div>
+    </section>
+  </div>
+</main>
+
+<section class="lower">
+  <div class="wrap">
+    <h2>Before you go</h2>
+    <p>Ticks are saved on this device.</p>
+    <p class="progress" id="progress"></p>
+    <ul class="checks" id="checks"></ul>
+    <button class="textbtn" id="reset" type="button">Clear all ticks</button>
+  </div>
+</section>
+
+<section class="lower">
+  <div class="wrap">
+    <h2>Bookings and numbers</h2>
+    <p>Everything you might be asked for at a desk. Booking references aren’t published with this page. Type them in once and they’re saved on this device only.</p>
+    <div class="refs">
+      <div class="ref" style="--c:var(--travel)">
+        <h3>Flight out, Wed 18 Nov</h3>
+        <dl>
+          <dt>Flight</dt><dd>Ryanair FR9611</dd>
+          <dt>Departs</dt><dd>Dublin 13:00</dd>
+          <dt>Arrives</dt><dd>Rome Fiumicino 17:00</dd>
+          <dt>Reference</dt><dd><input class="priv" data-priv="flightref" aria-label="Flight booking reference" placeholder="Add on this device" autocomplete="off" autocapitalize="characters" spellcheck="false"></dd>
+        </dl>
+      </div>
+      <div class="ref" style="--c:var(--travel)">
+        <h3>Flight home, Sun 22 Nov</h3>
+        <dl>
+          <dt>Flight</dt><dd>Ryanair FR9612</dd>
+          <dt>Departs</dt><dd>Rome Fiumicino 11:05</dd>
+          <dt>Arrives</dt><dd>Dublin 13:20</dd>
+          <dt>Reference</dt><dd><input class="priv" data-priv="flightref" aria-label="Flight booking reference" placeholder="Add on this device" autocomplete="off" autocapitalize="characters" spellcheck="false"></dd>
+        </dl>
+      </div>
+      <div class="ref" style="--c:var(--stay)">
+        <h3>Hotel Isa, Wed to Sat</h3>
+        <dl>
+          <dt>Address</dt><dd><a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Hotel%20Isa%2C%20Via%20Cicerone%2039%2C%20Roma">Via Cicerone 39, 00193 Rome</a></dd>
+          <dt>Check-in</dt><dd>Wed 18 Nov, from 15:00</dd>
+          <dt>Check-out</dt><dd>Sat 21 Nov, by 11:00</dd>
+          <dt>Booking</dt><dd><input class="priv" data-priv="isaref" aria-label="Hotel Isa booking number" placeholder="Add on this device" autocomplete="off" autocapitalize="characters" spellcheck="false">Two superior doubles, both under your name</dd>
+          <dt>Includes</dt><dd>Buffet breakfast</dd>
+          <dt>To pay</dt><dd><input class="priv" data-priv="isapay" aria-label="Hotel Isa balance to pay" placeholder="Add balance on this device" autocomplete="off" spellcheck="false">Includes €22.50 city tax per room, paid at check-out</dd>
+          <dt>Phone</dt><dd><a href="tel:+39063212610">+39 06 321 2610</a></dd>
+        </dl>
+      </div>
+      <div class="ref" style="--c:var(--stay)">
+        <h3>Albergo Abruzzi, Sat to Sun</h3>
+        <dl>
+          <dt>Address</dt><dd><a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Albergo%20Abruzzi%2C%20Piazza%20della%20Rotonda%2069%2C%20Roma">Piazza della Rotonda 69, 00186 Rome</a>, facing the Pantheon</dd>
+          <dt>Check-in</dt><dd>Sat 21 Nov, from 14:00</dd>
+          <dt>Check-out</dt><dd>Sun 22 Nov, by 12:00</dd>
+          <dt>Booking</dt><dd><input class="priv" data-priv="abrref" aria-label="Albergo Abruzzi booking number" placeholder="Add on this device" autocomplete="off" autocapitalize="characters" spellcheck="false"></dd>
+          <dt>Phone</dt><dd><a href="tel:+390697841369">+39 06 9784 1369</a></dd>
+        </dl>
+      </div>
+      <div class="ref" style="--c:var(--work)">
+        <h3>Awards venue</h3>
+        <dl>
+          <dt>Where</dt><dd><a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Corsie%20Sistine%20Complesso%20Monumentale%20di%20Santo%20Spirito%20in%20Sassia%2C%20Roma">Corsie Sistine, Complesso Monumentale di Santo Spirito in Sassia</a></dd>
+          <dt>Thursday</dt><dd>17:00 to 23:00</dd>
+          <dt>Friday</dt><dd>09:00 to 14:00</dd>
+          <dt>From Hotel Isa</dt><dd>About 18 minutes on foot</dd>
+        </dl>
+      </div>
+    </div>
+    <p class="foot">Flight, hotel and programme times come from your confirmations and the ESN programme page. Opening hours, ticket prices and taxi fares were checked on 13 November 2026 and can change, so confirm when you book. Restaurants and bars, including your pins, haven’t been checked for this week’s opening hours. Walking times are estimates.</p>
+  </div>
+</section>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- places ---------- */
+var P = {
+  isa:{n:"Hotel Isa",lat:41.9070,lon:12.4697,q:"Hotel Isa, Via Cicerone 39, Roma",hotel:1},
+  abr:{n:"Albergo Abruzzi",lat:41.8991,lon:12.4766,q:"Albergo Abruzzi, Piazza della Rotonda 69, Roma",hotel:1},
+  venue:{n:"Corsie Sistine",lat:41.9012,lon:12.4628,q:"Corsie Sistine Complesso Monumentale di Santo Spirito in Sassia, Roma"},
+  zanzara:{n:"La Zanzara",lat:41.9066,lon:12.4622,q:"La Zanzara, Via Crescenzio 84, Roma"},
+  fonclea:{n:"Fonclea",lat:41.9069,lon:12.4634,q:"Fonclea, Via Crescenzio 82a, Roma"},
+  stp:{n:"St Peter’s",lat:41.9022,lon:12.4568,q:"Basilica di San Pietro, Città del Vaticano"},
+  poli:{n:"Policlinico Umberto I",lat:41.9070,lon:12.5125,q:"Policlinico Umberto I, Roma"},
+  csa:{n:"Castel Sant’Angelo",lat:41.9031,lon:12.4663,q:"Castel Sant'Angelo, Roma"},
+  romolo:{n:"Da Romolo",lat:41.9046,lon:12.4640,q:"Da Romolo alla Mole Adriana, Roma"},
+  gian:{n:"Gianicolo terrace",lat:41.8914,lon:12.4613,q:"Piazzale Giuseppe Garibaldi, Gianicolo, Roma"},
+  paola:{n:"Fontana dell’Acqua Paola",lat:41.8887,lon:12.4640,q:"Fontana dell'Acqua Paola, Roma"},
+  smt:{n:"Santa Maria in Trastevere",lat:41.8895,lon:12.4697,q:"Basilica di Santa Maria in Trastevere, Roma"},
+  calisto:{n:"Bar San Calisto",lat:41.8886,lon:12.4706,q:"Bar San Calisto, Piazza di San Calisto, Roma"},
+  gensola:{n:"La Gensola",lat:41.8893,lon:12.4767,q:"Osteria La Gensola, Piazza della Gensola 15, Roma"},
+  alcazar:{n:"Alcazar Live",lat:41.8858,lon:12.4722,q:"Alcazar Live, Via Cardinale Merry del Val 14, Roma"},
+  col:{n:"Colosseum",lat:41.8902,lon:12.4922,q:"Colosseo, Roma"},
+  clem:{n:"San Clemente",lat:41.8893,lon:12.4976,q:"Basilica di San Clemente al Laterano, Roma"},
+  piazzetta:{n:"Lunch in Monti",lat:41.8938,lon:12.4895,q:"La Nuova Piazzetta, Monti, Roma"},
+  forum:{n:"Roman Forum",lat:41.8922,lon:12.4862,q:"Foro Romano, Roma"},
+  camp:{n:"Capitoline Hill",lat:41.8933,lon:12.4828,q:"Piazza del Campidoglio, Roma"},
+  marc:{n:"Theatre of Marcellus",lat:41.8919,lon:12.4797,q:"Teatro di Marcello, Roma"},
+  circo:{n:"Circus Maximus",lat:41.8861,lon:12.4853,q:"Circo Massimo, Roma"},
+  aranci:{n:"Orange Garden",lat:41.8847,lon:12.4804,q:"Giardino degli Aranci, Roma"},
+  pan:{n:"Pantheon",lat:41.8986,lon:12.4769,q:"Pantheon, Roma"},
+  monti:{n:"Monti, evening",lat:41.8953,lon:12.4905,q:"Piazza della Madonna dei Monti, Roma"},
+  kong:{n:"Drink Kong",lat:41.8955,lon:12.4990,q:"Drink Kong, Piazza di San Martino ai Monti 8, Roma"},
+  tazza:{n:"Tazza d’Oro",lat:41.8996,lon:12.4774,q:"La Casa del Caffè Tazza d'Oro, Via degli Orfani 84, Roma"}
+};
+var RIVER = [[41.9200,12.4672],[41.9160,12.4683],[41.9115,12.4739],[41.9082,12.4762],[41.9052,12.4753],[41.9024,12.4720],[41.9017,12.4664],[41.9009,12.4641],[41.8985,12.4626],[41.8953,12.4650],[41.8924,12.4708],[41.8905,12.4747],[41.8900,12.4777],[41.8880,12.4797],[41.8838,12.4762],[41.8790,12.4740]];
+
+/* alternatives: n name, d description, pin = from the saved list, q = Maps query */
+function A(n,d,pin,q){ return {n:n,d:d,pin:pin,q:q||(n+", Roma")}; }
+
+/* ---------- days ---------- */
+var DAYS = [
+ {id:"wed",date:"2026-11-18",tab:"Wed 18",gist:"Arrive",title:"Wednesday: Dublin to Rome",
+  sum:"A travel day. You land at 17:00 Rome time, so the evening is dinner in Prati and live music if you still have the energy.",
+  items:[
+   {t:"11:00",c:"travel",title:"Be at Dublin Airport",note:"Irish time. Ryanair bag drop closes 40 minutes before departure and the gate closes 30 minutes before, so two hours gives you room for security."},
+   {t:"13:00",e:"17:00",c:"travel",title:"Flight FR9611 to Rome Fiumicino",note:"Rome is one hour ahead of Dublin, so the flight is about three hours."},
+   {t:"17:30",c:"travel",title:"Fiumicino to Hotel Isa",note:"A white licensed taxi from the rank takes 45 to 60 minutes at this hour. The fixed fare is €55 to anywhere inside the Aurelian Walls. Prati sits right at the edge of that zone, so agree the fare before you set off.",
+    alts:[A("Train and metro","Leonardo Express to Termini (32 minutes, €14), then Metro A four stops to Lepanto and a six-minute walk. Cheaper, and about the same time in bad traffic.",0,"Lepanto metro, Roma")]},
+   {t:"18:45",c:"stay",p:"isa",title:"Check in at Hotel Isa",note:"Both rooms are under your name, so give that at the desk. Breakfast is included."},
+   {t:"20:00",c:"free",p:"zanzara",title:"Dinner at La Zanzara",note:"A buzzy bistro ten minutes’ walk from the hotel, and a few doors from Fonclea if you want music afterwards.",
+    alts:[A("Il Sorpasso","Relaxed all-day bistro and wine bar on Via Properzio.",1),
+          A("L’Arcangelo","The serious Roman kitchen in Prati. Book.",1,"L'Arcangelo, Via Giuseppe Gioachino Belli 59, Roma"),
+          A("Osteria Ragno d’Oro","Traditional trattoria, good for a plain plate of pasta after a flight.",1,"Osteria Ragno d'Oro, Via Silla 26, Roma"),
+          A("Alla Bucaniera or Marea","The two seafood places from your earlier draft. I haven’t checked either.",0,"Alla Bucaniera, Roma")]},
+   {t:"21:30",c:"free",p:"fonclea",opt:1,title:"Live music at Fonclea",note:"A long-running pub with a band most nights. See what’s on and stay for one or two.",
+    alts:[A("Saxophone Live Pub","The other live music pub on your list.",1),
+          A("Argot Prati","Cocktails rather than a band.",1),
+          A("The Basement","Pub and cocktail bar with events.",1,"The Basement Pub Cocktail Bar, Prati, Roma"),
+          A("An early night","Thursday runs to 23:00.",0,"Hotel Isa, Via Cicerone 39, Roma")]}
+  ]},
+ {id:"thu",date:"2026-11-19",tab:"Thu 19",gist:"Awards",title:"Thursday: the dome, the castle, then the awards",
+  sum:"Work starts at 17:00 and runs to 23:00. The morning is architecture within a mile of the hotel, unless you take the study visit.",
+  choice:{key:"thu",text:"Study visit, 11:00 to 13:00: TOBIA-DAMA, a model for accessible healthcare, at Policlinico Umberto I on the far side of the city."},
+  note:"<b>If it rains:</b> swap the dome for the Vatican Museums. The castle is mostly indoors apart from the terrace.",
+  items:[
+   {v:"skip",t:"08:30",e:"10:45",c:"free",p:"stp",title:"St Peter’s Basilica and the dome climb",note:"The basilica is free, with an airport-style security queue in the square. The dome is ticketed: €17 by stairs or €22 with the lift when booked ahead on the basilica’s official site, or €10 and €15 at the kiosk if you’d rather queue. It’s 551 steps, or 320 with the lift, and the last stretch between the two shells of the dome is narrow and slanted. Shoulders and knees covered.",
+    alts:[A("Vatican Museums and Sistine Chapel","The big-museum alternative. Timed ticket from tickets.museivaticani.va, €20 plus €5 booking fee, name must match your ID. Allow three hours, which means dropping the castle.",1,"Musei Vaticani, Viale Vaticano, Roma"),
+          A("Basilica without the climb","Skip the stairs, see the nave, Michelangelo’s Pietà and the grottoes. All free.",1,"Basilica di San Pietro, Città del Vaticano")]},
+   {v:"skip",t:"11:15",e:"12:45",c:"free",p:"csa",title:"Castel Sant’Angelo and its bridge",note:"Ten minutes’ walk down Via della Conciliazione. Hadrian’s mausoleum turned papal fortress: climb the spiral ramp to the terrace for the view back to the dome you’ve just been up. Entry is about €16. Finish on Ponte Sant’Angelo among Bernini’s angels.",
+    alts:[A("Leave it for Friday","It’s five minutes from the awards venue, so it also fits after Friday’s lunch.",0,"Castel Sant'Angelo, Roma")]},
+   {v:"skip",t:"13:00",c:"free",p:"romolo",title:"Lunch at Da Romolo alla Mole Adriana",note:"Behind the castle, on the way back to the hotel.",
+    alts:[A("Be.Re. + Trapizzino","Craft beer and stuffed pizza pockets on Piazza del Risorgimento.",1),
+          A("Vuliò","Puglian street food, quick and cheap.",1,"Vuliò, Via degli Scipioni 55, Roma"),
+          A("All’Antico Vinaio","Florentine schiacciata sandwiches.",1,"All'Antico Vinaio, Roma"),
+          A("Mercato Trionfale","The covered market from your draft. Stalls wind down in the early afternoon.",0)]},
+   {v:"go",t:"07:30",e:"09:45",c:"free",p:"stp",title:"St Peter’s Basilica and the dome, early",note:"The dome opens at 07:30 and is at its quietest then. €17 by stairs or €22 with the lift booked ahead, €10 and €15 at the kiosk. 551 steps, or 320 with the lift. Shoulders and knees covered.",
+    alts:[A("A slow breakfast instead","Save the dome for another trip and keep your legs for the evening.",0,"Hotel Isa, Via Cicerone 39, Roma")]},
+   {v:"go",t:"10:15",c:"travel",title:"Cross the city to the Policlinico",note:"A taxi takes about 20 minutes. By metro, take Line A from Lepanto to Termini, change to Line B and go two stops to Policlinico. Allow 35 minutes door to door."},
+   {v:"go",t:"11:00",e:"13:00",c:"work",p:"poli",title:"Study visit: TOBIA-DAMA",note:"Outpatient care for people with cognitive or neuromotor disabilities, run by a multidisciplinary team at the university hospital."},
+   {v:"go",t:"13:15",c:"free",title:"Lunch, then back to Prati",note:"Eat near the hospital or head straight back and use one of your Prati pins. Aim to be at the hotel by 15:00.",
+    alts:[A("Be.Re. + Trapizzino","Craft beer and stuffed pizza pockets on Piazza del Risorgimento.",1),
+          A("Vuliò","Puglian street food, quick and cheap.",1,"Vuliò, Via degli Scipioni 55, Roma")]},
+   {t:"14:30",c:"stay",p:"isa",title:"Back at the hotel to rest and change",note:"The ceremony is seated banquet-style with a three-course dinner, so pack something smart."},
+   {t:"16:40",c:"travel",title:"Walk to the venue",note:"About 18 minutes, past Castel Sant’Angelo and along the river. A taxi is five minutes if it’s raining."},
+   {t:"17:00",e:"18:00",c:"work",p:"venue",title:"Check-in and welcome reception",note:"Cloakroom, interpretation headsets and a welcome drink."},
+   {t:"18:00",e:"20:30",c:"work",p:"venue",title:"Awards ceremony",note:"Welcome from Christian Fillet and Massimiliano Maselli, a keynote from Sinead Kane, then eleven awards presented by Alfonso Lara Montero and Jane Dudman. Closing remarks from Ruth Paserman of the European Commission."},
+   {t:"20:30",e:"23:00",c:"work",p:"venue",title:"Dinner",note:"Three courses at the venue."},
+   {t:"23:00",c:"travel",title:"Back to Hotel Isa",note:"The same 18-minute walk, or ask the venue to call a taxi."}
+  ]},
+ {id:"fri",date:"2026-11-20",tab:"Fri 20",gist:"Half day",title:"Friday: conference, then over the hill to Trastevere",
+  sum:"The programme ends with lunch at 14:00. The venue sits at the foot of the Gianicolo, so the afternoon walks up to the viewpoint and down into Trastevere for the evening.",
+  choice:{key:"fri",text:"Study visit, 15:00 to 17:00: restorative justice at the Astrea Restorative Justice Centre. The programme page doesn’t give its address, so check the session details with ESN."},
+  note:"<b>If it rains:</b> take the churches loop under the Gianicolo step instead, then a taxi to Trastevere for dinner.",
+  items:[
+   {t:"08:40",c:"travel",title:"Walk to the venue",note:"About 18 minutes from the hotel."},
+   {t:"09:00",e:"09:30",c:"work",p:"venue",title:"Check-in opens"},
+   {t:"09:30",e:"10:45",c:"work",p:"venue",title:"Panel discussion and partner presentations",note:"Led by EY and the Regional Government of Lazio, on how technology and AI are changing social service delivery and the workforce."},
+   {t:"10:45",e:"11:15",c:"work",p:"venue",title:"Coffee break"},
+   {t:"11:15",e:"13:00",c:"work",p:"venue",title:"Walking Practice Fair",note:"Nominated projects and partner exhibition stands."},
+   {t:"13:00",e:"14:00",c:"work",p:"venue",title:"Buffet lunch",note:"The closing session of the event."},
+   {v:"skip",t:"14:15",e:"15:15",c:"free",p:"gian",title:"Climb the Gianicolo",note:"From the venue it’s a 25-minute uphill walk along the Passeggiata del Gianicolo to Piazzale Garibaldi, the widest view over the city’s domes and rooftops.",
+    alts:[A("Baroque churches loop","For architecture rather than a climb: cross Ponte Sant’Angelo to Sant’Agnese in Agone on Piazza Navona (Borromini), San Luigi dei Francesi (three Caravaggios, shut over lunch until mid-afternoon) and Sant’Ignazio (the painted false dome). About 25 minutes of walking in all.",1,"Chiesa di Sant'Agnese in Agone, Piazza Navona, Roma"),
+          A("Castel Sant’Angelo","If you didn’t get to it on Thursday. Five minutes from the venue.",0,"Castel Sant'Angelo, Roma"),
+          A("Villa Borghese","A taxi to the park for a walk under the pines and the Pincio terrace at sunset.",1)]},
+   {v:"skip",t:"15:30",c:"free",p:"paola",title:"Fontana dell’Acqua Paola",note:"Ten minutes along the ridge. A huge marble fountain with another terrace, then steps and Via Garibaldi drop you into Trastevere."},
+   {v:"skip",t:"16:15",c:"free",p:"smt",title:"Santa Maria in Trastevere",note:"Twelfth-century gold mosaics in the apse, and a piazza that fills up as the light goes. Sunset is around 16:45.",
+    alts:[A("Church of St Callixtus","On the next square, a minute away.",1,"Chiesa di San Callisto, Piazza di San Calisto, Roma"),
+          A("Ponte Fabricio and Tiber Island","Ten minutes east: the oldest working bridge in Rome.",1,"Ponte Fabricio, Roma")]},
+   {v:"go",t:"14:15",c:"travel",title:"Travel to the Astrea centre",note:"Confirm the address and how long it takes from the venue before Friday."},
+   {v:"go",t:"15:00",e:"17:00",c:"work",title:"Study visit: restorative justice",note:"The only fully public restorative justice centre in Lazio, set up under the Cartabia Reform."},
+   {v:"go",t:"17:45",c:"free",p:"smt",title:"Taxi to Trastevere, Santa Maria in Trastevere",note:"It’s dark by now, so skip the hill. The basilica’s gold mosaics are lit and the piazza is at its best in the evening."},
+   {t:"18:00",c:"free",p:"calisto",title:"A drink at Bar San Calisto",note:"Cheap, scruffy and loved. Stand outside with a beer or a spritz like everyone else.",
+    alts:[A("Samovar","Another bar from your list.",1,"Samovar, Trastevere, Roma"),
+          A("Lettere Caffè","Bookish café-bar on Via di San Francesco a Ripa.",1),
+          A("Supplì Roma","A fried rice supplì to keep you going until dinner.",1,"Supplì Roma, Via di San Francesco a Ripa 137, Roma"),
+          A("Trapizzino","Stuffed pizza pockets by Piazza Trilussa.",1,"Trapizzino Trastevere, Piazza Trilussa, Roma")]},
+   {t:"19:45",c:"free",p:"gensola",title:"Seafood dinner at La Gensola",note:"One of the two seafood places from your draft, on the quieter side of Viale Trastevere. Book.",
+    alts:[A("Le Mani in Pasta","The other seafood pick from your draft. Book.",0),
+          A("Otello","Roman classics in a courtyard.",1,"Otello in Trastevere, Via della Pelliccia 47, Roma"),
+          A("Tonnarello","The most popular trattoria in Trastevere. Expect a queue.",1),
+          A("La Canonica","Italian, on Vicolo del Piede.",1,"La Canonica, Vicolo del Piede, Roma"),
+          A("Bacco in Trastevere","Another of your restaurant pins.",1),
+          A("Il Botticelli","Roman, from your list.",1,"Il Botticelli, Trastevere, Roma"),
+          A("Antica Pesa","The upmarket option. Book.",1,"Antica Pesa, Via Garibaldi 18, Roma"),
+          A("Ivo a Trastevere","Old-school pizzeria if you’d rather keep it simple.",1)]},
+   {t:"21:45",c:"free",p:"alcazar",opt:1,title:"Alcazar Live",note:"Live music and club nights in a converted cinema, five minutes from dinner. Check the listing for the night. A taxi back to Prati takes about 15 minutes.",
+    alts:[A("Back to Bar San Calisto","It stays lively late.",1,"Bar San Calisto, Roma"),
+          A("Taxi home","Saturday starts at 07:45.",0,"Hotel Isa, Via Cicerone 39, Roma")]}
+  ]},
+ {id:"sat",date:"2026-11-21",tab:"Sat 21",gist:"Your day",title:"Saturday: ancient Rome, the Aventine and Monti",
+  sum:"No work. You change hotels first thing, then walk from the Colosseum to the Orange Garden for sunset. It’s roughly 9 km on foot, and every leg has a shorter option.",
+  note:"<b>Swap the whole day:</b> the Aqueduct Park from your draft, if you wake up wanting open country instead of ruins and crowds. <b>If it rains:</b> the Capitoline Museums cover two hours indoors, with a covered view over the Forum.",
+  items:[
+   {t:"07:45",c:"stay",p:"isa",title:"Breakfast and check out of Hotel Isa",note:"City tax of €22.50 per room is paid at the desk."},
+   {t:"08:15",c:"travel",p:"abr",title:"Taxi to Albergo Abruzzi, then on to the Colosseum",note:"Ten minutes to the Pantheon to leave your bags (check-in is from 14:00), then ten more to the Colosseum. Ask the driver to wait."},
+   {t:"09:00",e:"10:30",c:"free",p:"col",title:"Colosseum, Full Experience Attic ticket",note:"The ticket takes you to the top tier as well as the main levels, in groups of 25, with 90 minutes inside. About €24 on colosseo.it. Slots are released 30 days ahead, so book now. It includes the Forum and Palatine.",
+    alts:[A("Standard ticket","About €18, still timed entry, without the upper tier. Take this if the attic slots have gone.",1,"Colosseo, Roma"),
+          A("Outside only","Walk the perimeter and the Arch of Constantine and put the time into San Clemente and the Forum.",0,"Arco di Costantino, Roma")]},
+   {t:"10:45",e:"11:40",c:"free",p:"clem",title:"San Clemente, the underground levels",note:"Five minutes’ walk. A twelfth-century basilica on top of a fourth-century church on top of a Roman house and a temple of Mithras. The excavations need a slot booked online, about €10. The Saturday morning session ends at 12:30."},
+   {t:"12:00",c:"free",p:"piazzetta",title:"Lunch in Monti at La Nuova Piazzetta",note:"Your pin, on a lane between the Colosseum and Via Cavour. Go as it opens to get a table.",
+    alts:[A("La Taverna dei Fori Imperiali","Family-run trattoria a few minutes away. Book.",0,"La Taverna dei Fori Imperiali, Via della Madonna dei Monti 9, Roma"),
+          A("Santa Maria Maggiore","Not lunch, but ten minutes north if you want the fifth-century mosaics.",1,"Basilica Papale di Santa Maria Maggiore, Roma")]},
+   {t:"13:15",e:"14:30",c:"free",p:"forum",title:"Through the Roman Forum",note:"Your Colosseum ticket covers it. Walk the Via Sacra west and leave by the exit under the Capitoline. Last entry in winter is 15:30.",
+    alts:[A("Add the Palatine","Another 45 minutes uphill for the view down over the Forum. Skip the Circus Maximus later to make room.",0,"Palatino, Roma"),
+          A("See it from above instead","Skip going in and look down on the Forum from the terrace behind the Capitoline. Free.",0,"Piazza del Campidoglio, Roma")]},
+   {t:"14:35",c:"free",p:"camp",title:"Capitoline Hill",note:"Michelangelo’s piazza, then walk round the back of the central palace for the classic view along the Forum.",
+    alts:[A("Altar of the Fatherland","Next door. The terraces are free; the lift to the top is paid.",1,"Altare della Patria, Roma"),
+          A("Pizza Florida","A slice at Largo Argentina, eight minutes north, if lunch was light.",1,"Pizza Florida, Via Florida, Roma")]},
+   {t:"15:05",c:"free",p:"marc",title:"Theatre of Marcellus",note:"Down the steps and five minutes on: a Roman theatre with Renaissance apartments built on top. You pass it on the way south.",
+    alts:[A("Ponte Fabricio","Three minutes further to the river and the bridge to Tiber Island.",1)]},
+   {t:"15:25",c:"free",p:"circo",title:"Along the Circus Maximus",note:"The chariot track is now a long grass valley under the Palatine. Walk its length to the foot of the Aventine."},
+   {t:"15:50",e:"16:50",c:"free",p:"aranci",title:"Aventine Hill and the Orange Garden",note:"Santa Sabina, a near-intact fifth-century basilica, is beside the garden, and the keyhole view of St Peter’s is two minutes further. Sunset from the garden terrace is around 16:45. It’s free and open until about 18:00.",
+    alts:[A("Cut it short","Take a taxi from the Capitoline straight to the Orange Garden and skip the two stops between.",0,"Giardino degli Aranci, Roma")]},
+   {t:"17:00",c:"travel",title:"Taxi to Albergo Abruzzi",note:"About ten minutes. On foot it’s 30, by way of the river and the Ghetto."},
+   {t:"17:20",c:"stay",p:"abr",title:"Check in at Albergo Abruzzi"},
+   {t:"18:00",c:"free",p:"pan",title:"The Pantheon",note:"Across the square. Entry is about €5 and last admission is around 18:30. After dark the oculus is a black disc and the building is quieter.",
+    alts:[A("Sant’Ignazio","Three minutes away: Pozzo’s painted ceiling and false dome. Free.",1,"Chiesa di Sant'Ignazio di Loyola, Roma"),
+          A("Tazza d’Oro","Coffee at the bar, one minute from the hotel.",1,"La Casa del Caffè Tazza d'Oro, Roma"),
+          A("Venchi","Chocolate and gelato.",1,"Venchi, Via degli Orfani, Roma")]},
+   {t:"19:45",c:"free",p:"monti",title:"Dinner in Monti",note:"Ten minutes by taxi. The lanes around Piazza della Madonna dei Monti are the liveliest part of the centre on a Saturday. La Taverna dei Fori Imperiali if you didn’t use it at lunch; book.",
+    alts:[A("Stay by the hotel: Pancrazio dal 1922","Dining rooms built into the remains of the Theatre of Pompey.",1,"Ristorante Pancrazio dal 1922, Piazza del Biscione, Roma"),
+          A("Stay by the hotel: Saltimbocca","Roman, just off Piazza Navona.",1,"Saltimbocca ristorante, Via di Tor Millina, Roma"),
+          A("Stay by the hotel: Il Corallo","Pizza and Roman dishes near Navona.",1,"Il Corallo, Via del Corallo, Roma"),
+          A("Armando al Pantheon","The classic next to your hotel. Books out early, so try now.",0,"Armando al Pantheon, Salita de' Crescenzi 31, Roma")]},
+   {t:"21:30",c:"free",p:"kong",opt:1,title:"Drink Kong",note:"Your cocktail bar pin, ten minutes’ walk from dinner. Book a table for a Saturday. Then a taxi back to the Pantheon.",
+    alts:[A("Gregory’s Jazz Club","Live jazz near the Spanish Steps.",1,"Gregory's Jazz Club, Via Gregoriana, Roma"),
+          A("Jerry Thomas Speakeasy","Near Navona. You need a reservation and the password from their site.",1,"Jerry Thomas Speakeasy, Vicolo Cellini 30, Roma"),
+          A("La Botticella","Small pub near Piazza Navona.",1,"La Botticella of Poggi Giovanni, Via di Tor Millina, Roma"),
+          A("Trinity College Pub","Irish pub five minutes from the hotel.",1),
+          A("Frigidarium","Gelato and a walk round Piazza Navona instead.",1,"Frigidarium, Via del Governo Vecchio 112, Roma")]}
+  ]},
+ {id:"sun",date:"2026-11-22",tab:"Sun 22",gist:"Home",title:"Sunday: home",
+  sum:"An early start. There’s time for the empty piazza and a coffee, and that’s all.",
+  items:[
+   {t:"07:00",c:"free",p:"pan",opt:1,title:"Piazza della Rotonda with nobody in it",note:"Step outside before the crowds. The Pantheon doesn’t open until 09:00, but the square at this hour is worth ten minutes."},
+   {t:"07:15",c:"free",p:"tazza",opt:1,title:"Coffee at Tazza d’Oro",note:"One minute from the hotel, if it’s open this early on a Sunday. Otherwise there’s coffee at the airport."},
+   {t:"07:40",c:"stay",p:"abr",title:"Check out of Albergo Abruzzi",note:"City tax is paid at the desk."},
+   {t:"08:00",c:"travel",title:"Taxi to Fiumicino",note:"The Pantheon is inside the Aurelian Walls, so the fixed €55 fare applies. Allow 45 minutes. Ask the hotel on Saturday to book the car."},
+   {t:"08:45",c:"travel",title:"At the airport",note:"Bag drop closes 40 minutes before departure and the gate closes at 10:35. Your boarding pass shows the terminal."},
+   {t:"11:05",e:"13:20",c:"travel",title:"Flight FR9612 to Dublin",note:"Lands 13:20 Irish time."}
+  ]}
+];
+
+var CHECKS = [
+ ["checkin","Check in online for both Ryanair flights","FR9611 and FR9612. Checking in at the airport costs extra."],
+ ["col","Book the Colosseum Attic ticket for Saturday 09:00","colosseo.it, about €24. Small groups, so slots go. Fall back to a standard timed ticket."],
+ ["clem","Book San Clemente’s excavations for Saturday 10:45","Online only, about €10."],
+ ["dome","Book the St Peter’s dome for Thursday 09:15","Only if you want a guaranteed slot; you can also pay at the kiosk on the day."],
+ ["study","Decide on the two study visits","Thursday 11:00 and Friday 15:00. Check with ESN whether you need to register and where the Friday visit is."],
+ ["fri","Book Friday dinner in Trastevere","La Gensola or Le Mani in Pasta."],
+ ["sat","Book Saturday night","A table in Monti and Drink Kong, or Armando al Pantheon if you’d rather stay by the hotel."],
+ ["abr","Find your Albergo Abruzzi confirmation","It isn’t in this itinerary yet. Have the booking number to hand for Saturday."],
+ ["id","Passport and photo ID","Needed for the flight and for named tickets."],
+ ["pack","Pack for the ceremony, the stairs and the rain","Something smart for Thursday night, proper walking shoes for the dome and Saturday, covered shoulders and knees for churches, and an umbrella. Late November in Rome is usually 8 to 17°C with showers."],
+ ["taxi","On Saturday, ask Albergo Abruzzi to book Sunday’s 08:00 taxi",""]
+];
+
+/* ---------- pins: [name, type, note, maps query] ---------- */
+var TYPES = {sight:"Sights",eat:"Restaurants",quick:"Quick bites",sweet:"Coffee and sweet",drink:"Bars",music:"Live music",other:"Not sure yet"};
+var AREAS = [
+ {n:"Prati and the Vatican",w:"Around Hotel Isa. Closest on Wednesday and Thursday.",pins:[
+  ["Saint Peter’s Basilica","sight","Thursday’s main plan.","Basilica di San Pietro"],
+  ["Sistine Chapel","sight","Inside the Vatican Museums; Thursday’s alternative.","Cappella Sistina"],
+  ["Vatican City","sight","",""],
+  ["La Zanzara","eat","Wednesday’s dinner pick.",""],
+  ["Il Sorpasso","eat","All-day bistro and wine bar.",""],
+  ["L’Arcangelo","eat","Serious Roman cooking. Book.","L'Arcangelo, Via Giuseppe Gioachino Belli"],
+  ["Osteria Ragno d’Oro","eat","Traditional trattoria.","Osteria Ragno d'Oro"],
+  ["Da Romolo alla Mole Adriana","eat","Thursday’s lunch pick, behind Castel Sant’Angelo.",""],
+  ["Be.Re. + Trapizzino","quick","Craft beer and stuffed pizza pockets.",""],
+  ["Vuliò","quick","Puglian street food.",""],
+  ["L’angolo della pizza","quick","","L'angolo della pizza, Prati"],
+  ["Argot Prati","drink","Cocktail bar.",""],
+  ["The Basement","drink","Pub and cocktail bar with events.","The Basement Pub Cocktail Bar Events"],
+  ["T’SaBaR bar","drink","","T'SaBaR bar"],
+  ["Saxophone Live Pub","music","Live music pub.",""],
+  ["MiVà","other","",""],
+  ["VIDA Prati","other","",""]]},
+ {n:"Trastevere",w:"Friday evening’s neighbourhood.",pins:[
+  ["Bar San Calisto","drink","Friday’s drink pick.",""],
+  ["Samovar","drink","",""],
+  ["Lettere Caffè","drink","Bookish café-bar.",""],
+  ["Alcazar Live","music","Friday’s late option, in a converted cinema.",""],
+  ["Otello","eat","Roman classics in a courtyard.","Otello in Trastevere"],
+  ["Tonnarello","eat","Very popular. Expect a queue.",""],
+  ["La Canonica","eat","Italian, on Vicolo del Piede.",""],
+  ["Bacco in Trastevere","eat","",""],
+  ["Il Botticelli","eat","Roman.","Il Botticelli Trastevere"],
+  ["Antica Pesa","eat","Upmarket Roman. Book.",""],
+  ["Ivo a Trastevere","eat","Old-school pizzeria.",""],
+  ["Trapizzino Trastevere","quick","Stuffed pizza pockets by Piazza Trilussa.",""],
+  ["Supplì Roma","quick","Fried rice supplì and pizza by the slice.","Supplì Roma i supplì di Giacomo"],
+  ["Giselda","sweet","Bakery and café on Viale Trastevere.",""],
+  ["Sora Mirella","sweet","Shaved-ice kiosk by the river. It may be shut in November.",""],
+  ["Church of St Callixtus","sight","On the square beside Bar San Calisto.","Chiesa di San Callisto"]]},
+ {n:"Tiber Island, the Ghetto and the Capitoline",w:"On Saturday afternoon’s route.",pins:[
+  ["Theatre of Marcellus","sight","On Saturday’s main route.","Teatro di Marcello"],
+  ["Ponte Fabricio","sight","Rome’s oldest working bridge, 62 BC.",""],
+  ["Altar of the Fatherland","sight","Free terraces; paid lift to the top.","Altare della Patria"],
+  ["Pizza Florida","quick","Pizza by the slice at Largo Argentina.",""],
+  ["Saporizzo","other","",""]]},
+ {n:"The Colosseum and Monti",w:"Saturday morning, and Saturday night.",pins:[
+  ["Colosseum","sight","Saturday 09:00.","Colosseo"],
+  ["Roman Forum","sight","Saturday 13:15, on the same ticket.","Foro Romano"],
+  ["La Nuova Piazzetta","eat","Saturday’s lunch pick.",""],
+  ["Drink Kong","drink","Saturday’s late option. Book.",""],
+  ["Papal Basilica of Saint Mary Major","sight","Fifth-century mosaics, ten minutes north of Monti.","Basilica Papale di Santa Maria Maggiore"]]},
+ {n:"Campo de’ Fiori and Piazza Navona",w:"Five to ten minutes from Albergo Abruzzi. Good for Saturday night if you stay local.",pins:[
+  ["Piazza Navona","sight","",""],
+  ["Chiesa di Sant’Agnese in Agone","sight","Borromini’s church on Piazza Navona.","Chiesa di Sant'Agnese in Agone"],
+  ["Church of Saint Louis of the French","sight","Three Caravaggios. Shut over lunch.","San Luigi dei Francesi"],
+  ["Campo de’ Fiori","sight","Market square in the morning, bars at night.","Campo de' Fiori"],
+  ["Ristorante Pancrazio dal 1922","eat","Built into the remains of the Theatre of Pompey.",""],
+  ["Saltimbocca ristorante","eat","Roman, just off Navona.",""],
+  ["Il Corallo","eat","Pizza and Roman dishes.","Il Corallo, Via del Corallo"],
+  ["Vivi Bistrot","eat","Bistro on Piazza Navona.","Vivi Bistrot Piazza Navona"],
+  ["Antico Forno Roscioli","quick","Bakery; pizza by the slice.",""],
+  ["Forno Campo de’ Fiori","quick","Pizza bianca straight from the oven.","Forno Campo de' Fiori"],
+  ["Norcineria Viola","quick","Cured-meat shop on the Campo.",""],
+  ["Frigidarium","sweet","Gelato.",""],
+  ["Jerry Thomas Speakeasy","drink","Reservation and password needed.",""],
+  ["La Botticella of Poggi Giovanni","drink","Small pub near Navona.",""],
+  ["FIORE","other","","FIORE Campo de' Fiori"]]},
+ {n:"The Pantheon and Trevi",w:"On the doorstep of Albergo Abruzzi.",pins:[
+  ["Chiesa di Sant’Ignazio di Loyola","sight","Pozzo’s painted false dome. Free.","Chiesa di Sant'Ignazio di Loyola"],
+  ["Via dei Pastini","sight","The lane from the Pantheon towards Piazza di Pietra.",""],
+  ["Trevi Fountain","sight","Eight minutes’ walk from the hotel.","Fontana di Trevi"],
+  ["La Casa del Caffè Tazza d’Oro","sweet","Coffee, one minute from the hotel.","La Casa del Caffè Tazza d'Oro"],
+  ["Venchi","sweet","Chocolate and gelato. You’ve pinned three branches.",""],
+  ["All’Antico Vinaio","quick","Florentine schiacciata sandwiches. You’ve pinned two branches.","All'Antico Vinaio"],
+  ["Pane e Salame","quick","Sandwiches and boards near Trevi. Queues.",""],
+  ["Orient Express La Minerva","drink","Hotel rooftop bar behind the Pantheon.",""],
+  ["Trinity College Pub","drink","Irish pub.",""]]},
+ {n:"Spanish Steps, Piazza del Popolo and Villa Borghese",w:"Not on the main plan. Fifteen minutes’ walk north of Albergo Abruzzi.",pins:[
+  ["Spanish Steps","sight","","Scalinata di Trinità dei Monti"],
+  ["Piazza di Spagna","sight","",""],
+  ["Piazza del Popolo","sight","",""],
+  ["Villa Borghese","sight","The park. The Pincio terrace on its edge is a sunset spot.",""],
+  ["Pastificio Guerra","quick","Cheap fresh pasta at lunchtime.",""],
+  ["Gregory’s Jazz Club","music","Live jazz near the Spanish Steps.","Gregory's Jazz Club"],
+  ["Il Bar della Musa","drink","",""],
+  ["Paparazzo Bar & Rooftop","drink","",""]]}
+];
+
+/* ---------- storage ---------- */
+var mem = {};
+function load(k,d){ try{ var v = localStorage.getItem("rome26:"+k); return v===null? (k in mem?mem[k]:d) : JSON.parse(v);}catch(e){ return k in mem?mem[k]:d; } }
+function save(k,v){ mem[k]=v; try{ localStorage.setItem("rome26:"+k, JSON.stringify(v)); }catch(e){} }
+
+/* ---------- time in Rome ---------- */
+function romeNow(){
+  try{
+    var parts = new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Rome",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).formatToParts(new Date());
+    var o={}; parts.forEach(function(p){o[p.type]=p.value;});
+    return {date:o.year+"-"+o.month+"-"+o.day, min:(parseInt(o.hour,10)%24)*60+parseInt(o.minute,10)};
+  }catch(e){ return {date:"",min:0}; }
+}
+function mins(t){ var a=t.split(":"); return (+a[0])*60+(+a[1]); }
+function dayDiff(a,b){ return Math.round((Date.parse(b+"T00:00:00Z")-Date.parse(a+"T00:00:00Z"))/86400000); }
+
+var now = romeNow();
+var todayId = null;
+DAYS.forEach(function(d){ if(d.date===now.date) todayId=d.id; });
+
+(function(){
+  var s = document.getElementById("status"), txt;
+  if(!now.date){ s.hidden=true; return; }
+  var before = dayDiff(now.date, DAYS[0].date), after = dayDiff(DAYS[4].date, now.date);
+  if(before>1) txt = before+" days until you fly";
+  else if(before===1) txt = "You fly tomorrow";
+  else if(after>0) txt = "Trip finished";
+  else txt = "Day "+(1-before)+" of 5, showing today";
+  s.textContent = txt;
+})();
+
+/* ---------- rendering ---------- */
+var tabsEl=document.getElementById("tabs"), tl=document.getElementById("tl"), map=document.getElementById("map");
+var current=null, hot=null;
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function mapsUrl(q){ return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q); }
+var KIND={work:"Work",free:"Free time",travel:"Travel",stay:"Hotel"};
+
+DAYS.forEach(function(d){
+  var a=document.createElement("a");
+  a.className="tab"; a.href="#"+d.id; a.id="tab-"+d.id;
+  a.innerHTML="<b>"+esc(d.tab)+(d.id===todayId?'<span class="today">today</span>':"")+"</b><small>"+esc(d.gist)+"</small>";
+  tabsEl.appendChild(a);
+});
+
+(function(){
+  var a=document.createElement("a");
+  a.className="tab"; a.href="#pins"; a.id="tab-pins";
+  a.innerHTML="<b>Pins</b><small>Saved</small>";
+  tabsEl.appendChild(a);
+})();
+
+function visibleItems(d){
+  var mode = d.choice ? load("visit:"+d.choice.key,"skip") : null;
+  return d.items.filter(function(it){ return !it.v || it.v===mode; });
+}
+
+function render(id){
+  var d = DAYS.filter(function(x){return x.id===id;})[0] || DAYS[0];
+  current=d; hot=null;
+  document.getElementById("pinsview").hidden=true;
+  document.getElementById("dayview").hidden=false;
+  document.getElementById("tab-pins").removeAttribute("aria-current");
+  DAYS.forEach(function(x){
+    var t=document.getElementById("tab-"+x.id);
+    if(x.id===d.id) t.setAttribute("aria-current","page"); else t.removeAttribute("aria-current");
+  });
+  document.getElementById("dtitle").textContent=d.title;
+  document.getElementById("dsum").textContent=d.sum;
+
+  var ch=document.getElementById("choice");
+  if(d.choice){
+    var mode=load("visit:"+d.choice.key,"skip");
+    ch.innerHTML='<div class="choice"><p>'+esc(d.choice.text)+'</p><div class="seg" role="group" aria-label="Study visit">'+
+      '<button type="button" data-m="skip" aria-pressed="'+(mode==="skip")+'">Skip it</button>'+
+      '<button type="button" data-m="go" aria-pressed="'+(mode==="go")+'">Attend</button></div></div>';
+  } else ch.innerHTML="";
+
+  var items=visibleItems(d);
+  // number the places
+  var nums={}, n=0;
+  items.forEach(function(it){ if(it.p && !P[it.p].hotel && !(it.p in nums)) nums[it.p]=++n; });
+
+  // now / next
+  var flagIdx=-1, flag="";
+  if(d.id===todayId){
+    for(var i=0;i<items.length;i++){
+      var s=mins(items[i].t), e=items[i].e?mins(items[i].e):(i+1<items.length?mins(items[i+1].t):s+60);
+      if(now.min>=s && now.min<e){ flagIdx=i; flag="Now"; break; }
+      if(now.min<s){ flagIdx=i; flag="Next"; break; }
+    }
+  }
+
+  tl.innerHTML=items.map(function(it,i){
+    var pl = it.p?P[it.p]:null;
+    var where = pl ? '<p class="where">'+(nums[it.p]?'<span class="num">'+nums[it.p]+'</span>':'')+
+      '<a target="_blank" rel="noopener" href="'+mapsUrl(pl.q)+'">'+esc(pl.n)+', open in Maps</a></p>' : "";
+    return '<li class="item" data-c="'+it.c+'"'+(it.p?' data-p="'+it.p+'"':'')+'>'+
+      '<div class="time">'+it.t+(it.e?'<small>to '+it.e+'</small>':'')+'</div>'+
+      '<div class="body"><h3>'+(i===flagIdx?'<span class="flag">'+flag+'</span>':'')+'<span class="kind">'+KIND[it.c]+'</span>'+(it.opt?'<span class="opt">Optional</span>':'')+esc(it.title)+'</h3>'+
+      where+(it.note?'<p class="note">'+esc(it.note)+'</p>':'')+altsHtml(it)+'</div></li>';
+  }).join("");
+
+  document.getElementById("daynote").innerHTML = d.note ? '<p class="daynote">'+d.note+'</p>' : "";
+  drawMap(items,nums);
+}
+
+function altsHtml(it){
+  if(!it.alts||!it.alts.length) return "";
+  var n=it.alts.length;
+  return '<details class="alts"><summary>'+(n===1?"1 other option":n+" other options")+'</summary><ul>'+
+    it.alts.map(function(a){
+      return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(a.q)+'"><b>'+esc(a.n)+'</b></a>'+(a.pin?'<span class="mine">Your pin</span>':'')+'<br>'+esc(a.d)+'</li>';
+    }).join("")+'</ul></details>';
+}
+
+/* ---------- pins view ---------- */
+var pinFilter="all";
+function renderPins(){
+  document.getElementById("dayview").hidden=true;
+  document.getElementById("pinsview").hidden=false;
+  current=null;
+  DAYS.forEach(function(x){ document.getElementById("tab-"+x.id).removeAttribute("aria-current"); });
+  document.getElementById("tab-pins").setAttribute("aria-current","page");
+  var chips='<button type="button" data-f="all" aria-pressed="'+(pinFilter==="all")+'">All</button>';
+  Object.keys(TYPES).forEach(function(k){ chips+='<button type="button" data-f="'+k+'" aria-pressed="'+(pinFilter===k)+'">'+TYPES[k]+'</button>'; });
+  document.getElementById("chips").innerHTML=chips;
+  var html="";
+  AREAS.forEach(function(ar){
+    var list=ar.pins.filter(function(p){ return pinFilter==="all"||p[1]===pinFilter; });
+    if(!list.length) return;
+    html+='<div class="area"><h3>'+esc(ar.n)+'</h3><p>'+esc(ar.w)+'</p><ul class="pinlist">'+
+      list.map(function(p){
+        var q=(p[3]||p[0])+", Roma";
+        return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(q)+'">'+esc(p[0])+'</a><span class="ty">'+TYPES[p[1]]+'</span>'+(p[2]?'<span class="ds">'+esc(p[2])+'</span>':'')+'</li>';
+      }).join("")+'</ul></div>';
+  });
+  document.getElementById("areas").innerHTML=html||'<p class="daynote">Nothing of that type in your list.</p>';
+}
+document.getElementById("chips").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-f]"); if(!b) return;
+  pinFilter=b.getAttribute("data-f"); renderPins();
+});
+
+/* ---------- map ---------- */
+function drawMap(items,nums){
+  var W=Math.max(280,Math.round(map.parentNode.clientWidth)), H=Math.round(Math.min(380,Math.max(230,W*0.72)));
+  map.setAttribute("viewBox","0 0 "+W+" "+H);
+  var seq=[], seen={};
+  items.forEach(function(it){ if(it.p){ if(seq[seq.length-1]!==it.p) seq.push(it.p); seen[it.p]=it; } });
+  var ids=Object.keys(seen);
+  var cap=document.getElementById("mapcap");
+  if(!ids.length){ map.innerHTML=""; cap.textContent="Nothing to map for this day."; return; }
+
+  var K=Math.cos(41.9*Math.PI/180);
+  var xs=ids.map(function(i){return P[i].lon*K;}), ys=ids.map(function(i){return P[i].lat;});
+  var minx=Math.min.apply(null,xs), maxx=Math.max.apply(null,xs), miny=Math.min.apply(null,ys), maxy=Math.max.apply(null,ys);
+  var minSpan=0.011;
+  if(maxx-minx<minSpan){ var cx=(maxx+minx)/2; minx=cx-minSpan/2; maxx=cx+minSpan/2; }
+  if(maxy-miny<minSpan*0.7){ var cy=(maxy+miny)/2; miny=cy-minSpan*0.35; maxy=cy+minSpan*0.35; }
+  var padX=58, padY=40;
+  var sc=Math.min((W-2*padX)/(maxx-minx),(H-2*padY)/(maxy-miny));
+  var ox=(W-(maxx-minx)*sc)/2, oy=(H-(maxy-miny)*sc)/2;
+  function pr(lat,lon){ return [ox+(lon*K-minx)*sc, oy+(maxy-lat)*sc]; }
+
+  var out=[];
+  // river
+  var rp=RIVER.map(function(c){return pr(c[0],c[1]);});
+  var dpath="M"+rp[0][0].toFixed(1)+" "+rp[0][1].toFixed(1);
+  for(var i=1;i<rp.length-1;i++){
+    var mx=(rp[i][0]+rp[i+1][0])/2,my=(rp[i][1]+rp[i+1][1])/2;
+    dpath+=" Q"+rp[i][0].toFixed(1)+" "+rp[i][1].toFixed(1)+" "+mx.toFixed(1)+" "+my.toFixed(1);
+  }
+  dpath+=" L"+rp[rp.length-1][0].toFixed(1)+" "+rp[rp.length-1][1].toFixed(1);
+  var rw=Math.max(6,Math.min(16,sc*0.0011));
+  out.push('<path d="'+dpath+'" fill="none" stroke="var(--river)" stroke-width="'+rw.toFixed(1)+'" stroke-linecap="round" stroke-linejoin="round"/>');
+  // positions with nudging
+  var pos={}, placed=[];
+  ids.forEach(function(id){
+    var p=pr(P[id].lat,P[id].lon), tries=0;
+    while(tries<6 && placed.some(function(q){return Math.hypot(q[0]-p[0],q[1]-p[1])<25;})){ p=[p[0]+(tries%2?-1:1)*(13+tries*5), p[1]-10]; tries++; }
+    pos[id]=p; placed.push(p);
+  });
+  // route
+  if(seq.length>1){
+    out.push('<polyline points="'+seq.map(function(id){return pos[id][0].toFixed(1)+","+pos[id][1].toFixed(1);}).join(" ")+'" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="2 5" stroke-linecap="round"/>');
+  }
+  // labels
+  var boxes=placed.map(function(p){return [p[0]-14,p[1]-14,p[0]+14,p[1]+14];});
+  function hit(b){ return b[0]<2||b[2]>W-2||b[1]<2||b[3]>H-2||boxes.some(function(o){return !(b[2]<o[0]||b[0]>o[2]||b[3]<o[1]||b[1]>o[3]);}); }
+  var marks=[], labels=[];
+  ids.forEach(function(id){
+    var pl=P[id], p=pos[id], it=seen[id], col="var(--"+(pl.hotel?"stay":it.c)+")";
+    if(pl.hotel){
+      marks.push('<g class="pin hm" data-p="'+id+'" tabindex="0" role="button" aria-label="'+esc(pl.n)+'"><rect x="'+(p[0]-11).toFixed(1)+'" y="'+(p[1]-11).toFixed(1)+'" width="22" height="22" rx="5" fill="'+col+'"/><text x="'+p[0].toFixed(1)+'" y="'+(p[1]+4.5).toFixed(1)+'" text-anchor="middle" fill="var(--bg)">H</text></g>');
+    } else {
+      marks.push('<g class="pin" data-p="'+id+'" tabindex="0" role="button" aria-label="'+nums[id]+", "+esc(pl.n)+'"><circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="12" fill="'+col+'"/><text x="'+p[0].toFixed(1)+'" y="'+(p[1]+4.5).toFixed(1)+'" text-anchor="middle" fill="var(--bg)">'+nums[id]+'</text></g>');
+    }
+    var w=pl.n.length*6.3+4, opts=[
+      [p[0]+17,p[1]+4,"start",[p[0]+15,p[1]-8,p[0]+17+w,p[1]+8]],
+      [p[0]-17,p[1]+4,"end",[p[0]-17-w,p[1]-8,p[0]-15,p[1]+8]],
+      [p[0],p[1]+27,"middle",[p[0]-w/2,p[1]+16,p[0]+w/2,p[1]+31]],
+      [p[0],p[1]-18,"middle",[p[0]-w/2,p[1]-30,p[0]+w/2,p[1]-15]]
+    ];
+    for(var k=0;k<opts.length;k++){
+      if(!hit(opts[k][3])){ boxes.push(opts[k][3]); labels.push('<text class="lbl" x="'+opts[k][0].toFixed(1)+'" y="'+opts[k][1].toFixed(1)+'" text-anchor="'+opts[k][2]+'">'+esc(pl.n)+'</text>'); break; }
+    }
+  });
+  for(var r=1;r<rp.length-1;r++){
+    var rb=[rp[r][0]+rw/2+4,rp[r][1]-10,rp[r][0]+rw/2+40,rp[r][1]+8];
+    if(!hit(rb)){ labels.push('<text class="rv" x="'+(rb[0]+2).toFixed(1)+'" y="'+(rp[r][1]+4).toFixed(1)+'">Tiber</text>'); break; }
+  }
+  map.innerHTML=out.join("")+labels.join("")+marks.join("");
+  cap.textContent="A sketch of where the day’s stops sit, not a street map. Numbers match the plan; H marks your hotel. Tap a marker to find it in the list.";
+}
+
+function setHot(p,scroll){
+  hot=p;
+  [].forEach.call(tl.children,function(li){ li.classList.toggle("hot", !!p && li.getAttribute("data-p")===p); });
+  [].forEach.call(map.querySelectorAll(".pin"),function(g){ g.classList.toggle("hot", !!p && g.getAttribute("data-p")===p); });
+  if(scroll && p){
+    var li=tl.querySelector('[data-p="'+p+'"]');
+    if(li){ var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches; li.scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"}); }
+  }
+}
+map.addEventListener("click",function(e){ var g=e.target.closest&&e.target.closest(".pin"); if(g) setHot(g.getAttribute("data-p"),true); });
+map.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ var g=e.target.closest&&e.target.closest(".pin"); if(g){ e.preventDefault(); setHot(g.getAttribute("data-p"),true); } } });
+tl.addEventListener("click",function(e){ if(e.target.closest("a")||e.target.closest("details")) return; var li=e.target.closest(".item"); if(li) setHot(li.getAttribute("data-p")===hot?null:li.getAttribute("data-p"),false); });
+
+document.getElementById("choice").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-m]"); if(!b||!current||!current.choice) return;
+  save("visit:"+current.choice.key,b.getAttribute("data-m"));
+  render(current.id);
+});
+
+/* ---------- checklist ---------- */
+var checksEl=document.getElementById("checks");
+function renderChecks(){
+  var done=load("checks",{}), count=0;
+  checksEl.innerHTML=CHECKS.map(function(c){
+    if(done[c[0]]) count++;
+    return '<li><label><input type="checkbox" data-k="'+c[0]+'"'+(done[c[0]]?" checked":"")+'><span>'+esc(c[1])+(c[2]?'<small>'+esc(c[2])+'</small>':'')+'</span></label></li>';
+  }).join("");
+  document.getElementById("progress").textContent=count+" of "+CHECKS.length+" done";
+}
+checksEl.addEventListener("change",function(e){
+  var k=e.target.getAttribute("data-k"); if(!k) return;
+  var done=load("checks",{}); done[k]=e.target.checked; save("checks",done);
+  var count=CHECKS.filter(function(c){return done[c[0]];}).length;
+  document.getElementById("progress").textContent=count+" of "+CHECKS.length+" done";
+});
+document.getElementById("reset").addEventListener("click",function(){ save("checks",{}); renderChecks(); });
+
+/* ---------- private details: typed in by the user, kept on this device only ---------- */
+var privEls=document.querySelectorAll("input[data-priv]");
+[].forEach.call(privEls,function(el){
+  var k=el.getAttribute("data-priv");
+  el.value=load("priv:"+k,"");
+  el.addEventListener("input",function(){
+    save("priv:"+k,el.value);
+    [].forEach.call(privEls,function(o){ if(o!==el && o.getAttribute("data-priv")===k) o.value=el.value; });
+  });
+});
+
+/* ---------- routing ---------- */
+function route(){
+  var h=(location.hash||"").replace("#","");
+  if(h==="pins"){ renderPins(); return; }
+  var ok=DAYS.some(function(d){return d.id===h;});
+  render(ok?h:(todayId||"wed"));
+}
+window.addEventListener("hashchange",route);
+var rz; window.addEventListener("resize",function(){ clearTimeout(rz); rz=setTimeout(function(){ if(current){ var keep=hot; render(current.id); if(keep) setHot(keep,false);} },150); });
+renderChecks(); route();
+})();
+</script>
+</body>
+</html>
