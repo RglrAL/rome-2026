@@ -388,6 +388,18 @@
     },
     {
       "contexts": [
+        "taxi",
+        "drink",
+        "eat",
+        "music"
+      ],
+      "en": "Could you call me a taxi?",
+      "it": "Può chiamarmi un taxi?",
+      "say": "pwo kya-MAR-mee oon TAK-see",
+      "tip": "Any bar or restaurant will do this for you at the end of the night."
+    },
+    {
+      "contexts": [
         "hotel"
       ],
       "en": "I have a reservation under {name}",

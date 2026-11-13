@@ -272,6 +272,17 @@ html.maplock{overflow:hidden}
 .ref dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;font-size:.92rem}
 .ref dt{color:var(--muted)}
 .ref dd{margin:0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#homebtn{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:20;border:0;border-radius:999px;background:var(--ink);color:var(--bg);padding:12px 18px;font:600 .92rem/1 var(--body);box-shadow:0 2px 10px rgba(0,0,0,.35);cursor:pointer}
+#home{position:fixed;inset:0;z-index:37;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 0 calc(env(safe-area-inset-bottom,0px) + 24px)}
+.hcard{margin:14px 0 0;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;max-width:640px}
+.hcard.pick{border:2px solid var(--ink)}
+.hcard h3{margin:0;font-size:1.12rem;font-weight:600}
+.hcard .best{display:inline-block;font-size:.72rem;font-weight:700;background:var(--ink);color:var(--bg);padding:1px 8px;border-radius:999px;margin-right:8px;vertical-align:2px}
+.hcard p{margin:8px 0 0;font-size:.95rem}
+.hcard .hacts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.hcard .hacts a,.hcard .hacts button{display:inline-block;border:1px solid var(--ink);border-radius:999px;background:none;color:inherit;text-decoration:none;padding:8px 14px;font:600 .88rem/1.2 var(--body);cursor:pointer}
+.hcard .hacts .main{background:var(--ink);color:var(--bg)}
+.foot{padding-bottom:90px}
 #spare{position:fixed;inset:0;z-index:37;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 0 calc(env(safe-area-inset-bottom,0px) + 24px)}
 .sparelab{font-size:.82rem;font-weight:600;color:var(--muted);margin:16px 0 0}
 #spare .chips{margin:8px 0 0}
@@ -552,6 +563,14 @@ html.maplock{overflow:hidden}
   </div>
 </div>
 
+<button type="button" id="homebtn" data-home="1">Take me home</button>
+<div id="home" hidden role="dialog" aria-modal="true" aria-label="The best way back">
+  <div class="wrap">
+    <div class="phrhead"><h2 id="hometitle">Take me home</h2><button type="button" class="pillbtn" id="homeclose">Close</button></div>
+    <div id="homebody"></div>
+  </div>
+</div>
+
 <div id="spare" hidden role="dialog" aria-modal="true" aria-label="Suggestions for the time you have">
   <div class="wrap">
     <div class="phrhead"><h2>I’ve got some time</h2><button type="button" class="pillbtn" id="spareclose">Close</button></div>
@@ -799,7 +818,8 @@ var CHECKS = [
  ["abr","Find your Albergo Abruzzi confirmation","It isn’t in this itinerary yet. Have the booking number to hand for Saturday."],
  ["id","Passport and photo ID","Needed for the flight and for named tickets."],
  ["pack","Pack for the ceremony, the stairs and the rain","Something smart for Thursday night, proper walking shoes for the dome and Saturday, covered shoulders and knees for churches, and an umbrella. Late November in Rome is usually 8 to 17°C with showers."],
- ["taxi","On Saturday, ask Albergo Abruzzi to book Sunday’s 08:00 taxi",""]
+ ["taxi","On Saturday, ask Albergo Abruzzi to book Sunday’s 08:00 taxi",""],
+ ["taxiapp","Install a taxi app and add a payment card","FreeNow or itTaxi. Setting one up on a street corner at night is miserable. “Take me home” uses it."]
 ];
 
 /* ---------- what to look at, by place. Every statement was checked against the English Wikipedia article
@@ -1413,6 +1433,7 @@ function paintToday(){
   }
   if(ni<0 && xi<0) html+='<p>Nothing more on today’s plan.</p>';
   if(lateInfo) lateInfo.warns.forEach(function(w){ html+=row(w.i,"Check",esc(w.title),esc(w.w),"urgent"); });
+  html+=lastBusRow();
   html+='<div class="late"><button type="button" data-spare="1">I’ve got some time</button></div>';
   if(xi>=0){
     var on=lateInfo && lateInfo.moved;
@@ -1776,6 +1797,8 @@ function onPos(pos){
   nearErr="";
   if(lmap) drawMe();
   if(!spareEl.hidden && spare.from==="auto") sparePaint();
+  if(!homeEl.hidden && home.from==="auto") homePaint();
+  if(current && current.id===todayId && now.min>=1260) paintToday();      // so the last-bus line can appear
   // refresh the near list on the first fix and then only after moving, so it doesn't jump under a thumb
   if(pinMode==="near" && nearFrom==="me" && !document.getElementById("pinsview").hidden && (!nearAt || metres(nearAt.lat,nearAt.lon,mePos.lat,mePos.lon)>25)) renderNear();
 }
@@ -2228,6 +2251,137 @@ function renderMenu(){
   fetch("menu.json").then(function(r){ return r.json(); }).then(function(j){ MENU=j; menuPaint(); }).catch(function(){ menuPaint(); });
 }
 document.getElementById("menuq").addEventListener("input",menuPaint);
+
+/* ---------- take me home: walk, the 81 or a taxi back to tonight's hotel, worked out on the phone ---------- */
+var TAXI=null, homeEl=document.getElementById("home"), home={from:"auto"}, FCO={lat:41.7999,lon:12.2462};
+fetch("taxi.json").then(function(r){ return r.json(); }).then(function(j){ TAXI=j; }).catch(function(){});
+function effNow(){                           // the small hours belong to the night before
+  var t=romeNow(), date=t.date, m=t.min;
+  if(m<300 && date){ date=new Date(Date.parse(date+"T00:00:00Z")-86400000).toISOString().slice(0,10); m+=1440; }
+  return {date:date,min:m,clock:t.min,real:t.date};
+}
+function homeTarget(){
+  var e=effNow(), first=DAYS[0].date, last=DAYS[DAYS.length-1].date, sat=DAYS[3].date;
+  if(!e.date || e.date<first || e.date>last) return {k:"isa",trial:1};
+  if(e.date===last) return e.min>=665 ? {done:1} : {air:1};
+  return {k:e.date>=sat?"abr":"isa"};
+}
+function homeOrigin(){
+  if(home.from!=="auto" && P[home.from]) return {lat:P[home.from].lat,lon:P[home.from].lon,name:P[home.from].n.replace(/, evening$/,"")};
+  if(mePos && inRomeLL(mePos.lat,mePos.lon)) return {lat:mePos.lat,lon:mePos.lon,name:"where you are",me:1,acc:mePos.acc};
+  return null;
+}
+function homeBus(o,h,e){                     // the 81 from near o to near h, with the next and last scheduled buses
+  if(!BUS) return null;
+  var best=null;
+  BUS.dirs.forEach(function(d,di){
+    var a=busNear(d,o.lat,o.lon), b=busNear(d,h.lat,h.lon);
+    if(a.m>500 || b.m>450 || b.i<=a.i) return;
+    var wa=busWalk(a.m), l=d.days[e.date]||[], nx=[], last=null;
+    l.forEach(function(t){ var x=t+a.s[4]; last=x; if(x>=e.min+wa && nx.length<2) nx.push(x); });
+    var c={d:d,di:di,a:a,b:b,wa:wa,wb:busWalk(b.m),nx:nx,last:last,ride:b.s[4]-a.s[4],known:l.length>0};
+    c.total=nx.length?(nx[0]-e.min)+c.ride+c.wb:null;
+    if(!best || (c.total!==null && (best.total===null || c.total<best.total))) best=c;
+  });
+  return best;
+}
+function lastBusRow(){                       // in the evening, near a stop that goes your way: when the last 81 passes
+  if(!todayId || !BUS || !mePos || !inRomeLL(mePos.lat,mePos.lon)) return "";
+  var tg=homeTarget(), e=effNow(); if(!tg.k || e.min<1260) return "";
+  var c=homeBus(mePos,P[tg.k],e); if(!c || !c.known || c.last===null) return "";
+  var left=c.last-e.min; if(left<=0 || left>75) return "";
+  return '<button type="button" class="trow'+(left<=20?" urgent":"")+'" data-home="1"><span class="tk">Bus</span><span><b>Last 81 to '+esc(P[tg.k].n)+' passes '+esc(c.a.s[0])+' at '+hm(c.last)+', '+inMin(left)+'</b><small>'+c.wa+' min walk to the stop.</small></span></button>';
+}
+function homeRank(o){
+  if(!TAXI || !TAXI.ranks.length) return null;
+  var best=null; TAXI.ranks.forEach(function(r){ var m=metres(o.lat,o.lon,r[1],r[2]); if(!best||m<best.m) best={m:m,r:r}; });
+  return best && best.m<=700 ? best : null;
+}
+function taxiActs(drvKey){
+  var a=(TAXI?TAXI.apps:[]).map(function(x){ return '<a target="_blank" rel="noopener" href="'+x.u+'">'+esc(x.n)+'</a>'; }).join("");
+  return '<div class="hacts"><button type="button" class="main" data-drv="'+drvKey+'">Show the driver</button>'+
+    (TAXI?'<a href="tel:'+TAXI.phone.tel+'">Call '+esc(TAXI.phone.n)+'</a>':'')+a+'</div>';
+}
+function homePaint(){
+  var body=document.getElementById("homebody"), tg=homeTarget(), e=effNow(), html="";
+  var btn=document.getElementById("homebtn"); btn.textContent=tg.air?"To the airport":"Take me home";
+  document.getElementById("hometitle").textContent=tg.air?"To the airport":"Take me home";
+  if(tg.done){ body.innerHTML='<div class="hcard"><h3>You’re on your way home</h3><p>Flight FR9612 left at 11:05. Nothing more to work out.</p></div>'; return; }
+  var o=homeOrigin();
+  function whereChips(){
+    var opts=[]; if(todayId){ var cur=null; visibleItemsQuiet(spareDay()).forEach(function(it){ if(it.p && st(it)<=now.min) cur=it.p; }); if(cur) opts.push([cur,P[cur].n.replace(/, evening$/,"")+", per the plan"]); }
+    [["smt","Trastevere"],["monti","Monti"],["col","The Colosseum"],["pan","The Pantheon and Navona"],["zanzara","Prati"],["venue","The awards venue"]].forEach(function(x){ if(!opts.some(function(y){ return y[0]===x[0]; })) opts.push(x); });
+    return '<p class="sparelab">Where are you?</p><div class="chips">'+opts.map(function(x){ return '<button type="button" data-hfrom="'+x[0]+'" aria-pressed="'+(home.from===x[0])+'">'+esc(x[1])+'</button>'; }).join("")+
+      '<button type="button" data-hfrom="auto" aria-pressed="'+(home.from==="auto")+'">Use my location</button></div>';
+  }
+  // ---- Sunday morning: home is the airport
+  if(tg.air){
+    html+='<div class="hcard pick"><h3><span class="best">The plan</span>Taxi to Fiumicino</h3>'+
+      '<p>Flight FR9612 leaves at 11:05 and the gate closes at 10:35. The plan is a taxi from Albergo Abruzzi at 08:00, booked through the hotel on Saturday.</p>'+
+      '<p>The fare is fixed at €55 from inside the Aurelian Walls. Say <b lang="it">“È la tariffa fissa, vero?”</b> before you set off.</p>'+
+      (e.clock>=480?'<p><b>It’s past 08:00.</b> If the booked car hasn’t come, call one now.</p>':'')+taxiActs("fco")+'</div>';
+    body.innerHTML=html+'<p class="sparenote">Worked out on this phone, so it works without signal. The taxi apps need data; the phone number only needs a signal to call.</p>'; return;
+  }
+  var h=P[tg.k], d=DAYS.filter(function(x){ return x.date===e.date; })[0]||null;
+  html+='<p class="sparenote" style="margin-top:0">To <b>'+esc(h.n)+'</b>, '+esc(DAD[tg.k])+'.'+(tg.trial?' It isn’t a trip day, so this is a trial run to Hotel Isa.':'')+'</p>';
+  if(!o){
+    body.innerHTML=html+(home.from==="auto"&&watchId!==null&&!mePos?'<p class="sparenote">Finding you…</p>':(mePos?'<p class="sparenote">Your phone says you’re not in Rome, so pick a starting point.</p>':''))+whereChips()+
+      '<div class="hcard"><h3>Or go straight to a taxi</h3><p>The address card works from anywhere.</p>'+taxiActs(tg.k)+'</div>'; return;
+  }
+  // ---- arriving: from the airport
+  if(metres(o.lat,o.lon,FCO.lat,FCO.lon)<6000){
+    html+='<div class="hcard pick"><h3><span class="best">Best now</span>Taxi from the rank</h3><p>White licensed taxis wait outside arrivals. The fare is fixed at €55 to anywhere inside the Aurelian Walls. Prati sits at the edge of that zone, so agree it before you set off: <b lang="it">“È la tariffa fissa, vero?”</b></p>'+taxiActs(tg.k)+'</div>'+
+      '<div class="hcard"><h3>Train and metro</h3><p>Leonardo Express to Termini, then Metro A to Lepanto and a six-minute walk. Cheaper, and about the same time in bad traffic.</p></div>';
+    body.innerHTML=html; return;
+  }
+  var m=metres(o.lat,o.lon,h.lat,h.lon), w=Math.max(1,Math.round(m*1.3/80))+riverMin(o,h);
+  var night=e.min>=1440, rain=d?rainAt(d,Math.min(e.clock,1439),Math.min(e.clock+w,1439)):null, wet=rain!==null&&rain>=WET;
+  var close=night?10:wet?12:20, far=night?10:wet?12:30;
+  var bus=homeBus(o,h,e), busOk=bus && bus.total!==null && (bus.nx[0]-e.min)<=25 && bus.total<=w+10;
+  var pick = m<60?"here" : w<=close?"walk" : busOk?"bus" : w<=far?"walk" : "taxi";
+  function tag(k){ return pick===k?'<span class="best">Best now</span>':''; }
+  var dist=m<950?Math.max(10,Math.round(m/10)*10)+" m":(m/1000).toFixed(1)+" km";
+  var walkCard='<div class="hcard'+(pick==="walk"?" pick":"")+'"><h3>'+tag("walk")+'Walk, about '+w+' min</h3><p>'+dist+' '+compass(o.lat,o.lon,h.lat,h.lon)+' of '+esc(o.name)+', by my straight-line estimate.'+
+    (wet?' Rain is likely ('+rain+'%).':'')+(night&&w>10?' It’s late for a walk this long.':'')+'</p>'+
+    '<div class="hacts"><a class="'+(pick==="walk"?"main":"")+'" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(h.q)+'&travelmode=walking">Walking directions in Maps</a>'+
+    (useL?'<button type="button" data-mapat="'+h.lat+','+h.lon+'" data-hclose="1">Show on map</button>':'')+'</div></div>';
+  var busCardH="";
+  if(bus){
+    var way=bus.di===0?busWay(0,bus.a.i):"towards Prati";
+    busCardH='<div class="hcard'+(pick==="bus"?" pick":"")+'"><h3>'+tag("bus")+'Bus 81'+(bus.total!==null?', about '+bus.total+' min':'')+'</h3><p>'+bus.wa+' min walk to <b>'+esc(bus.a.s[0])+'</b>, '+way+'. '+
+      (bus.nx.length?'Next scheduled at '+bus.nx.map(hm).join(" and ")+'. ':(bus.known?'<b>The last one has gone</b>'+(bus.last!==null?' (it passed at '+hm(bus.last)+')':'')+'. ':'No timetable for today in the app. '))+
+      'About '+bus.ride+' min to '+esc(bus.b.s[0])+', then '+bus.wb+' min on foot.'+(bus.nx.length&&bus.last!==null?' The last one tonight passes at '+hm(bus.last)+'.':'')+
+      (d&&d.id==="sat"?' A transport strike is reported for Saturday, so the bus may not be running.':'')+'</p>'+
+      '<div class="hacts"><a class="'+(pick==="bus"?"main":"")+'" target="_blank" rel="noopener" href="'+busLive(bus.a.s[1])+'">Live arrivals</a>'+(useL?'<button type="button" data-mapat="'+bus.a.s[2]+','+bus.a.s[3]+'" data-busmap="1" data-hclose="1">Show the stop</button>':'')+'</div></div>';
+  }
+  var rank=homeRank(o);
+  var taxiCard='<div class="hcard'+(pick==="taxi"?" pick":"")+'"><h3>'+tag("taxi")+'Taxi</h3><p>With signal, a taxi app brings a car to you. Without data, call '+(TAXI?esc(TAXI.phone.n)+', '+esc(TAXI.phone.label):'a taxi')+', or ask the bar: <b lang="it">“Può chiamarmi un taxi?”</b></p>'+
+    (rank?'<p>The nearest rank on the map is '+(rank.r[0]?esc(rank.r[0])+', ':'')+busWalk(rank.m)+' min walk '+compass(o.lat,o.lon,rank.r[1],rank.r[2])+'. It may be empty late at night.</p>':'')+
+    (TAXI&&TAXI.phone.note?'<p class="sparenote" style="margin-top:8px">'+esc(TAXI.phone.note)+'</p>':'')+taxiActs(tg.k)+
+    (rank&&useL?'<div class="hacts"><button type="button" data-mapat="'+rank.r[1]+','+rank.r[2]+'" data-hclose="1">Show the rank</button></div>':'')+'</div>';
+  if(pick==="here") html+='<div class="hcard pick"><h3>You’re there</h3><p>'+esc(h.n)+' is right here.</p></div>';
+  var order=pick==="walk"?[walkCard,busCardH,taxiCard]:pick==="bus"?[busCardH,walkCard,taxiCard]:pick==="taxi"?[taxiCard,busCardH,walkCard]:[walkCard,taxiCard];
+  html+=order.join("");
+  html+='<p class="sparenote">Measured from '+esc(o.name)+(o.me&&o.acc>150?', though your position is only good to about '+Math.round(o.acc/50)*50+' m':'')+'. '+
+    '<button type="button" class="textbtn" id="homechange" style="margin:0;font-size:inherit">Start from somewhere else</button></p>'+
+    '<div id="homewhere" hidden>'+whereChips()+'</div>'+
+    '<p class="sparenote">Worked out on this phone, so it works without signal. Walking directions, taxi apps and live arrivals need data; the phone number only needs a signal to call.</p>';
+  body.innerHTML=html;
+}
+function openHome(){ now=romeNow(); home.from="auto"; if(watchId===null && navigator.geolocation) startLocate(false); homePaint(); homeEl.hidden=false; homeEl.scrollTop=0; document.documentElement.classList.add("maplock"); }
+function closeHome(){ homeEl.hidden=true; if(!mapbox.classList.contains("mapfull")) document.documentElement.classList.remove("maplock"); }
+document.getElementById("homeclose").addEventListener("click",closeHome);
+document.addEventListener("click",function(e){
+  var t=e.target; if(!t.closest) return;
+  if(t.closest("[data-home]")){ openHome(); return; }
+  if(!t.closest("#home")) return;
+  var b=t.closest("[data-hfrom]");
+  if(b){ home.from=b.getAttribute("data-hfrom"); if(home.from==="auto" && watchId===null) startLocate(false); homePaint(); return; }
+  if(t.id==="homechange"){ document.getElementById("homewhere").hidden=false; return; }
+  if(t.closest("[data-hclose]")) closeHome();
+},true);
+document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !homeEl.hidden && driverEl.hidden) closeHome(); });
+(function(){ var tg=homeTarget(); document.getElementById("homebtn").textContent=tg.air?"To the airport":"Take me home"; if(tg.done) document.getElementById("homebtn").hidden=true; })();
 
 /* ---------- "I've got some time": one or two suggestions that fit the time, the mood and where you need to be next.
    Tags come from place-tags.json. Hours are rules of thumb by kind of place, never looked-up opening times. ---------- */
