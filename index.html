@@ -101,6 +101,15 @@ button{font:inherit;color:inherit}
 .trow.urgent{background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:10px;margin:2px -10px 4px;width:calc(100% + 20px)}
 .trow.urgent small{color:inherit;opacity:.85}
 .trow.urgent + .trow{border-top:0}
+.instead{margin:6px 0 0;font-size:.88rem;color:var(--muted)}
+.instead .textbtn{margin:0 0 0 8px;font-size:.88rem}
+.warn{margin:8px 0 0;font-size:.9rem;font-weight:600;max-width:62ch}
+.wflag{display:inline-block;font-size:.74rem;font-weight:700;background:var(--ink);color:var(--bg);padding:1px 8px;border-radius:999px;margin-right:6px;vertical-align:1px}
+.pick{display:inline-block;margin-top:6px;border:1px solid var(--c);color:var(--c);background:none;border-radius:999px;padding:5px 13px;font-size:.82rem;font-weight:600;cursor:pointer}
+.late{display:flex;flex-wrap:wrap;align-items:center;gap:8px;border-top:1px solid var(--line);padding:10px 0 6px;font-size:.9rem}
+.late span{font-weight:600;margin-right:2px}
+.late button{min-height:36px;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 13px;font-size:.85rem;font-weight:600;cursor:pointer}
+.todaybox p.latenote{margin:0 0 8px;font-size:.88rem;color:var(--muted)}
 .leave{margin:6px 0 0;font-size:.9rem;font-weight:600;max-width:62ch}
 .legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:18px 0 0;padding:0;list-style:none;font-size:.82rem;color:var(--muted)}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
@@ -389,17 +398,36 @@ var P = {
   pan:{n:"Pantheon",lat:41.89862,lon:12.47683,q:"Pantheon, Roma"},
   monti:{n:"Monti, evening",lat:41.89490,lon:12.49088,q:"Piazza della Madonna dei Monti, Roma"},
   kong:{n:"Drink Kong",lat:41.89514,lon:12.49787,q:"Drink Kong, Piazza di San Martino ai Monti 8, Roma"},
+  lepanto:{n:"Lepanto metro",lat:41.91137,lon:12.46616,q:"Lepanto metro, Roma"},
+  vatmus:{n:"Vatican Museums",lat:41.90496,lon:12.45466,approx:1,q:"Musei Vaticani, Viale Vaticano, Roma"},
+  trionfale:{n:"Mercato Trionfale",lat:41.90932,lon:12.45273,q:"Mercato Trionfale, Via Andrea Doria, Roma"},
+  manipasta:{n:"Le Mani in Pasta",lat:41.88772,lon:12.47714,q:"Le Mani in Pasta, Via dei Genovesi 37, Roma"},
+  arco:{n:"Arch of Constantine",lat:41.88976,lon:12.49067,q:"Arco di Costantino, Roma"},
+  taverna:{n:"La Taverna dei Fori Imperiali",lat:41.89397,lon:12.48838,q:"La Taverna dei Fori Imperiali, Via della Madonna dei Monti 9, Roma"},
+  palatino:{n:"Palatine Hill",lat:41.88823,lon:12.48720,q:"Palatino, Roma"},
+  armando:{n:"Armando al Pantheon",lat:41.89906,lon:12.47620,q:"Armando al Pantheon, Salita de' Crescenzi 31, Roma"},
   tazza:{n:"Tazza d’Oro",lat:41.89959,lon:12.47749,q:"La Casa del Caffè Tazza d'Oro, Via degli Orfani 84, Roma"}
 };
 var RIVER = [[41.9200,12.4672],[41.9160,12.4683],[41.9115,12.4739],[41.9082,12.4762],[41.9052,12.4753],[41.9024,12.4720],[41.9017,12.4664],[41.9009,12.4641],[41.8985,12.4626],[41.8953,12.4650],[41.8924,12.4708],[41.8905,12.4747],[41.8900,12.4777],[41.8880,12.4797],[41.8838,12.4762],[41.8790,12.4740]];
 
 /* alternatives: n name, d description, pin = from the saved list, q = Maps query */
 function A(n,d,pin,q){ return {n:n,d:d,pin:pin,q:q||(n+", Roma")}; }
+/* where an alternative is, when its name isn't exactly a pin's name: a key in P, a pin name, or null for nowhere in particular */
+var ALT_AT={"Train and metro":"lepanto","An early night":"isa","Vatican Museums and Sistine Chapel":"vatmus","Basilica without the climb":"stp",
+  "Mercato Trionfale":"trionfale","A slow breakfast instead":"isa","Baroque churches loop":"Chiesa di Sant’Agnese in Agone","Castel Sant’Angelo":"csa",
+  "Ponte Fabricio and Tiber Island":"Ponte Fabricio","Trapizzino":"Trapizzino Trastevere","Le Mani in Pasta":"manipasta","Back to Bar San Calisto":"calisto",
+  "Taxi home":"isa","Standard ticket":"col","Outside only":"arco","La Taverna dei Fori Imperiali":"taverna","Santa Maria Maggiore":"Papal Basilica of Saint Mary Major",
+  "Add the Palatine":"palatino","See it from above instead":"camp","Cut it short":"aranci","Sant’Ignazio":"Chiesa di Sant’Ignazio di Loyola","Tazza d’Oro":"tazza",
+  "Stay by the hotel: Pancrazio dal 1922":"Ristorante Pancrazio dal 1922","Stay by the hotel: Saltimbocca":"Saltimbocca ristorante","Stay by the hotel: Il Corallo":"Il Corallo",
+  "Armando al Pantheon":"armando","La Botticella":"La Botticella of Poggi Giovanni",
+  "All’Antico Vinaio":null,"Alla Bucaniera or Marea":null,"Leave it for Friday":null};
+var ALT_KEEP={"Standard ticket":1};   // alternatives that keep the step's fixed time
 
 /* ---------- days ---------- */
 var DAYS = [
 /* fix:1 = a fixed time. lv = when to leave for it (lvl replaces the "Leave by" label, lvd adds how).
-   ti:1 / ei:1 = the start / end time is Irish time, an hour behind Rome. */
+   ti:1 / ei:1 = the start / end time is Irish time, an hour behind Rome.
+   sb = the step must start before this time (sbl says why); used by the running-late warnings. */
  {id:"wed",date:"2026-11-18",tab:"Wed 18",gist:"Arrive",title:"Wednesday: Dublin to Rome",
   sum:"A travel day. You land at 17:00 Rome time, so the evening is dinner in Prati and live music if you still have the energy.",
   items:[
@@ -459,7 +487,7 @@ var DAYS = [
    {t:"10:45",e:"11:15",c:"work",p:"venue",title:"Coffee break"},
    {t:"11:15",e:"13:00",c:"work",p:"venue",title:"Walking Practice Fair",note:"Nominated projects and partner exhibition stands."},
    {t:"13:00",e:"14:00",c:"work",p:"venue",title:"Buffet lunch",note:"The closing session of the event."},
-   {v:"skip",t:"14:15",e:"15:15",c:"free",p:"gian",title:"Climb the Gianicolo",note:"From the venue it’s a 25-minute uphill walk along the Passeggiata del Gianicolo to Piazzale Garibaldi, the widest view over the city’s domes and rooftops.",
+   {v:"skip",t:"14:15",e:"15:15",sb:"16:45",sbl:"sunset",c:"free",p:"gian",title:"Climb the Gianicolo",note:"From the venue it’s a 25-minute uphill walk along the Passeggiata del Gianicolo to Piazzale Garibaldi, the widest view over the city’s domes and rooftops.",
     alts:[A("Baroque churches loop","For architecture rather than a climb: cross Ponte Sant’Angelo to Sant’Agnese in Agone on Piazza Navona (Borromini), San Luigi dei Francesi (three Caravaggios, shut over lunch until mid-afternoon) and Sant’Ignazio (the painted false dome). About 25 minutes of walking in all.",1,"Chiesa di Sant'Agnese in Agone, Piazza Navona, Roma"),
           A("Castel Sant’Angelo","If you didn’t get to it on Thursday. Five minutes from the venue.",0,"Castel Sant'Angelo, Roma"),
           A("Villa Borghese","A taxi to the park for a walk under the pines and the Pincio terrace at sunset.",1)]},
@@ -501,7 +529,7 @@ var DAYS = [
    {t:"12:00",c:"free",p:"piazzetta",title:"Lunch in Monti at La Nuova Piazzetta",note:"Your pin, on a lane between the Colosseum and Via Cavour. Go as it opens to get a table.",
     alts:[A("La Taverna dei Fori Imperiali","Family-run trattoria a few minutes away. Book.",0,"La Taverna dei Fori Imperiali, Via della Madonna dei Monti 9, Roma"),
           A("Santa Maria Maggiore","Not lunch, but ten minutes north if you want the fifth-century mosaics.",1,"Basilica Papale di Santa Maria Maggiore, Roma")]},
-   {t:"13:15",e:"14:30",c:"free",p:"forum",title:"Through the Roman Forum",note:"Your Colosseum ticket covers it. Walk the Via Sacra west and leave by the exit under the Capitoline. Last entry in winter is 15:30.",
+   {t:"13:15",e:"14:30",sb:"15:30",sbl:"last entry to the Forum",c:"free",p:"forum",title:"Through the Roman Forum",note:"Your Colosseum ticket covers it. Walk the Via Sacra west and leave by the exit under the Capitoline. Last entry in winter is 15:30.",
     alts:[A("Add the Palatine","Another 45 minutes uphill for the view down over the Forum. Skip the Circus Maximus later to make room.",0,"Palatino, Roma"),
           A("See it from above instead","Skip going in and look down on the Forum from the terrace behind the Capitoline. Free.",0,"Piazza del Campidoglio, Roma")]},
    {t:"14:35",c:"free",p:"camp",title:"Capitoline Hill",note:"Michelangelo’s piazza, then walk round the back of the central palace for the classic view along the Forum.",
@@ -510,11 +538,11 @@ var DAYS = [
    {t:"15:05",c:"free",p:"marc",title:"Theatre of Marcellus",note:"Down the steps and five minutes on: a Roman theatre with Renaissance apartments built on top. You pass it on the way south.",
     alts:[A("Ponte Fabricio","Three minutes further to the river and the bridge to Tiber Island.",1)]},
    {t:"15:25",c:"free",p:"circo",title:"Along the Circus Maximus",note:"The chariot track is now a long grass valley under the Palatine. Walk its length to the foot of the Aventine."},
-   {t:"15:50",e:"16:50",c:"free",p:"aranci",title:"Aventine Hill and the Orange Garden",note:"Santa Sabina, a near-intact fifth-century basilica, is beside the garden, and the keyhole view of St Peter’s is two minutes further. Sunset from the garden terrace is around 16:45. It’s free and open until about 18:00.",
+   {t:"15:50",e:"16:50",sb:"16:45",sbl:"sunset",c:"free",p:"aranci",title:"Aventine Hill and the Orange Garden",note:"Santa Sabina, a near-intact fifth-century basilica, is beside the garden, and the keyhole view of St Peter’s is two minutes further. Sunset from the garden terrace is around 16:45. It’s free and open until about 18:00.",
     alts:[A("Cut it short","Take a taxi from the Capitoline straight to the Orange Garden and skip the two stops between.",0,"Giardino degli Aranci, Roma")]},
    {t:"17:00",c:"travel",title:"Taxi to Albergo Abruzzi",note:"About ten minutes. On foot it’s 30, by way of the river and the Ghetto."},
    {t:"17:20",c:"stay",p:"abr",title:"Check in at Albergo Abruzzi"},
-   {t:"18:00",c:"free",p:"pan",title:"The Pantheon",note:"Across the square. Entry is about €5 and last admission is around 18:30. After dark the oculus is a black disc and the building is quieter.",
+   {t:"18:00",sb:"18:30",sbl:"last admission to the Pantheon",c:"free",p:"pan",title:"The Pantheon",note:"Across the square. Entry is about €5 and last admission is around 18:30. After dark the oculus is a black disc and the building is quieter.",
     alts:[A("Sant’Ignazio","Three minutes away: Pozzo’s painted ceiling and false dome. Free.",1,"Chiesa di Sant'Ignazio di Loyola, Roma"),
           A("Tazza d’Oro","Coffee at the bar, one minute from the hotel.",1,"La Casa del Caffè Tazza d'Oro, Roma"),
           A("Venchi","Chocolate and gelato.",1,"Venchi, Via degli Orfani, Roma")]},
@@ -705,9 +733,79 @@ DAYS.forEach(function(d){
   tabsEl.appendChild(a);
 })();
 
+/* ---------- the plan as shown: study-visit choice, then swaps, then any delay ---------- */
+function copy(o){ var c={},k; for(k in o) c[k]=o[k]; return c; }
+function altPlace(a){
+  var at=(a.n in ALT_AT)?ALT_AT[a.n]:a.n;
+  if(!at) return null;
+  if(P[at]) return at;
+  for(var i=0;i<PINLIST.length;i++) if(PINLIST[i].n===at){
+    var k="xp"+i; if(!P[k]) P[k]={n:PINLIST[i].n,lat:PINLIST[i].lat,lon:PINLIST[i].lon,q:PINLIST[i].q};
+    return k;
+  }
+  return null;
+}
 function visibleItems(d){
-  var mode = d.choice ? load("visit:"+d.choice.key,"skip") : null;
-  return d.items.filter(function(it){ return !it.v || it.v===mode; });
+  var mode = d.choice ? load("visit:"+d.choice.key,"skip") : null, out=[];
+  d.items.forEach(function(orig,idx){
+    if(orig.v && orig.v!==mode) return;
+    var it=copy(orig); it.idx=idx;
+    var pick=orig.alts ? load("swap:"+d.id+":"+idx,-1) : -1, a=pick>=0 && orig.alts[pick];
+    if(a){
+      it.title=a.n; it.note=a.d; it.q=a.q; it.p=altPlace(a)||undefined; it.swapped=orig.title; it.pick=pick;
+      if(!ALT_KEEP[a.n]){ it.fix=0; it.lv=it.lvl=it.lvd=it.sb=it.sbl=undefined; }
+    }
+    out.push(it);
+  });
+  return applyLate(d,out);
+}
+/* running late: move the flexible steps from late.from onwards by late.m minutes, up to the next fixed step,
+   where the plan picks up on time again. Only ever applies to today. */
+var lateInfo=null, lateMsg="";
+function isFixed(it){ return it.fix || it.c==="work"; }
+function shift(t,m){ return hm(Math.min(mins(t)+m,1439)); }
+function applyLate(d,items){
+  lateInfo=null;
+  var late = d.id===todayId ? load("late:"+d.id,null) : null;
+  if(!late || !late.m) return items;
+  var info={m:late.m,moved:0,last:0,stopAt:null,warns:[]};
+  for(var i=0;i<items.length;i++){
+    var it=items[i];
+    if(st(it)<late.from) continue;
+    if(isFixed(it)){ info.stopAt=it; break; }
+    var nf=null;
+    for(var j=i+1;j<items.length;j++){ if(isFixed(items[j])){ nf=items[j]; break; } }
+    if(nf && nf.lv && it.t===nf.lv) continue;            // the departure for a fixed step stays put
+    it.was=it.t; it.t=shift(it.t,late.m); if(it.e) it.e=shift(it.e,late.m);
+    info.moved++; info.last=st(it);
+    var w="";
+    if(it.sb && mins(it.t)>mins(it.sb)) w="Now starts at "+it.t+", after "+it.sbl+" at "+it.sb+".";
+    if(nf){
+      var lim=nf.lv||nf.t;
+      if(mins(it.e||it.t)>mins(lim)) w+=(w?" ":"")+"Runs past "+lim+", when "+(nf.lv?"you need to leave for "+nf.title+".":nf.title+" starts.");
+    }
+    if(w){ it.warn=w; info.warns.push({i:i,title:it.title,w:w}); }
+  }
+  lateInfo=info;
+  return items;
+}
+function setLate(add){
+  var d=current; if(!d || d.id!==todayId) return;
+  lateMsg="";
+  if(!add){ save("late:"+d.id,null); render(d.id); return; }
+  var cur=load("late:"+d.id,null);
+  if(cur && lateInfo && lateInfo.moved && lateInfo.last>now.min){ cur.m+=add; }   // still inside the moved stretch: add to it
+  else{
+    var nxt=null; curItems.forEach(function(it){ if(!nxt && st(it)>now.min) nxt=it; });
+    if(!nxt) return;
+    cur={m:add,from:mins(nxt.was||nxt.t)+(nxt.ti?60:0)};
+  }
+  save("late:"+d.id,cur); render(d.id);
+  if(lateInfo && !lateInfo.moved){
+    save("late:"+d.id,null);
+    lateMsg="The next step has a fixed time, so there’s nothing to move.";
+    render(d.id);
+  }
 }
 
 function render(id){
@@ -739,13 +837,18 @@ function render(id){
   curItems=items;
 
   tl.innerHTML=items.map(function(it,i){
-    var pl = it.p?P[it.p]:null;
-    var where = pl ? '<p class="where">'+(nums[it.p]?'<span class="num">'+nums[it.p]+'</span>':'')+
-      '<a target="_blank" rel="noopener" href="'+mapsUrl(pl.q)+'">'+esc(pl.n)+', open in Maps</a>'+(useL?'<button type="button" class="textbtn" data-show="'+it.p+'">Show on map</button>':'')+'</p>' : "";
-    return '<li class="item" data-c="'+it.c+'"'+(it.p?' data-p="'+it.p+'"':'')+'>'+
-      '<div class="time">'+it.t+(it.e?'<small>to '+it.e+'</small>':'')+'</div>'+
-      '<div class="body"><h3>'+'<span class="kind">'+KIND[it.c]+'</span>'+(it.opt?'<span class="opt">Optional</span>':'')+esc(it.title)+'</h3>'+
-      where+(it.lv && it.lv!==it.t?'<p class="leave">'+esc(it.lvl||"Leave by")+' '+it.lv+(it.ti?' Irish time':'')+'.'+(it.lvd?' '+esc(it.lvd):'')+'</p>':'')+(it.note?'<p class="note">'+esc(it.note)+'</p>':'')+altsHtml(it)+'</div></li>';
+    var pl = it.p?P[it.p]:null, where="";
+    if(pl) where='<p class="where">'+(nums[it.p]?'<span class="num">'+nums[it.p]+'</span>':'')+
+      '<a target="_blank" rel="noopener" href="'+mapsUrl(it.swapped?it.q:pl.q)+'">'+esc(pl.n)+', open in Maps</a>'+(useL?'<button type="button" class="textbtn" data-show="'+it.p+'">Show on map</button>':'')+'</p>';
+    else if(it.swapped) where='<p class="where"><a target="_blank" rel="noopener" href="'+mapsUrl(it.q)+'">Open in Maps</a></p>';
+    return '<li class="item" data-c="'+it.c+'" data-idx="'+it.idx+'"'+(it.p?' data-p="'+it.p+'"':'')+'>'+
+      '<div class="time">'+it.t+(it.was?'<small>was '+it.was+'</small>':'')+(it.e?'<small>to '+it.e+'</small>':'')+'</div>'+
+      '<div class="body"><h3><span class="kind">'+KIND[it.c]+'</span>'+(it.opt?'<span class="opt">Optional</span>':'')+(it.swapped?'<span class="opt">Swapped</span>':'')+esc(it.title)+'</h3>'+
+      where+
+      (it.swapped?'<p class="instead">Instead of: '+esc(it.swapped)+'.<button type="button" class="textbtn" data-swap="-1" data-idx="'+it.idx+'">Back to the original</button></p>':'')+
+      (it.lv && it.lv!==it.t?'<p class="leave">'+esc(it.lvl||"Leave by")+' '+it.lv+(it.ti?' Irish time':'')+'.'+(it.lvd?' '+esc(it.lvd):'')+'</p>':'')+
+      (it.warn?'<p class="warn"><span class="wflag">Check</span>'+esc(it.warn)+'</p>':'')+
+      (it.note?'<p class="note">'+esc(it.note)+'</p>':'')+altsHtml(it)+'</div></li>';
   }).join("");
 
   paintToday();
@@ -788,9 +891,19 @@ function paintToday(){
     } else if(fi!==xi) html+=row(fi,"Fixed",what,inMin(st(fx)-n));
   }
   if(ni<0 && xi<0) html+='<p>Nothing more on today’s plan.</p>';
+  if(lateInfo) lateInfo.warns.forEach(function(w){ html+=row(w.i,"Check",esc(w.title),esc(w.w),"urgent"); });
+  if(xi>=0){
+    var on=lateInfo && lateInfo.moved;
+    html+='<div class="late"><span>Running late?</span><button type="button" data-late="15">+15 min</button><button type="button" data-late="30">+30 min</button>'+(on?'<button type="button" data-late="0">Undo</button>':'')+'</div>';
+    if(on) html+='<p class="latenote">'+lateInfo.moved+(lateInfo.moved===1?" step":" steps")+" moved "+lateInfo.m+" min later"+
+      (lateInfo.stopAt?". The plan picks up on time at "+lateInfo.stopAt.t+" with "+esc(lateInfo.stopAt.title)+".":", to the end of the day.")+'</p>';
+    else if(lateMsg) html+='<p class="latenote">'+esc(lateMsg)+'</p>';
+  }
   box.innerHTML='<div class="todaybox">'+html+'</div>';
 }
 document.getElementById("today").addEventListener("click",function(e){
+  var lb=e.target.closest("button[data-late]");
+  if(lb){ setLate(+lb.getAttribute("data-late")); return; }
   var b=e.target.closest("button[data-i]"); if(!b) return;
   var li=tl.children[+b.getAttribute("data-i")]; if(!li) return;
   setHot(null,false);
@@ -812,11 +925,15 @@ document.addEventListener("visibilitychange",function(){ if(!document.hidden) ti
 
 function altsHtml(it){
   if(!it.alts||!it.alts.length) return "";
-  var n=it.alts.length;
-  return '<details class="alts"><summary>'+(n===1?"1 other option":n+" other options")+'</summary><ul>'+
-    it.alts.map(function(a){
-      return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(a.q)+'"><b>'+esc(a.n)+'</b></a>'+(a.pin?'<span class="mine">Your pin</span>':'')+'<br>'+esc(a.d)+'</li>';
-    }).join("")+'</ul></details>';
+  var orig=current.items[it.idx], rows=[];
+  function btn(k){ return '<br><button type="button" class="pick" data-swap="'+k+'" data-idx="'+it.idx+'">Choose this</button>'; }
+  if(it.swapped) rows.push('<li><b>'+esc(orig.title)+'</b><br>The original plan.'+btn(-1)+'</li>');
+  it.alts.forEach(function(a,k){
+    if(k===it.pick) return;
+    rows.push('<li><a target="_blank" rel="noopener" href="'+mapsUrl(a.q)+'"><b>'+esc(a.n)+'</b></a>'+(a.pin?'<span class="mine">Your pin</span>':'')+'<br>'+esc(a.d)+btn(k)+'</li>');
+  });
+  var n=rows.length;
+  return '<details class="alts"><summary>'+(n===1?"1 other option":n+" other options")+'</summary><ul>'+rows.join("")+'</ul></details>';
 }
 
 /* ---------- pins view ---------- */
@@ -1084,6 +1201,14 @@ function setHot(p,scroll,fromMap){
 map.addEventListener("click",function(e){ var g=e.target.closest&&e.target.closest(".pin"); if(g) setHot(g.getAttribute("data-p"),true); });
 map.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ var g=e.target.closest&&e.target.closest(".pin"); if(g){ e.preventDefault(); setHot(g.getAttribute("data-p"),true); } } });
 tl.addEventListener("click",function(e){
+  var sw=e.target.closest("button[data-swap]");
+  if(sw){
+    var idx=sw.getAttribute("data-idx");
+    save("swap:"+current.id+":"+idx,+sw.getAttribute("data-swap"));
+    render(current.id);
+    var row=tl.querySelector('[data-idx="'+idx+'"]'); if(row) row.scrollIntoView({block:"nearest"});
+    return;
+  }
   var sb=e.target.closest("button[data-show]");
   if(sb){ setHot(sb.getAttribute("data-show"),false); mapbox.scrollIntoView({block:"start"}); return; }
   if(e.target.closest("a")||e.target.closest("details")) return; var li=e.target.closest(".item"); if(li) setHot(li.getAttribute("data-p")===hot?null:li.getAttribute("data-p"),false); });
