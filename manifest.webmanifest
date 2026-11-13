@@ -1,0 +1,15 @@
+{
+  "name": "Rome, 18–22 November",
+  "short_name": "Rome",
+  "description": "Day-by-day plan, map and saved places for the Rome trip.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ECEBE7",
+  "theme_color": "#ECEBE7",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
