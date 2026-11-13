@@ -120,6 +120,7 @@ button{font:inherit;color:inherit}
 .look{margin:10px 0 0;max-width:62ch}
 .look summary{cursor:pointer;font-size:.9rem;font-weight:600;color:var(--c);width:max-content;max-width:100%;padding:2px 0}
 .look p{margin:6px 0 2px;font-size:.92rem}
+.pinlist .ds>.textbtn{margin:2px 0 0;font-size:.88rem;font-weight:600;color:inherit}
 .pinlist .ds.macts{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:baseline;margin-top:6px}
 .macts a{font-weight:600}
 .macts .textbtn{margin:0;font-size:inherit;font-weight:600;color:inherit}
@@ -205,6 +206,8 @@ html.maplock{overflow:hidden}
 .pop li{margin:2px 0}
 .pop span{font-weight:600;font-variant-numeric:tabular-nums;margin-right:4px}
 .popty{color:var(--muted);font-size:.8rem}
+.popdist{font-size:.84rem;font-weight:600;margin-top:3px}
+.popdist:empty{display:none}
 .popact{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;margin-top:8px}
 .popact .textbtn{margin:0;font-size:.88rem;font-weight:600;color:inherit}
 .where .textbtn{margin:0 0 0 10px;font-size:.88rem}
@@ -1087,7 +1090,7 @@ DAYS.forEach(function(d){ if(d.date===now.date) todayId=d.id; });
 
 /* ---------- rendering ---------- */
 var tabsEl=document.getElementById("tabs"), tl=document.getElementById("tl"), map=document.getElementById("map");
-var current=null, hot=null, curItems=[];
+var current=null, hot=null, curItems=[], lastDay="wed";
 
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function mapsUrl(q){ return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q); }
@@ -1197,7 +1200,7 @@ function setLate(add){
 
 function render(id){
   var d = DAYS.filter(function(x){return x.id===id;})[0] || DAYS[0];
-  current=d; hot=null;
+  current=d; hot=null; lastDay=d.id;
   showView("dayview");
   DAYS.forEach(function(x){
     var t=document.getElementById("tab-"+x.id);
@@ -1361,7 +1364,8 @@ function renderPins(){
     html+='<div class="area"><h3>'+esc(ar.n)+'</h3><p>'+esc(ar.w)+'</p><ul class="pinlist">'+
       list.map(function(p){
         var q=(p[3]||p[0])+", Roma";
-        return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(q)+'">'+esc(p[0])+'</a><span class="ty">'+TYPES[p[1]]+'</span>'+(p[2]?'<span class="ds">'+esc(p[2])+'</span>':'')+aboutHtml(ABOUT[p[0]],"span")+lookHtml(pinLook(p[0]))+'</li>';
+        return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(q)+'">'+esc(p[0])+'</a><span class="ty">'+TYPES[p[1]]+'</span>'+(p[2]?'<span class="ds">'+esc(p[2])+'</span>':'')+aboutHtml(ABOUT[p[0]],"span")+
+          (useL&&typeof p[4]==="number"?'<span class="ds"><button type="button" class="textbtn" data-mapat="'+p[4]+','+p[5]+'">Show on map</button></span>':'')+lookHtml(pinLook(p[0]))+'</li>';
       }).join("")+'</ul></div>';
   });
   document.getElementById("areas").innerHTML=html||'<p class="daynote">Nothing of that type in your list.</p>';
@@ -1417,7 +1421,8 @@ function renderNear(){
     var p=x.p, m=x.m, far=m<950?Math.max(10,Math.round(m/10)*10)+" m":(m/1000).toFixed(1)+" km";
     var how=m<40?(nearFrom==="me"?"You’re here":"Next door"):Math.max(1,Math.round(m*1.3/80))+" min walk · "+far+" "+compass(o.lat,o.lon,p.lat,p.lon);
     return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(p.q)+'">'+esc(p.n)+'</a><span class="ty">'+how+' · '+(p.label||TYPES[p.ty])+'</span>'+
-      (p.plan?'<span class="ds used">On your plan: '+esc(p.plan)+'</span>':'')+(p.d?'<span class="ds">'+esc(p.d)+'</span>':'')+aboutHtml((p.k&&aboutFor(p.k))||ABOUT[p.n],"span")+lookHtml((p.k&&LOOK[p.k])||pinLook(p.n))+'</li>';
+      (p.plan?'<span class="ds used">On your plan: '+esc(p.plan)+'</span>':'')+(p.d?'<span class="ds">'+esc(p.d)+'</span>':'')+aboutHtml((p.k&&aboutFor(p.k))||ABOUT[p.n],"span")+
+      (useL?'<span class="ds"><button type="button" class="textbtn" data-mapat="'+p.lat+','+p.lon+'">Show on map</button></span>':'')+lookHtml((p.k&&LOOK[p.k])||pinLook(p.n))+'</li>';
   }).join("")+'</ul>'+(list.length>nearLimit?'<button type="button" class="textbtn" id="nearmore">Show more</button>':'');
 }
 document.getElementById("pinmode").addEventListener("click",function(e){
@@ -1506,25 +1511,36 @@ function drawLeaflet(items,nums){
   shown.forEach(function(id){
     var pl=P[id], its=byP[id]||[], c=pl.hotel?"stay":its[its.length-1].c;
     var m=L.marker(ll(id),{icon:dot('<span class="mk'+(pl.hotel?" h":"")+'" style="--c:var(--'+c+')">'+(pl.hotel?"H":nums[id])+'</span>',30,-12),zIndexOffset:pl.hotel?400:600,title:pl.n,alt:pl.n});
-    m.bindPopup('<b>'+esc(pl.n)+'</b>'+
+    m.bindPopup(withDist(pl.lat,pl.lon,'<b>'+esc(pl.n)+'</b><div class="popdist"></div>'+
       (its.length?'<ul class="pop">'+its.map(function(it){ return '<li><span>'+it.t+'</span>'+esc(it.title)+'</li>'; }).join("")+'</ul>':'<br><span class="popty">Not on this day’s plan</span>')+
       '<div class="popact">'+(its.length?'<button type="button" class="textbtn" data-plan="'+id+'">Show in plan</button>':'')+
       '<button type="button" class="textbtn" data-drv="'+id+'">Show the driver</button>'+
-      '<a target="_blank" rel="noopener" href="'+mapsUrl(pl.q)+'">Open in Maps</a></div>',{maxWidth:240,autoPanPaddingTopLeft:[8,54],autoPanPaddingBottomRight:[8,8]});
+      '<a target="_blank" rel="noopener" href="'+mapsUrl(pl.q)+'">Open in Maps</a></div>'),{maxWidth:240,autoPanPaddingTopLeft:[8,54],autoPanPaddingBottomRight:[8,8]});
     m.on("click",function(){ setHot(id,false,true); });
     m.addTo(stopLayer); lmarks[id]=m;
   });
   PINLIST.forEach(function(p,pi){
     if(shown.some(function(id){ return metres(p.lat,p.lon,P[id].lat,P[id].lon)<20; })) return;
     L.marker([p.lat,p.lon],{icon:dot('<span class="pk"></span>',24,-6),title:p.n,alt:p.n})
-      .bindPopup('<b>'+esc(p.n)+'</b><br><span class="popty">'+(p.extra?'Live music · not one of your pins':'Your pin · '+TYPES[p.ty])+'</span>'+(p.d?'<br>'+esc(p.d):'')+
-        '<div class="popact"><button type="button" class="textbtn" data-drv="pin:'+pi+'">Show the driver</button><a target="_blank" rel="noopener" href="'+mapsUrl(p.q)+'">Open in Maps</a></div>',{maxWidth:240,autoPanPaddingTopLeft:[8,54],autoPanPaddingBottomRight:[8,8]})
+      .bindPopup(withDist(p.lat,p.lon,'<b>'+esc(p.n)+'</b><br><span class="popty">'+(p.extra?'Live music · not one of your pins':'Your pin · '+TYPES[p.ty])+'</span><div class="popdist"></div>'+(p.d?'<br>'+esc(p.d):'')+
+        '<div class="popact"><button type="button" class="textbtn" data-drv="pin:'+pi+'">Show the driver</button><a target="_blank" rel="noopener" href="'+mapsUrl(p.q)+'">Open in Maps</a></div>'),{maxWidth:240,autoPanPaddingTopLeft:[8,54],autoPanPaddingBottomRight:[8,8]})
       .addTo(pinLayer);
   });
   lmap.fitBounds(L.latLngBounds((ids.length?ids:shown).map(ll)).pad(0.2),{maxZoom:17,animate:false});
   document.getElementById("mapcap").textContent="Numbers match the plan, H marks your hotels and the small dots are your pins. The dotted line joins the stops in order; it isn’t a walking route.";
 }
 
+/* how far a place is: from you when your position is known and in Rome, otherwise from that day's hotel */
+function howFar(lat,lon){
+  var o=null, from="";
+  if(mePos && inRomeLL(mePos.lat,mePos.lon)){ o=mePos; from="you"; }
+  else if(current){ var h=P[(current.id==="sat"||current.id==="sun")?"abr":"isa"]; o=h; from=h.n; }
+  if(!o) return "";
+  var m=metres(o.lat,o.lon,lat,lon); if(m<30) return "";
+  var far=m<950?Math.max(10,Math.round(m/10)*10)+" m":(m/1000).toFixed(1)+" km", w=Math.max(1,Math.round(m*1.3/80));
+  return "About "+w+" min on foot, "+far+" "+compass(o.lat,o.lon,lat,lon)+" of "+from+"."+(w>30?" A taxi may suit better.":"");
+}
+function withDist(lat,lon,html){ return function(){ return html.replace('<div class="popdist"></div>','<div class="popdist">'+esc(howFar(lat,lon))+'</div>'); }; }
 function setFull(on){
   var c=lmap.getCenter();
   mapbox.classList.toggle("mapfull",on); document.documentElement.classList.toggle("maplock",on);
@@ -1883,7 +1899,7 @@ function focusOnMap(lat,lon){
 }
 document.addEventListener("click",function(e){
   var b=e.target.closest&&e.target.closest("button[data-mapat]"); if(!b) return;
-  var at=b.getAttribute("data-mapat").split(","), day=b.getAttribute("data-day");
+  var at=b.getAttribute("data-mapat").split(","), day=b.getAttribute("data-day") || todayId || lastDay;
   if(!current || current.id!==day){
     try{ history.replaceState(null,"","#"+day); }catch(err){}
     render(day);
