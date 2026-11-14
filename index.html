@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rome, 18–22 November</title>
 <script>try{var t=JSON.parse(localStorage.getItem("rome26:theme"));if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}
-try{if(localStorage.getItem("rome26:seen")!==JSON.stringify(new Date().toDateString()))document.documentElement.className+=" showcover";}catch(e){}</script>
+document.documentElement.className+=" showcover";   /* the cover shows on every open */</script>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#ECEBE7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#16181B" media="(prefers-color-scheme: dark)">
@@ -300,7 +300,7 @@ html.maplock{overflow:hidden}
 .hcard .hacts a,.hcard .hacts button{display:inline-block;border:1px solid var(--ink);border-radius:999px;background:none;color:inherit;text-decoration:none;padding:8px 14px;font:600 .88rem/1.2 var(--body);cursor:pointer}
 .hcard .hacts .main{background:var(--ink);color:var(--bg)}
 .foot{padding-bottom:90px}
-#spare,#addp{position:fixed;inset:0;z-index:37;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 0 calc(env(safe-area-inset-bottom,0px) + 24px)}
+#spare,#addp,#inst{position:fixed;inset:0;z-index:37;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 0 calc(env(safe-area-inset-bottom,0px) + 24px)}
 .sparelab{font-size:.82rem;font-weight:600;color:var(--muted);margin:16px 0 0}
 #spare .chips{margin:8px 0 0}
 .scard{margin:14px 0 0;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;max-width:640px}
@@ -385,6 +385,11 @@ html.maplock{overflow:hidden}
 .bkline b{font-weight:600}
 .bkline .textbtn{margin:0 0 0 8px;font-size:.88rem}
 .fstat a{display:block;padding:5px 0}
+button.status{font:inherit;font-size:.9rem;color:inherit;cursor:pointer;font-weight:600}
+#instbody{max-width:60ch}
+#instbody ol{padding-left:1.3em;margin:10px 0}
+#instbody li{margin:8px 0}
+#instbody .chips{margin:14px 0}
 .addlab{display:block;margin:18px 0 6px;font-weight:600;font-size:.95rem}
 .addin{display:block;width:100%;max-width:520px;box-sizing:border-box;font:inherit;font-size:1rem;padding:10px 14px;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
 #addp .chips{margin:0}
@@ -529,6 +534,7 @@ main.wrap{padding-bottom:84px}
   <div class="status" id="status" role="status"></div>
   <a class="status" id="checkpill" href="#trip" hidden></a>
   <div class="status" id="offpill" hidden>Saved for offline use</div>
+  <button type="button" class="status" id="instpill" hidden>Install as an app</button>
   <div class="themerow"><div class="seg" id="themeseg" role="group" aria-label="Theme">
     <button type="button" data-theme-set="auto">Auto</button><button type="button" data-theme-set="light">Light</button><button type="button" data-theme-set="dark">Dark</button>
   </div></div>
@@ -808,6 +814,12 @@ main.wrap{padding-bottom:84px}
     <p class="addpos" id="addpos" role="status"></p>
     <div class="chips addend"><button type="button" id="addsave" aria-pressed="true">Save place</button><button type="button" id="adddel" hidden>Delete</button></div>
     <p class="refnote" id="addmsg" role="status"></p>
+  </div>
+</div>
+<div id="inst" hidden role="dialog" aria-modal="true" aria-label="Install as an app">
+  <div class="wrap">
+    <div class="phrhead"><h2>Install as an app</h2><button type="button" class="pillbtn" id="instclose">Close</button></div>
+    <div id="instbody"></div>
   </div>
 </div>
 <div id="pickbar" hidden role="status"><span>Tap the map where the place is</span><button type="button" id="pickcancel">Cancel</button></div>
@@ -2320,7 +2332,35 @@ if(navigator.storage && navigator.storage.persist){
 }
 keepNote();
 
-/* ---------- cover: shown the first time the app is opened on a device ---------- */
+/* ---------- install as an app: a real prompt where the browser offers one, steps to follow where it doesn't ---------- */
+(function(){
+  var pill=document.getElementById("instpill"), el=document.getElementById("inst"), body=document.getElementById("instbody"), ask=null;
+  var installed=(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
+  if(installed) return;
+  var ua=navigator.userAgent||"", ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1), android=/Android/.test(ua);
+  var WHY='<p>Installing puts a Rome icon on your home screen. It opens full screen like any other app and works without signal. Nothing comes from an app store; it is this same page, kept on the phone.</p>';
+  var AFTER='<p class="refnote">Afterwards, open it from the new icon and wait for “Saved for offline use, map included”. The installed app keeps its own storage, so type your references and numbers in there, not here.</p>';
+  function paint(){
+    var h=WHY;
+    if(ask) h+='<div class="chips"><button type="button" id="instgo" aria-pressed="true">Install now</button></div>';
+    else if(ios) h+='<ol><li>Open this page in <b>Safari</b>, if you’re in another app’s browser.</li><li>Tap the <b>Share</b> button, the square with an arrow pointing up.</li><li>Scroll down and tap <b>Add to Home Screen</b>.</li><li>Tap <b>Add</b>.</li></ol>';
+    else if(android) h+='<ol><li>Open the browser’s menu, the three dots at the top right.</li><li>Tap <b>Install app</b> or <b>Add to Home screen</b>.</li><li>Confirm.</li></ol>';
+    else h+='<p>On a computer, look for an install icon at the right of the address bar, or <b>Install</b> in the browser’s menu. In Safari on a Mac, choose File, then Add to Dock. Not every browser offers it.</p>';
+    body.innerHTML=h+AFTER;
+  }
+  window.addEventListener("beforeinstallprompt",function(e){ e.preventDefault(); ask=e; if(!el.hidden) paint(); });
+  window.addEventListener("appinstalled",function(){ pill.hidden=true; el.hidden=true; document.documentElement.classList.remove("maplock"); });
+  pill.hidden=false;
+  pill.addEventListener("click",function(){ paint(); el.hidden=false; el.scrollTop=0; document.documentElement.classList.add("maplock"); });
+  function close(){ el.hidden=true; if(!mapbox.classList.contains("mapfull")) document.documentElement.classList.remove("maplock"); }
+  document.getElementById("instclose").addEventListener("click",close);
+  body.addEventListener("click",function(e){
+    if(e.target.id!=="instgo" || !ask) return;
+    ask.prompt(); ask.userChoice.then(function(){ ask=null; close(); },function(){ ask=null; close(); });
+  });
+})();
+
+/* ---------- cover: shown every time the app is opened ---------- */
 (function(){
   var cov=document.getElementById("cover"), root=document.documentElement, btn=document.getElementById("coveropen");
   function shut(){
