@@ -300,7 +300,7 @@ html.maplock{overflow:hidden}
 .hcard .hacts a,.hcard .hacts button{display:inline-block;border:1px solid var(--ink);border-radius:999px;background:none;color:inherit;text-decoration:none;padding:8px 14px;font:600 .88rem/1.2 var(--body);cursor:pointer}
 .hcard .hacts .main{background:var(--ink);color:var(--bg)}
 .foot{padding-bottom:90px}
-#spare{position:fixed;inset:0;z-index:37;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 0 calc(env(safe-area-inset-bottom,0px) + 24px)}
+#spare,#addp{position:fixed;inset:0;z-index:37;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 0 calc(env(safe-area-inset-bottom,0px) + 24px)}
 .sparelab{font-size:.82rem;font-weight:600;color:var(--muted);margin:16px 0 0}
 #spare .chips{margin:8px 0 0}
 .scard{margin:14px 0 0;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;max-width:640px}
@@ -385,6 +385,23 @@ html.maplock{overflow:hidden}
 .bkline b{font-weight:600}
 .bkline .textbtn{margin:0 0 0 8px;font-size:.88rem}
 .fstat a{display:block;padding:5px 0}
+.addlab{display:block;margin:18px 0 6px;font-weight:600;font-size:.95rem}
+.addin{display:block;width:100%;max-width:520px;box-sizing:border-box;font:inherit;font-size:1rem;padding:10px 14px;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
+#addp .chips{margin:0}
+#addfindbox{margin-top:10px;max-width:520px}
+.addrow{display:flex;gap:8px;align-items:center}
+.addrow .addin{flex:1 1 auto}
+#addres button{display:block;width:100%;text-align:left;font:inherit;font-size:.92rem;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:8px;cursor:pointer}
+#addres small{display:block;color:var(--muted);margin-top:2px}
+.addpos{margin:14px 0 0;font-size:.93rem;max-width:60ch}
+.addpos.set{font-weight:600}
+#addp .addend{margin-top:22px}
+#adddel{color:var(--work)}
+#pickbar{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 10px);z-index:45;display:flex;gap:12px;align-items:center;background:var(--ink);color:var(--bg);border-radius:999px;padding:8px 8px 8px 18px;font-size:.92rem;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.3);white-space:nowrap}
+#pickbar[hidden]{display:none}
+#pickbar button{font:inherit;font-weight:600;border:0;border-radius:999px;padding:7px 14px;background:var(--bg);color:var(--ink);cursor:pointer}
+.picking #lmap{cursor:crosshair}
+.pk.mine{outline:2px solid var(--free);outline-offset:2px}
 #cover{display:none;position:fixed;inset:0;z-index:5000;background:#07080c;color:#fff;flex-direction:column;justify-content:space-between;height:100vh;height:100dvh;overflow:hidden}
 .showcover #cover{display:flex}
 .showcover body{overflow:hidden}
@@ -499,7 +516,7 @@ main.wrap{padding-bottom:84px}
   <div class="pinsview" id="pinsview" hidden>
     <h2>Your pinned places</h2>
     <p id="pinsintro"></p>
-    <p style="margin:14px 0 0"><button type="button" class="sparebtn" data-spare="1">I’ve got some time</button></p>
+    <p style="margin:14px 0 0"><button type="button" class="sparebtn" data-spare="1">I’ve got some time</button> <button type="button" class="sparebtn" data-addplace="1">Add a place</button></p>
     <div class="seg pinseg" id="pinmode" role="group" aria-label="Order">
       <button type="button" data-pm="area">By neighbourhood</button><button type="button" data-pm="near">Nearest to me</button>
     </div>
@@ -553,7 +570,7 @@ main.wrap{padding-bottom:84px}
       <figure class="mapbox" id="mapbox">
         <div id="lmap" hidden></div>
         <svg id="map" role="img" aria-label="Sketch map of the day’s stops"></svg>
-        <figcaption><span id="mapcap"></span><span id="mapmsg" role="status"></span><div class="acts2" id="mapcapbtns"><button type="button" id="nearbtn">What’s near me?</button><button type="button" data-spare="1">I’ve got some time</button><button type="button" id="mapmode" hidden></button></div></figcaption>
+        <figcaption><span id="mapcap"></span><span id="mapmsg" role="status"></span><div class="acts2" id="mapcapbtns"><button type="button" id="nearbtn">What’s near me?</button><button type="button" data-spare="1">I’ve got some time</button><button type="button" data-addplace="1">Add a place</button><button type="button" id="mapmode" hidden></button></div></figcaption>
       </figure>
     </div>
     <section aria-live="polite">
@@ -705,7 +722,7 @@ main.wrap{padding-bottom:84px}
       </div>
     </div>
     <h3 class="subh" id="keep">Keep a copy of what you’ve typed in</h3>
-    <p class="refnote" style="margin-top:0">Your references, numbers, booking details and ticks live only in this browser. Copy them somewhere safe, such as a note or a message to yourself, in case the phone clears them or you move to another device.</p>
+    <p class="refnote" style="margin-top:0">Your references, numbers, booking details, ticks and any places you’ve added live only in this browser. Copy them somewhere safe, such as a note or a message to yourself, in case the phone clears them or you move to another device.</p>
     <div class="chips">
       <button type="button" id="bkcopy">Copy my details</button><button type="button" id="bkshare" hidden>Send them somewhere</button>
     </div>
@@ -746,6 +763,30 @@ main.wrap{padding-bottom:84px}
     <div id="sparebody"></div>
   </div>
 </div>
+
+<div id="addp" hidden role="dialog" aria-modal="true" aria-label="Add a place">
+  <div class="wrap">
+    <div class="phrhead"><h2 id="addtitle">Add a place</h2><button type="button" class="pillbtn" id="addclose">Close</button></div>
+    <p class="refnote" style="margin-top:0">Saved on this phone only. It shows as a dot on the map, on the Pins tab and in “Nearest to me”.</p>
+    <label class="addlab" for="addname">Name</label>
+    <input id="addname" class="addin" autocomplete="off" maxlength="80" placeholder="What is it called?">
+    <p class="addlab">Kind of place</p>
+    <div class="chips" id="addtypes" role="group" aria-label="Kind of place"></div>
+    <label class="addlab" for="addnote">Note, if you like</label>
+    <input id="addnote" class="addin" autocomplete="off" maxlength="200" placeholder="Why it caught your eye">
+    <p class="addlab">Where is it?</p>
+    <div class="chips"><button type="button" id="addhere">I’m standing here</button><button type="button" id="addpick">Tap it on the map</button><button type="button" id="addfind">Search by name</button></div>
+    <div id="addfindbox" hidden>
+      <p class="refnote">Looks the name up in OpenStreetMap, so it needs signal. Small places are sometimes missing.</p>
+      <div class="addrow"><input id="addq" class="addin" type="search" autocomplete="off" enterkeyhint="search" aria-label="Name to search for" placeholder="Name, or name and street"><button type="button" class="pillbtn" id="addgo">Search</button></div>
+      <div id="addres"></div>
+    </div>
+    <p class="addpos" id="addpos" role="status"></p>
+    <div class="chips addend"><button type="button" id="addsave" aria-pressed="true">Save place</button><button type="button" id="adddel" hidden>Delete</button></div>
+    <p class="refnote" id="addmsg" role="status"></p>
+  </div>
+</div>
+<div id="pickbar" hidden role="status"><span>Tap the map where the place is</span><button type="button" id="pickcancel">Cancel</button></div>
 
 <div id="driver" hidden role="dialog" aria-modal="true" aria-label="Destination to show a taxi driver">
   <div class="dmain" lang="it">
@@ -1686,14 +1727,14 @@ function renderPins(){
   document.getElementById("chips").innerHTML=chips;
   if(pinMode==="near"){ renderNear(); return; }
   var html="", narrowed=pinQ||pinFilter!=="all";
-  AREAS.forEach(function(ar){
+  (MINE.length?[{n:"Added by you",w:"Saved on this phone only, and included in “Keep a copy” on the Trip tab.",pins:MINE.map(function(m){ return [m.n,m.ty,m.d||"",null,m.lat,m.lon,0,m.id]; })}]:[]).concat(AREAS).forEach(function(ar){
     var list=ar.pins.filter(function(p){ return (pinFilter==="all"||p[1]===pinFilter) && pinHit(p[0],TYPES[p[1]],p[2],ar.n); });
     if(!list.length) return;
     html+='<details class="area" data-area="'+esc(ar.n)+'"'+(narrowed||areaOpen[ar.n]?' open':'')+'><summary><h3>'+esc(ar.n)+'</h3><span class="cnt">'+list.length+'</span></summary><p>'+esc(ar.w)+'</p><ul class="pinlist">'+
       list.map(function(p){
-        var q=(p[3]||p[0])+", Roma";
+        var q=p[7]?p[4]+","+p[5]:(p[3]||p[0])+", Roma";
         return '<li><a target="_blank" rel="noopener" href="'+mapsUrl(q)+'">'+esc(p[0])+'</a><span class="ty">'+TYPES[p[1]]+'</span>'+(p[2]?'<span class="ds">'+esc(p[2])+'</span>':'')+aboutHtml(ABOUT[p[0]],"span")+
-          '<span class="ds macts">'+(useL&&typeof p[4]==="number"?'<button type="button" class="textbtn" data-mapat="'+p[4]+','+p[5]+'">Show on map</button>':'')+'<button type="button" class="textbtn" data-phr="'+p[1]+'" data-pplace="'+esc(p[0])+'">Phrases and tips</button></span>'+lookHtml(pinLook(p[0]))+'</li>';
+          '<span class="ds macts">'+(useL&&typeof p[4]==="number"?'<button type="button" class="textbtn" data-mapat="'+p[4]+','+p[5]+'">Show on map</button>':'')+'<button type="button" class="textbtn" data-phr="'+p[1]+'" data-pplace="'+esc(p[0])+'">Phrases and tips</button>'+(p[7]?'<button type="button" class="textbtn" data-mineedit="'+p[7]+'">Edit</button>':'')+'</span>'+lookHtml(pinLook(p[0]))+'</li>';
       }).join("")+'</ul></details>';
   });
   document.getElementById("areas").innerHTML=html||'<p class="daynote">Nothing in your list matches that.</p>';
@@ -1706,7 +1747,7 @@ var PTY={stp:"sight",csa:"sight",gian:"sight",paola:"sight",smt:"sight",col:"sig
 var NEARLIST=null;
 function nearList(){
   if(NEARLIST) return NEARLIST;
-  var out=PINLIST.map(function(p){ return {n:p.n,ty:p.ty,d:p.d,q:p.q,lat:p.lat,lon:p.lon,plan:"",label:p.extra?"Live music, not a pin":""}; }), when={};
+  var out=PINLIST.map(function(p){ return {n:p.n,ty:p.ty,d:p.d,q:p.q,lat:p.lat,lon:p.lon,plan:"",label:p.extra?"Live music, not a pin":(p.mine?"Added by you · "+TYPES[p.ty]:"")}; }), when={};
   DAYS.forEach(function(d){ var day=d.tab.split(" ")[0]; d.items.forEach(function(it){
     if(!it.p) return;
     var w=when[it.p]=when[it.p]||[];
@@ -1811,6 +1852,14 @@ function setMapMode(m){
 var PINLIST=[];
 AREAS.forEach(function(ar){ ar.pins.forEach(function(p){ if(typeof p[4]==="number") PINLIST.push({n:p[0],ty:p[1],d:p[2],q:(p[3]||p[0])+", Roma",lat:p[4],lon:p[5]}); }); });
 MUSIC.forEach(function(m){ if(m.ad) PINLIST.forEach(function(p){ if(p.n===m.n) p.ad=m.ad; }); });
+/* places added on this phone: kept in this browser only, shown alongside the pins */
+var MINE=load("mine",[]); if(!Array.isArray(MINE)) MINE=[];
+function syncMine(){
+  for(var i=PINLIST.length-1;i>=0;i--) if(PINLIST[i].mine) PINLIST.splice(i,1);
+  MINE.forEach(function(m){ PINLIST.push({n:m.n,ty:m.ty,d:m.d||"",q:m.lat+","+m.lon,lat:m.lat,lon:m.lon,mine:m.id}); });
+  NEARLIST=null;
+}
+syncMine();
 /* ---------- bus 81: route and stops from bus-81.json ---------- */
 var BUS=null, showBus=load("showbus",false), busLayer=null;
 function busDir(d){ return /Malatesta/.test(d.to) ? "Malatesta, the Colosseum direction" : "Piazza del Risorgimento, the Prati direction"; }
@@ -1926,9 +1975,9 @@ function drawLeaflet(items,nums){
   });
   PINLIST.forEach(function(p,pi){
     if(shown.some(function(id){ return metres(p.lat,p.lon,P[id].lat,P[id].lon)<20; })) return;
-    L.marker([p.lat,p.lon],{icon:dot('<span class="pk"></span>',24,-6),title:p.n,alt:p.n})
-      .bindPopup(withDist(p.lat,p.lon,'<b>'+esc(p.n)+'</b><br><span class="popty">'+(p.extra?'Live music · not one of your pins':'Your pin · '+TYPES[p.ty])+'</span><div class="popdist"></div>'+(p.d?'<br>'+esc(p.d):'')+
-        '<div class="popact"><button type="button" class="textbtn" data-drv="pin:'+pi+'">Show the driver</button><a target="_blank" rel="noopener" href="'+mapsUrl(p.q)+'">Open in Maps</a></div>'),{maxWidth:240,autoPanPaddingTopLeft:[8,54],autoPanPaddingBottomRight:[8,8]})
+    L.marker([p.lat,p.lon],{icon:dot('<span class="pk'+(p.mine?' mine':'')+'"></span>',24,-6),title:p.n,alt:p.n})
+      .bindPopup(withDist(p.lat,p.lon,'<b>'+esc(p.n)+'</b><br><span class="popty">'+(p.extra?'Live music · not one of your pins':(p.mine?'Added by you · ':'Your pin · ')+TYPES[p.ty])+'</span><div class="popdist"></div>'+(p.d?'<br>'+esc(p.d):'')+
+        '<div class="popact">'+(p.mine?'<button type="button" class="textbtn" data-mineedit="'+p.mine+'">Edit</button>':'<button type="button" class="textbtn" data-drv="pin:'+pi+'">Show the driver</button>')+'<a target="_blank" rel="noopener" href="'+mapsUrl(p.q)+'">Open in Maps</a></div>'),{maxWidth:240,autoPanPaddingTopLeft:[8,54],autoPanPaddingBottomRight:[8,8]})
       .addTo(pinLayer);
   });
   lastFit=L.latLngBounds((ids.length?ids:shown).map(ll)).pad(0.2);
@@ -2198,11 +2247,12 @@ var privEls=document.querySelectorAll("input[data-priv]");
 /* ---------- a copy of everything typed in, to keep outside the browser, and a way to put it back ---------- */
 var PRIVLAB={flightref:"Flight booking reference",isaref:"Hotel Isa booking number",isapay:"Hotel Isa balance to pay",abrref:"Albergo Abruzzi booking number",
   insphone:"Travel insurer’s emergency number",inspolicy:"Travel insurance policy number",cardphone:"Bank’s lost-card number",firstname:"First name",surname:"Surname"};
-var KEEPRE=/^rome26:(priv:|bk:|checks$|swap:|visit:|skip|choice)/;
+var KEEPRE=/^rome26:(priv:|bk:|checks$|mine$|swap:|visit:|skip|choice)/;
 function backupText(){
   var lines=["Rome trip, 18 to 22 November 2026: my details","Copied "+new Date().toLocaleDateString("en-IE",{day:"numeric",month:"long",year:"numeric"}),""], data={}, i, k;
   Object.keys(PRIVLAB).forEach(function(p){ var v=load("priv:"+p,""); if(v) lines.push(PRIVLAB[p]+": "+v); });
   BOOK.forEach(function(b){ var st=bookState(b); if(st.s==="done"||st.ref) lines.push(b.n+": "+(st.s==="done"?"booked":"not booked")+(st.slot?", "+st.slot:"")+(st.ref?", confirmation "+st.ref:"")); });
+  load("mine",[]).forEach(function(m){ lines.push("Place I added: "+m.n+" ("+TYPES[m.ty]+")"+(m.d?", "+m.d:"")+", at "+m.lat+", "+m.lon); });
   try{ for(i=0;i<localStorage.length;i++){ k=localStorage.key(i); if(KEEPRE.test(k)) data[k.slice(7)]=localStorage.getItem(k); } }catch(e){}
   if(lines.length===3) lines.push("(Nothing typed in yet.)");
   lines.push("","To put these back into the app, paste this line under Trip, Keep a copy:","R26:"+btoa(unescape(encodeURIComponent(JSON.stringify(data)))));
@@ -2945,6 +2995,113 @@ document.addEventListener("click",function(e){
   }
   setTimeout(function(){ focusOnMap(+at[0],+at[1]); },60);
 });
+
+/* ---------- add a place: name, kind, note and a position from the phone, the map or a search ---------- */
+var addEl=document.getElementById("addp"), addS=null, pickFn=null;
+function addGet(id){ return MINE.filter(function(m){ return m.id===id; })[0]; }
+function addOpen(id){
+  var m=id&&addGet(id);
+  addS=m?{id:m.id,n:m.n,ty:m.ty,d:m.d||"",lat:m.lat,lon:m.lon,note:""}:{id:null,n:"",ty:"eat",d:"",lat:null,lon:null,note:""};
+  document.getElementById("addfindbox").hidden=true; document.getElementById("addres").innerHTML="";
+  addShow();
+}
+function addShow(){
+  document.getElementById("addname").value=addS.n; document.getElementById("addnote").value=addS.d;
+  document.getElementById("addtitle").textContent=addS.id?"Edit this place":"Add a place";
+  var del=document.getElementById("adddel"); del.hidden=!addS.id; del.textContent="Delete"; del.removeAttribute("data-sure");
+  document.getElementById("addmsg").textContent="";
+  addPaint(); addEl.hidden=false; addEl.scrollTop=0; document.documentElement.classList.add("maplock");
+}
+function addRead(){ addS.n=document.getElementById("addname").value.trim(); addS.d=document.getElementById("addnote").value.trim(); }
+function addClose(){ addEl.hidden=true; if(!mapbox.classList.contains("mapfull")) document.documentElement.classList.remove("maplock"); }
+function addNearest(lat,lon){
+  var best=null;
+  nearList().forEach(function(p){ var m=metres(lat,lon,p.lat,p.lon); if(m>8 && (!best||m<best.m)) best={m:m,n:p.n}; });
+  if(!best) return "";
+  return best.m<1500 ? "about "+Math.max(10,Math.round(best.m/10)*10)+" m from "+best.n : "about "+(best.m/1000).toFixed(1)+" km from "+best.n;
+}
+function addPaint(){
+  document.getElementById("addtypes").innerHTML=Object.keys(TYPES).map(function(k){ return '<button type="button" data-aty="'+k+'" aria-pressed="'+(addS.ty===k)+'">'+TYPES[k]+'</button>'; }).join("");
+  var pos=document.getElementById("addpos"), has=typeof addS.lat==="number";
+  pos.classList.toggle("set",has);
+  pos.textContent=has ? "Position set, "+(addNearest(addS.lat,addS.lon)||"saved")+"."+(inRomeLL(addS.lat,addS.lon)?"":" That is outside Rome.")+(addS.note?" "+addS.note:"") : (addS.note||"No position yet. Pick one of the three ways above.");
+}
+function addSetPos(lat,lon,note){ addS.lat=Math.round(lat*1e5)/1e5; addS.lon=Math.round(lon*1e5)/1e5; addS.note=note||""; addPaint(); }
+function addHere(){
+  addRead();
+  if(!navigator.geolocation){ addS.note="This browser can’t share your location. Tap it on the map instead."; addPaint(); return; }
+  addS.note="Finding you…"; addS.lat=addS.lat; addPaint();
+  navigator.geolocation.getCurrentPosition(function(p){
+    var acc=p.coords.accuracy||0;
+    addSetPos(p.coords.latitude,p.coords.longitude,acc>60?"Your position is only good to about "+Math.round(acc/10)*10+" m, so check the dot on the map.":"");
+  },function(){
+    if(mePos){ addSetPos(mePos.lat,mePos.lon,"Used your last known position."); return; }
+    addS.note="Couldn’t find you. Check that location is allowed, or tap it on the map."; addPaint();
+  },{enableHighAccuracy:true,timeout:15000,maximumAge:20000});
+}
+function pickEnd(){ if(pickFn&&lmap) lmap.off("click",pickFn); pickFn=null; document.getElementById("pickbar").hidden=true; document.documentElement.classList.remove("picking"); }
+function addPick(){
+  addRead();
+  var day=todayId||lastDay||DAYS[0].id;
+  addClose(); showMap(true);
+  if(!current || current.id!==day){ try{ history.replaceState(null,"","#"+day); }catch(err){} render(day); }
+  if(!useL || !lmap){ addS.note="The map isn’t available just now."; addShow(); return; }
+  document.getElementById("pickbar").hidden=false; document.documentElement.classList.add("picking");
+  setTimeout(function(){ lmap.invalidateSize(false); mapbox.scrollIntoView({block:"start"}); },60);
+  pickFn=function(e){ pickEnd(); addSetPos(e.latlng.lat,e.latlng.lng,""); addShow(); };
+  lmap.on("click",pickFn);
+}
+function addFind(){
+  var q=document.getElementById("addq").value.trim(), box=document.getElementById("addres");
+  if(!q){ box.innerHTML='<p class="refnote">Type a name first.</p>'; return; }
+  box.innerHTML='<p class="refnote">Searching…</p>';
+  fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&addressdetails=1&bounded=1&viewbox="+ROME[0][1]+","+ROME[1][0]+","+ROME[1][1]+","+ROME[0][0]+"&q="+encodeURIComponent(q),{headers:{"Accept":"application/json"}})
+    .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    .then(function(list){
+      if(!list.length){ box.innerHTML='<p class="refnote">Nothing by that name in Rome on OpenStreetMap. Try adding the street, or tap it on the map.</p>'; return; }
+      box.innerHTML=list.map(function(x){
+        var a=x.address||{}, where=[a.road,a.suburb||a.quarter||a.neighbourhood].filter(Boolean).join(", ");
+        return '<button type="button" data-ares="'+(+x.lat)+','+(+x.lon)+'" data-aname="'+esc(x.name||q)+'"><b>'+esc(x.name||q)+'</b><small>'+esc(where||String(x.display_name||"").split(",").slice(1,3).join(","))+'</small></button>';
+      }).join("");
+    })
+    .catch(function(){ box.innerHTML='<p class="refnote">Couldn’t search. It needs signal; “I’m standing here” and the map don’t.</p>'; });
+}
+function addSave(){
+  addRead();
+  var msg=document.getElementById("addmsg");
+  if(!addS.n){ msg.textContent="Give it a name first."; document.getElementById("addname").focus(); return; }
+  if(typeof addS.lat!=="number"){ msg.textContent="It needs a position. Pick one of the three ways above."; return; }
+  var m=addS.id&&addGet(addS.id);
+  if(!m){ m={id:"m"+Date.now().toString(36)}; MINE.push(m); }
+  m.n=addS.n; m.ty=addS.ty; m.d=addS.d; m.lat=addS.lat; m.lon=addS.lon;
+  addAfter(m);
+}
+function addAfter(m){
+  save("mine",MINE); syncMine(); addClose();
+  if(!document.getElementById("pinsview").hidden){ areaOpen["Added by you"]=true; renderPins(); }
+  else if(current){ render(current.id); if(m) setTimeout(function(){ focusOnMap(m.lat,m.lon); },80); }
+}
+document.getElementById("addclose").addEventListener("click",addClose);
+document.getElementById("pickcancel").addEventListener("click",function(){ pickEnd(); addShow(); });
+document.getElementById("addq").addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); addFind(); } });
+document.addEventListener("click",function(e){
+  var t=e.target, b; if(!t.closest) return;
+  if(t.closest("[data-addplace]")){ if(mapbox.classList.contains("mapfull")) setFull(false); addOpen(null); return; }
+  if((b=t.closest("[data-mineedit]"))){ if(mapbox.classList.contains("mapfull")) setFull(false); if(lmap) lmap.closePopup(); addOpen(b.getAttribute("data-mineedit")); return; }
+  if(!t.closest("#addp")) return;
+  if((b=t.closest("[data-aty]"))){ addRead(); addS.ty=b.getAttribute("data-aty"); addPaint(); }
+  else if(t.closest("#addhere")) addHere();
+  else if(t.closest("#addpick")) addPick();
+  else if(t.closest("#addfind")){ addRead(); var fb=document.getElementById("addfindbox"); fb.hidden=!fb.hidden; if(!fb.hidden){ var qi=document.getElementById("addq"); if(!qi.value) qi.value=addS.n; qi.focus(); } }
+  else if(t.closest("#addgo")) addFind();
+  else if((b=t.closest("[data-ares]"))){ var at=b.getAttribute("data-ares").split(","); addRead(); if(!addS.n){ addS.n=b.getAttribute("data-aname"); document.getElementById("addname").value=addS.n; } addSetPos(+at[0],+at[1],"From OpenStreetMap."); document.getElementById("addfindbox").hidden=true; }
+  else if(t.closest("#addsave")) addSave();
+  else if((b=t.closest("#adddel"))){
+    if(!b.getAttribute("data-sure")){ b.setAttribute("data-sure","1"); b.textContent="Tap again to delete"; return; }
+    MINE=MINE.filter(function(m){ return m.id!==addS.id; }); addAfter(null);
+  }
+});
+document.addEventListener("keydown",function(e){ if(e.key==="Escape"){ if(pickFn){ pickEnd(); addShow(); } else if(!addEl.hidden) addClose(); } });
 
 /* ---------- routing ---------- */
 function route(){
