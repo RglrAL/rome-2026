@@ -1,4 +1,5 @@
 /* Service worker: lets the app open without signal.
+   - Version 3, 14 November 2026: the manifest is now fetched fresh when there is signal.
    - App files: saved on install. The page itself is fetched fresh when there is signal,
      and falls back to the saved copy after 3 seconds or when offline.
    - Fonts: saved on install.
@@ -157,6 +158,7 @@ self.addEventListener("fetch", function (e) {
   if (url.origin !== self.location.origin) return;
   if (req.mode === "navigate") { e.respondWith(page(e)); return; }
   if (/\.pmtiles$/.test(url.pathname)) { e.respondWith(mapRange(e)); return; }
-  if (/\.json$/.test(url.pathname)) { e.respondWith(fresh(e)); return; }
+  /* the manifest too: it sets the launch and navigation-bar colour, and a saved copy kept an old colour alive */
+  if (/\.(json|webmanifest)$/.test(url.pathname)) { e.respondWith(fresh(e)); return; }
   e.respondWith(cacheFirst(e, SHELL));
 });
