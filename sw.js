@@ -8,7 +8,7 @@
 
 var SHELL = "rome-shell-v1", FONTS = "rome-fonts-v1", TILES = "rome-tiles-v1";
 var FILES = ["index.html", "vendor/leaflet/leaflet.css", "vendor/leaflet/leaflet.js", "vendor/protomaps-leaflet/protomaps-leaflet.js",
-             "manifest.webmanifest", "icons/icon-192.png", "icons/icon-180.png", "phrases.json", "menu.json", "place-tags.json", "how-rome-works.json", "bus-81.json", "taxi.json"];
+             "manifest.webmanifest", "icons/icon-v2-192.png", "icons/icon-v2-180.png", "phrases.json", "menu.json", "place-tags.json", "how-rome-works.json", "bus-81.json", "taxi.json"];
 var FONT_CSS = "https://fonts.googleapis.com/css2?family=Marcellus&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap";
 var WEEK = 7 * 24 * 60 * 60 * 1000, MAX_TILES = 2500, PAGE_WAIT = 3000;
 
@@ -24,6 +24,16 @@ function saveFonts() {
       });
     });
   }).catch(function () {});   // fonts are optional: the page has system fallbacks
+}
+
+/* the cover photos for phones: optional, so the cover has its picture at once and without signal */
+var COVERS = ["cover/colosseum-tall.jpg", "cover/tall.jpg", "cover/trevi-tall.jpg", "cover/castel-tall.jpg"];
+function saveCovers() {
+  return caches.open(SHELL).then(function (c) {
+    return Promise.all(COVERS.map(function (u) {
+      return c.match(u).then(function (hit) { if (!hit) return fetch(u).then(function (r) { if (r.ok) return c.put(u, r); }); }).catch(function () {});
+    }));
+  }).catch(function () {});
 }
 
 /* the offline map of central Rome: one 8.5 MB file. Optional, so a failed download never blocks the install. */
@@ -57,7 +67,8 @@ self.addEventListener("install", function (e) {
   e.waitUntil(Promise.all([
     caches.open(SHELL).then(function (c) { return c.addAll(FILES.map(function (f) { return new Request(f, { cache: "reload" }); })); }),
     saveFonts(),
-    saveMap()
+    saveMap(),
+    saveCovers()
   ]).then(function () { return self.skipWaiting(); }));
 });
 

@@ -12,8 +12,8 @@ document.documentElement.className+=" showcover";   /* the cover shows on every 
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Rome">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
-<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-v2-180.png">
+<link rel="icon" type="image/png" href="icons/icon-v2-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
@@ -520,6 +520,9 @@ main.wrap{padding-bottom:84px}
     i=i%C.length;
     try{ localStorage.setItem("rome26:covi",String(i)); }catch(e){}
     cov.style.background=C[i].bg;
+    var mt=document.getElementById("covmeta");                    // the phone's status bar takes the photo's colour while the cover is up
+    if(!mt){ mt=document.createElement("meta"); mt.name="theme-color"; mt.id="covmeta"; document.head.insertBefore(mt,document.head.firstChild); }
+    mt.content=C[i].bg;
     cov.querySelector("source").srcset="cover/"+C[i].w;
     im.src="cover/"+C[i].t; im.alt=C[i].alt;
     cov.querySelector(".covcred").innerHTML=C[i].cred;
@@ -2365,7 +2368,7 @@ keepNote();
   var cov=document.getElementById("cover"), root=document.documentElement, btn=document.getElementById("coveropen");
   function shut(){
     save("seen",new Date().toDateString()); cov.classList.add("going");
-    setTimeout(function(){ root.classList.remove("showcover"); cov.classList.remove("going"); },360);
+    setTimeout(function(){ root.classList.remove("showcover"); cov.classList.remove("going"); var mt=document.getElementById("covmeta"); if(mt) mt.parentNode.removeChild(mt); },360);
   }
   cov.addEventListener("click",function(e){ if(!e.target.closest("a")) shut(); });      // a tap anywhere opens the plan
   document.addEventListener("keydown",function(e){ if(e.key==="Escape" && root.classList.contains("showcover")) shut(); });
