@@ -2843,7 +2843,7 @@ function sparePaint(){
     (r.capped?' '+esc(r.end.next.title)+' is fixed, so I’ve cut the time to the '+r.budget+' minutes before it.':
       (r.end.next && spare.min!=="next" && r.budget>r.until?' That is longer than the '+r.until+' minutes before the plan’s next step, so these suggestions run past it.':''))+
     (spare.from==="auto"&&!r.o.me?' <button type="button" class="textbtn" id="spareloc" style="margin:0;font-size:inherit">Use my location</button>':'')+'</p>';
-  var show=r.list.filter(function(x){ return !spare.skip[x.p.n]; }).slice(0,2);
+  var fits=r.list.filter(function(x){ return !spare.skip[x.p.n]; }), show=fits.slice(0,spare.n||2), left=fits.length-show.length;
   if(!show.length){
     html+='<div class="scard"><h3>Nothing on your list fits</h3><p>Nothing '+(spare.mood==="any"?'':'for that mood ')+'fits '+r.budget+' minutes from here once the walk there and on to '+esc(r.end.name)+' is counted.'+
       (r.coffee?' The nearest coffee or snack is '+esc(r.coffee.p.n)+', about '+r.coffee.w1+' min on foot.':'')+'</p>'+
@@ -2858,10 +2858,11 @@ function sparePaint(){
       '<div class="macts">'+(useL?'<button type="button" class="textbtn" data-mapat="'+p.lat+','+p.lon+'" data-sclose="1">Show on map</button>':'')+
       '<a target="_blank" rel="noopener" href="'+mapsUrl(p.q)+'">Open in Maps</a><button type="button" class="textbtn" data-sskip="'+esc(p.n)+'">Not this one</button></div></div>';
   });
+  if(left>0) html+='<p style="margin:14px 0 0"><button type="button" class="chipbtn" id="sparemore">Show more ('+left+' more '+(left===1?'fits':'fit')+')</button></p>';
   html+='<p class="sparenote">Walking times are straight-line estimates with extra for hills and the river. Visit times are rough, and opening hours are rules of thumb, not looked up.</p>';
   body.innerHTML=html;
 }
-function openSpare(){ spare.skip={}; now=romeNow(); tagsLoad(function(){ sparePaint(); spareEl.hidden=false; spareEl.scrollTop=0; document.documentElement.classList.add("maplock"); }); }
+function openSpare(){ spare.skip={}; spare.n=2; now=romeNow(); tagsLoad(function(){ sparePaint(); spareEl.hidden=false; spareEl.scrollTop=0; document.documentElement.classList.add("maplock"); }); }
 function closeSpare(){ spareEl.hidden=true; if(!mapbox.classList.contains("mapfull")) document.documentElement.classList.remove("maplock"); }
 document.getElementById("spareclose").addEventListener("click",closeSpare);
 document.addEventListener("click",function(e){
@@ -2869,11 +2870,12 @@ document.addEventListener("click",function(e){
   if(t.closest("[data-spare]")){ openSpare(); return; }
   if(!t.closest("#spare")) return;
   var b;
-  if((b=t.closest("[data-smin]"))){ var v=b.getAttribute("data-smin"); spare.min=v==="next"?"next":+v; spare.skip={}; sparePaint(); }
-  else if((b=t.closest("[data-smood]"))){ spare.mood=b.getAttribute("data-smood"); spare.skip={}; sparePaint(); }
-  else if((b=t.closest("[data-sfrom]"))){ spare.from=b.getAttribute("data-sfrom"); spare.skip={}; sparePaint(); }
+  if((b=t.closest("[data-smin]"))){ var v=b.getAttribute("data-smin"); spare.min=v==="next"?"next":+v; spare.skip={}; spare.n=2; sparePaint(); }
+  else if((b=t.closest("[data-smood]"))){ spare.mood=b.getAttribute("data-smood"); spare.skip={}; spare.n=2; sparePaint(); }
+  else if((b=t.closest("[data-sfrom]"))){ spare.from=b.getAttribute("data-sfrom"); spare.skip={}; spare.n=2; sparePaint(); }
   else if((b=t.closest("[data-sskip]"))){ spare.skip[b.getAttribute("data-sskip")]=1; sparePaint(); }
   else if(t.id==="sparereset"){ spare.skip={}; sparePaint(); }
+  else if(t.id==="sparemore"){ spare.n=(spare.n||2)+3; sparePaint(); }
   else if(t.id==="spareloc"){ if(watchId===null) startLocate(false); }
   else if(t.closest("[data-sclose]")) closeSpare();
 },true);
