@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rome, 18–22 November</title>
 <script>try{var t=JSON.parse(localStorage.getItem("rome26:theme"));if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}
-try{if(!localStorage.getItem("rome26:seen"))document.documentElement.className+=" showcover";}catch(e){}</script>
+try{if(localStorage.getItem("rome26:seen")!==JSON.stringify(new Date().toDateString()))document.documentElement.className+=" showcover";}catch(e){}</script>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#ECEBE7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#16181B" media="(prefers-color-scheme: dark)">
@@ -418,7 +418,7 @@ html.maplock{overflow:hidden}
 #coveropen:focus-visible{outline:3px solid #f2c26b;outline-offset:3px}
 .covcred{margin:14px 0 0;font-size:.74rem;opacity:.8}
 .covcred a{color:inherit}
-#cover{justify-content:flex-end;background:#071560}
+#cover{justify-content:flex-end;background:#071560;cursor:pointer}
 #cover img{object-position:50% 0}
 #cover::before{background:linear-gradient(180deg,rgba(4,8,30,0) 0,rgba(4,8,30,0) 42%,rgba(4,8,30,.62) 68%,rgba(4,8,30,.93) 100%)}
 .covtop{padding-top:0;margin-bottom:26px}
@@ -485,8 +485,8 @@ main.wrap{padding-bottom:84px}
 <body>
 <div id="cover" role="dialog" aria-modal="true" aria-label="Rome, 18 to 22 November 2026">
   <picture>
-    <source media="(min-aspect-ratio: 1/1)" srcset="cover/colosseum-wide.jpg">
-    <img src="cover/colosseum-tall.jpg" alt="The Colosseum at dusk, its arches lit gold against a deep blue sky" loading="lazy" decoding="async">
+    <source media="(min-aspect-ratio: 1/1)" srcset="">
+    <img alt="" decoding="async">
   </picture>
   <div class="covtop">
     <p class="covkick">Dublin to Rome</p>
@@ -495,9 +495,33 @@ main.wrap{padding-bottom:84px}
   </div>
   <div class="covfoot">
     <button type="button" id="coveropen">Open the plan</button>
-    <p class="covcred">Photo: <a target="_blank" rel="noopener" href="https://commons.wikimedia.org/wiki/File:Colosseum_in_Rome-April_2007-1-_copie_2B.jpg">Diliff, Wikimedia Commons</a>, <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-sa/2.5/">CC BY-SA 2.5</a>, cropped.</p>
+    <p class="covcred"></p>
   </div>
 </div>
+<script>
+/* cover photos, shown in turn. Credits and licences as given on Wikimedia Commons; CC BY-SA needs the credit, licence and "cropped" kept. */
+(function(){
+  var PD=", Wikimedia Commons. Public domain.";
+  var C=[
+    {t:"colosseum-tall.jpg",w:"colosseum-wide.jpg",bg:"#071560",alt:"The Colosseum at dusk, its arches lit gold against a deep blue sky",
+      cred:'Photo: <a target="_blank" rel="noopener" href="https://commons.wikimedia.org/wiki/File:Colosseum_in_Rome-April_2007-1-_copie_2B.jpg">Diliff, Wikimedia Commons</a>, <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-sa/2.5/">CC BY-SA 2.5</a>, cropped.'},
+    {t:"tall.jpg",w:"wide.jpg",bg:"#0c0a10",alt:"St Peter’s dome lit at night above the Tiber, with a stone bridge and its reflections in the water",cred:"Photo: Jebulon"+PD},
+    {t:"trevi-tall.jpg",w:"trevi-wide.jpg",bg:"#2b2824",alt:"The statue of Oceanus at the centre of the Trevi Fountain",cred:"Photo: Wilfredor"+PD},
+    {t:"castel-tall.jpg",w:"castel-wide.jpg",bg:"#06143f",alt:"Castel Sant’Angelo lit at dusk above the Tiber",cred:"Photo: Jebulon"+PD}
+  ];
+  window.coverPick=function(){
+    var i=0, cov=document.getElementById("cover"), im=cov.querySelector("img");
+    try{ i=(parseInt(localStorage.getItem("rome26:covi"),10)+1)||0; }catch(e){}
+    i=i%C.length;
+    try{ localStorage.setItem("rome26:covi",String(i)); }catch(e){}
+    cov.style.background=C[i].bg;
+    cov.querySelector("source").srcset="cover/"+C[i].w;
+    im.src="cover/"+C[i].t; im.alt=C[i].alt;
+    cov.querySelector(".covcred").innerHTML=C[i].cred;
+  };
+  if(/\bshowcover\b/.test(document.documentElement.className)) coverPick();
+})();
+</script>
 
 <header class="wrap mast">
   <h1>Rome <span>Wednesday 18 to Sunday 22 November 2026</span></h1>
@@ -2300,13 +2324,13 @@ keepNote();
 (function(){
   var cov=document.getElementById("cover"), root=document.documentElement, btn=document.getElementById("coveropen");
   function shut(){
-    save("seen",1); cov.classList.add("going");
+    save("seen",new Date().toDateString()); cov.classList.add("going");
     setTimeout(function(){ root.classList.remove("showcover"); cov.classList.remove("going"); },360);
   }
-  btn.addEventListener("click",shut);
+  cov.addEventListener("click",function(e){ if(!e.target.closest("a")) shut(); });      // a tap anywhere opens the plan
   document.addEventListener("keydown",function(e){ if(e.key==="Escape" && root.classList.contains("showcover")) shut(); });
   if(root.classList.contains("showcover")) btn.focus();
-  document.getElementById("coveragain").addEventListener("click",function(){ root.classList.add("showcover"); window.scrollTo(0,0); btn.focus(); });
+  document.getElementById("coveragain").addEventListener("click",function(e){ e.stopPropagation(); coverPick(); root.classList.add("showcover"); window.scrollTo(0,0); btn.focus(); });
 })();
 
 /* a typed-in phone number gets a Call link beside it */
