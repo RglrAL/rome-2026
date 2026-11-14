@@ -1747,7 +1747,7 @@ var PTY={stp:"sight",csa:"sight",gian:"sight",paola:"sight",smt:"sight",col:"sig
 var NEARLIST=null;
 function nearList(){
   if(NEARLIST) return NEARLIST;
-  var out=PINLIST.map(function(p){ return {n:p.n,ty:p.ty,d:p.d,q:p.q,lat:p.lat,lon:p.lon,plan:"",label:p.extra?"Live music, not a pin":(p.mine?"Added by you · "+TYPES[p.ty]:"")}; }), when={};
+  var out=PINLIST.map(function(p){ return {n:p.n,ty:p.ty,d:p.d,q:p.q,lat:p.lat,lon:p.lon,plan:"",mine:p.mine||"",label:p.extra?"Live music, not a pin":(p.mine?"Added by you · "+TYPES[p.ty]:"")}; }), when={};
   DAYS.forEach(function(d){ var day=d.tab.split(" ")[0]; d.items.forEach(function(it){
     if(!it.p) return;
     var w=when[it.p]=when[it.p]||[];
@@ -2748,7 +2748,7 @@ function tagsLoad(done){
     TAGS=idx; done();
   }).catch(function(){ TAGS=null; done(); });
 }
-function tagOf(p){ return (p.k&&TAGS.k[p.k]) || TAGS.n[nkey(p.n)] || TYDEF[p.ty] || null; }
+function tagOf(p){ return p.mine ? (TYDEF[p.ty]||null) : ((p.k&&TAGS.k[p.k]) || TAGS.n[nkey(p.n)] || TYDEF[p.ty] || null); }
 function walkMin(a,b){ return Math.round(metres(a.lat,a.lon,b.lat,b.lon)*1.3/80); }
 function segX(ax,ay,bx,by,cx,cy,dx,dy){
   function o(px,py,qx,qy,rx,ry){ return (qx-px)*(ry-py)-(qy-py)*(rx-px); }
@@ -2822,6 +2822,7 @@ function sparePick(){
     if(rain!==null && rain>=WET && t.setting==="outdoor"){ score-=2; labs.push("Rain is likely ("+rain+"%), and this is outdoors."); }
     if(t.dress_code) labs.push("Shoulders and knees covered.");
     if(t.note) labs.push(t.note);
+    if(p.mine) labs.push("You added this one, so the time there and the opening hours are guesses for its kind of place."+(p.d?" Your note: "+p.d:""));
     out.push({p:p,t:t,w1:w1,w2:w2,q:q,total:total,score:score,labs:labs,up:!!t.climb_minutes});
   });
   out.sort(function(a,b){ return b.score-a.score; });
