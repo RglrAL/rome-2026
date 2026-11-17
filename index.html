@@ -867,6 +867,7 @@ var P = {
   col:{n:"Colosseum",lat:41.89026,lon:12.49238,q:"Colosseo, Roma"},
   clem:{n:"San Clemente",lat:41.88931,lon:12.49747,q:"Basilica di San Clemente al Laterano, Roma"},
   piazzetta:{n:"Lunch in Monti",lat:41.89336,lon:12.48917,q:"La Nuova Piazzetta, Monti, Roma"},
+  trevi:{n:"Trevi Fountain",lat:41.90098,lon:12.48328,q:"Fontana di Trevi, Roma"},
   forum:{n:"Roman Forum",lat:41.89164,lon:12.48673,q:"Foro Romano, Roma"},
   camp:{n:"Capitoline Hill",lat:41.89325,lon:12.48299,q:"Piazza del Campidoglio, Roma"},
   marc:{n:"Theatre of Marcellus",lat:41.89194,lon:12.47976,q:"Teatro di Marcello, Roma"},
@@ -1001,30 +1002,25 @@ var DAYS = [
           A("Taxi home","Saturday starts at 07:45.",0,"Hotel Isa, Via Cicerone 39, Roma")]}
   ]},
  {id:"sat",date:"2026-11-21",tab:"Sat 21",gist:"Your day",title:"Saturday: ancient Rome, the Aventine and Monti",
-  sum:"No work. You change hotels first thing, then walk from the Colosseum to the Orange Garden for sunset. It’s roughly 9 km on foot, and every leg has a shorter option.",
+  sum:"No work, and a slower start. Check out at 10:00 and drop your bags at Albergo Abruzzi, then the Forum, the Colosseum at 12:00, lunch in Monti and a walk to the Orange Garden for sunset.",
   note:"<b>Swap the whole day:</b> the Aqueduct Park from your draft, if you wake up wanting open country instead of ruins and crowds. <b>If it rains:</b> the Capitoline Museums cover two hours indoors, with a covered view over the Forum.",
   rain:"The Capitoline Museums cover two hours indoors, with a covered view over the Forum.",
   items:[
-   {t:"07:45",c:"stay",p:"isa",title:"Breakfast and check out of Hotel Isa",note:"City tax of €22.50 per room is paid at the desk."},
-   {t:"08:15",drv:["abr","col"],c:"travel",p:"abr",title:"Taxi to Albergo Abruzzi, then on to the Colosseum",note:"Ten minutes to the Pantheon to leave your bags (check-in is from 14:00), then ten more to the Colosseum. Ask the driver to wait.",
-    alts:[A("Bus 81 for the second leg","Once the bags are dropped, walk five minutes to the Rinascimento stop and take the 81 ten stops to Celio Vibenna, beside the Colosseum. Only the 08:30 bus makes the 09:00 slot: it arrives at 08:50 on the timetable, and the next gets in at 09:09. A local transport strike is also reported for this Saturday, so the taxi is the safer plan.",0,"Corso del Rinascimento, Roma")]},
-   {t:"09:00",e:"10:30",fix:1,lv:"08:15",lvd:"By taxi from Hotel Isa, leaving your bags at Albergo Abruzzi on the way.",c:"free",p:"col",title:"Colosseum, Full Experience Attic ticket",note:"The ticket takes you to the top tier as well as the main levels, in groups of 25, with 90 minutes inside. About €24 on colosseo.it. Slots are released 30 days ahead, so book now. It includes the Forum and Palatine.",
-    alts:[A("Standard ticket","About €18, still timed entry, without the upper tier. Take this if the attic slots have gone.",1,"Colosseo, Roma"),
-          A("Outside only","Walk the perimeter and the Arch of Constantine and put the time into San Clemente and the Forum.",0,"Arco di Costantino, Roma")]},
-   {t:"10:45",e:"11:40",fix:1,lv:"10:35",lvd:"Five minutes’ walk from the Colosseum.",c:"free",p:"clem",title:"San Clemente, the underground levels",note:"Five minutes’ walk. A twelfth-century basilica on top of a fourth-century church on top of a Roman house and a temple of Mithras. The excavations need a slot booked online, about €10. The Saturday morning session ends at 12:30."},
-   {t:"12:00",c:"free",p:"piazzetta",title:"Lunch in Monti at La Nuova Piazzetta",note:"Your pin, on a lane between the Colosseum and Via Cavour. Go as it opens to get a table.",
+   {t:"08:30",c:"stay",p:"isa",title:"Breakfast at Hotel Isa",note:"No rush this morning. Check-out is at 10:00."},
+   {t:"10:00",drv:["abr"],c:"travel",p:"abr",title:"Check out, then a taxi to Albergo Abruzzi",note:"City tax of €22.50 per room is paid at the Hotel Isa desk. About ten minutes to the Pantheon to leave your bags; check-in there is from 14:00."},
+   {t:"10:30",drv:["forum"],c:"travel",title:"Taxi on to the Forum entrance",note:"Ask for the Roman Forum entrance at Largo della Salara Vecchia, on Via dei Fori Imperiali. A local transport strike is reported for this Saturday, so a taxi is the safer way across."},
+   {t:"10:45",e:"11:40",out:1,c:"free",p:"forum",title:"Through the Roman Forum",note:"Your Colosseum ticket covers a single entry to the Forum and Palatine, so once you leave you can’t go back in. Walk the Via Sacra east and leave by the Arch of Titus end by about 11:40. The Colosseum is a few minutes on."},
+   {t:"12:00",e:"13:15",fix:1,lv:"11:45",lvl:"Be at the gate by",lvd:"Straight from the Forum’s Arch of Titus exit.",c:"free",p:"col",title:"Colosseum, Full Experience Arena ticket",note:"Have the ticket and your photo ID ready: tickets carry your name and it is checked at the gate. The arena floor is part of this ticket."},
+   {t:"13:30",e:"14:40",c:"free",p:"piazzetta",title:"Lunch in Monti at La Nuova Piazzetta",note:"Your pin, on a lane between the Colosseum and Via Cavour. Book a table.",
     alts:[A("La Taverna dei Fori Imperiali","Family-run trattoria a few minutes away. Book.",0,"La Taverna dei Fori Imperiali, Via della Madonna dei Monti 9, Roma"),
           A("Santa Maria Maggiore","Not lunch, but ten minutes north if you want the fifth-century mosaics.",1,"Basilica Papale di Santa Maria Maggiore, Roma")]},
-   {t:"13:15",e:"14:30",out:1,sb:"15:30",sbl:"last entry to the Forum",c:"free",p:"forum",title:"Through the Roman Forum",note:"Your Colosseum ticket covers it. Walk the Via Sacra west and leave by the exit under the Capitoline. Last entry in winter is 15:30.",
-    alts:[A("Add the Palatine","Another 45 minutes uphill for the view down over the Forum. Skip the Circus Maximus later to make room.",0,"Palatino, Roma"),
-          A("See it from above instead","Skip going in and look down on the Forum from the terrace behind the Capitoline. Free.",0,"Piazza del Campidoglio, Roma")]},
-   {t:"14:35",c:"free",p:"camp",title:"Capitoline Hill",note:"Michelangelo’s piazza, then walk round the back of the central palace for the classic view along the Forum.",
+   {t:"14:50",c:"free",p:"camp",title:"Capitoline Hill",note:"Michelangelo’s piazza, then walk round the back of the central palace for the classic view along the Forum you walked through this morning.",
     alts:[A("Altar of the Fatherland","Next door. The terraces are free; the lift to the top is paid.",1,"Altare della Patria, Roma"),
           A("Pizza Florida","A slice at Largo Argentina, eight minutes north, if lunch was light.",1,"Pizza Florida, Via Florida, Roma")]},
-   {t:"15:05",c:"free",p:"marc",title:"Theatre of Marcellus",note:"Down the steps and five minutes on: a Roman theatre with Renaissance apartments built on top. You pass it on the way south.",
+   {t:"15:15",c:"free",p:"marc",title:"Past the Theatre of Marcellus",note:"Down the steps and five minutes on: a Roman theatre with Renaissance apartments built on top. You pass it on the way south.",
     alts:[A("Ponte Fabricio","Three minutes further to the river and the bridge to Tiber Island.",1)]},
-   {t:"15:25",out:1,c:"free",p:"circo",title:"Along the Circus Maximus",note:"The chariot track is now a long grass valley under the Palatine. Walk its length to the foot of the Aventine."},
-   {t:"15:50",e:"16:50",view:1,sb:"16:45",sbl:"sunset",c:"free",p:"aranci",title:"Aventine Hill and the Orange Garden",note:"Santa Sabina, a near-intact fifth-century basilica, is beside the garden, and the keyhole view of St Peter’s is two minutes further. Sunset from the garden terrace is around 16:45. It’s free and open until about 18:00.",
+   {t:"15:35",out:1,c:"free",p:"circo",title:"Along the Circus Maximus",note:"The chariot track is now a long grass valley under the Palatine. Walk its length to the foot of the Aventine."},
+   {t:"16:00",e:"16:50",view:1,sb:"16:45",sbl:"sunset",c:"free",p:"aranci",title:"Aventine Hill and the Orange Garden",note:"Santa Sabina, a near-intact fifth-century basilica, is beside the garden, and the keyhole view of St Peter’s is two minutes further. Sunset from the garden terrace is around 16:45. It’s free and open until about 18:00.",
     alts:[A("Cut it short","Take a taxi from the Capitoline straight to the Orange Garden and skip the two stops between.",0,"Giardino degli Aranci, Roma")]},
    {t:"17:00",drv:["abr"],c:"travel",title:"Taxi to Albergo Abruzzi",note:"About ten minutes. On foot it’s 30, by way of the river and the Ghetto."},
    {t:"17:20",c:"stay",p:"abr",title:"Check in at Albergo Abruzzi"},
@@ -1043,7 +1039,8 @@ var DAYS = [
           A("La Botticella","Small pub near Piazza Navona.",1,"La Botticella of Poggi Giovanni, Via di Tor Millina, Roma"),
           A("Trinity College Pub","Irish pub five minutes from the hotel.",1),
           A("Frigidarium","Gelato and a walk round Piazza Navona instead.",1,"Frigidarium, Via del Governo Vecchio 112, Roma"),
-          A("Alcazar Live","Its listings showed a comedy night at 21:00 and a Maurice Fulton DJ set from 23:00 for this Saturday. About 25 minutes’ walk from Albergo Abruzzi, or a short taxi.",1,"Alcazar Live, Via Cardinale Merry del Val 14, Roma")]}
+          A("Alcazar Live","Its listings showed a comedy night at 21:00 and a Maurice Fulton DJ set from 23:00 for this Saturday. About 25 minutes’ walk from Albergo Abruzzi, or a short taxi.",1,"Alcazar Live, Via Cardinale Merry del Val 14, Roma")]},
+   {t:"23:00",c:"free",p:"trevi",opt:1,title:"Late walk to the Trevi Fountain",note:"Eight minutes’ walk from Albergo Abruzzi. Late in the evening is when it is quietest."}
   ]},
  {id:"sun",date:"2026-11-22",tab:"Sun 22",gist:"Home",title:"Sunday: home",
   sum:"An early start. There’s time for the empty piazza and a coffee, and that’s all.",
@@ -1059,8 +1056,8 @@ var DAYS = [
 
 var CHECKS = [
  ["checkin","Check in online for both Ryanair flights","FR9611 and FR9612. Checking in at the airport costs extra."],
- ["col","Book the Colosseum Attic ticket for Saturday 09:00","colosseo.it, about €24. Small groups, so slots go. Fall back to a standard timed ticket."],
- ["clem","Book San Clemente’s excavations for Saturday 10:45","Online only, about €10."],
+ ["colname","Check your name on the Colosseum ticket and download it","Booked for Saturday 12:00. The name is checked against your photo ID, so it should read as on your passport. Type the reservation number into Bookings on this tab."],
+ ["satlunch","Book Saturday lunch in Monti for 13:30","La Nuova Piazzetta, or La Taverna dei Fori Imperiali."],
  ["dome","Book the St Peter’s dome for Thursday 09:15","Only if you want a guaranteed slot; you can also pay at the kiosk on the day."],
  ["study","Decide on the two study visits","Thursday 11:00 and Friday 15:00. Check with ESN whether you need to register and where the Friday visit is."],
  ["fri","Book Friday dinner in Trastevere","La Gensola or Le Mani in Pasta."],
@@ -1249,8 +1246,8 @@ function lookHtml(t){ return t ? '<details class="look"><summary>What to look at
    stay:1 = booking it doesn't move the step's time. Links were checked on 13 November 2026. */
 var BOOK=[
  {k:"dome",opt:1,day:"thu",p:"stp",stay:1,c:"free",n:"St Peter’s dome",when:"Thursday morning",slot:"",note:"Only needed if you want a guaranteed slot. You can also pay at the kiosk on the day.",url:"https://www.basilicasanpietro.va/en/",site:"basilicasanpietro.va, the basilica’s official site"},
- {k:"col",day:"sat",p:"col",c:"free",n:"Colosseum, Full Experience Attic ticket",when:"Saturday 09:00",slot:"09:00",note:"Fall back to a standard timed ticket if the attic slots have gone.",url:"https://colosseo.it/en/",site:"colosseo.it, the park’s official site"},
- {k:"clem",day:"sat",p:"clem",c:"free",n:"San Clemente excavations",when:"Saturday 10:45",slot:"10:45",note:"The basilica’s site says the excavations need an online booking.",url:"https://basilicasanclemente.com/eng/opening-hours-and-info/",site:"basilicasanclemente.com, the basilica’s own site"},
+ {k:"col",day:"sat",p:"col",c:"free",s0:"done",n:"Colosseum, Full Experience Arena ticket",when:"Saturday 12:00",slot:"12:00",note:"Booked, €24. Add or check your name on the ticket before you download it: it is checked against your photo ID at the gate, so it should read as it does on your passport. Type the reservation number in here; it stays on this device.",url:"https://colosseo.it/en/",site:"colosseo.it, the park’s official site"},
+ {k:"satlunch",day:"sat",p:"piazzetta",stay:1,c:"free",n:"Saturday lunch in Monti",when:"Saturday 13:30",slot:"13:30",note:"Two websites carry La Nuova Piazzetta’s name and disagree on whether it takes bookings, so ring or ask. La Taverna dei Fori Imperiali, a few minutes away, takes bookings through its site.",url:"https://www.latavernadeiforiimperiali.com",site:"latavernadeiforiimperiali.com, La Taverna’s own site"},
  {k:"pan",opt:1,day:"sat",p:"pan",c:"free",n:"Pantheon",when:"Saturday 18:00",slot:"18:00",note:"Tickets are also sold on site.",url:"https://www.museiitaliani.it/",site:"museiitaliani.it, the state museums’ ticket site"},
  {k:"fri",day:"fri",p:"gensola",c:"free",n:"Friday dinner in Trastevere",when:"Friday 19:45",slot:"19:45",note:"La Gensola takes bookings by phone or email; both are on its site. Le Mani in Pasta has no website of its own that I could find.",url:"https://www.osterialagensola.it/",site:"osterialagensola.it, La Gensola’s own site"},
  {k:"sat",day:"sat",p:"monti",c:"free",n:"Saturday dinner",when:"Saturday 19:45",slot:"19:45",note:"La Taverna dei Fori Imperiali takes bookings through its site. For Armando al Pantheon, book at armandoalpantheon.it.",url:"https://www.latavernadeiforiimperiali.com",site:"latavernadeiforiimperiali.com, the restaurant’s own site"},
@@ -1261,7 +1258,7 @@ function bookFor(dayId,orig){
   for(var i=0;i<BOOK.length;i++){ var b=BOOK[i]; if(b.day===dayId && (b.p?orig.p===b.p:orig.title===b.title)) return b; }
   return null;
 }
-function bookState(b){ var v=load("bk:"+b.k,null)||{}; return {s:v.s||"todo",slot:v.slot===undefined?b.slot:v.slot,ref:v.ref||""}; }
+function bookState(b){ var v=load("bk:"+b.k,null)||{}; return {s:v.s||b.s0||"todo",slot:v.slot===undefined?b.slot:v.slot,ref:v.ref||""}; }
 
 /* ---------- pins: [name, type, note, maps query, lat, lon, approx] ----------
    Coordinates looked up in OpenStreetMap on 13 November 2026. approx = 1 means placed by street
@@ -1313,7 +1310,7 @@ var AREAS = [
   ["Pizza Florida","quick","Pizza by the slice at Largo Argentina.","",41.89478,12.47672],
   ["Saporizzo","quick","Takeaway on Piazza d’Aracoeli, below the Capitoline.","",41.89434,12.48094]]},
  {n:"The Colosseum and Monti",w:"Saturday morning, and Saturday night.",pins:[
-  ["Colosseum","sight","Saturday 09:00.","Colosseo",41.89026,12.49238],
+  ["Colosseum","sight","Saturday 12:00.","Colosseo",41.89026,12.49238],
   ["Roman Forum","sight","Saturday 13:15, on the same ticket.","Foro Romano",41.89164,12.48673],
   ["La Nuova Piazzetta","eat","Saturday’s lunch pick.","",41.89336,12.48917],
   ["Drink Kong","drink","Saturday’s late option. Book.","",41.89514,12.49787],
@@ -1780,7 +1777,7 @@ function renderPins(){
 }
 
 /* ---------- nearest to me: pins and plan stops by distance ---------- */
-var PTY={stp:"sight",csa:"sight",gian:"sight",paola:"sight",smt:"sight",col:"sight",clem:"sight",forum:"sight",camp:"sight",marc:"sight",circo:"sight",aranci:"sight",pan:"sight",vatmus:"sight",arco:"sight",palatino:"sight",
+var PTY={trevi:"sight",stp:"sight",csa:"sight",gian:"sight",paola:"sight",smt:"sight",col:"sight",clem:"sight",forum:"sight",camp:"sight",marc:"sight",circo:"sight",aranci:"sight",pan:"sight",vatmus:"sight",arco:"sight",palatino:"sight",
   ponte:"sight",sabina:"sight",pincio:"sight",
   zanzara:"eat",romolo:"eat",gensola:"eat",piazzetta:"eat",manipasta:"eat",taverna:"eat",armando:"eat",trionfale:"quick",calisto:"drink",kong:"drink",fonclea:"music",alcazar:"music",tazza:"sweet"};
 var NEARLIST=null;
@@ -2386,7 +2383,7 @@ keepNote();
 /* ---------- show the driver: destination in Italian, large, full screen ---------- */
 var DAD={isa:"Via Cicerone, 39",abr:"Piazza della Rotonda, 69",venue:"Borgo Santo Spirito",poli:"Viale del Policlinico, 155",csa:"Lungotevere Castello, 50",
   zanzara:"Via Crescenzio, 84",fonclea:"Via Crescenzio, 82a",romolo:"Vicolo del Campanile, 12",smt:"Piazza di Santa Maria in Trastevere",calisto:"Piazza di San Calisto, 3",
-  gensola:"Piazza della Gensola, 15",alcazar:"Via Cardinale Merry del Val, 14",col:"Piazza del Colosseo",clem:"Via Labicana, 95",piazzetta:"Via del Buon Consiglio, 23",
+  gensola:"Piazza della Gensola, 15",alcazar:"Via Cardinale Merry del Val, 14",col:"Piazza del Colosseo",forum:"Largo della Salara Vecchia, 5/6",clem:"Via Labicana, 95",piazzetta:"Via del Buon Consiglio, 23",
   aranci:"Piazza Pietro d’Illiria",pan:"Piazza della Rotonda",kong:"Piazza di San Martino ai Monti, 8",tazza:"Via degli Orfani, 84",taverna:"Via della Madonna dei Monti, 9",
   armando:"Salita de’ Crescenzi, 31",manipasta:"Via dei Genovesi, 37",gian:"Gianicolo",monti:"Rione Monti"};
 var DNAME={venue:"Complesso Monumentale di Santo Spirito in Sassia",piazzetta:"La Nuova Piazzetta"};
