@@ -894,7 +894,7 @@ var RIVER = [[41.9200,12.4672],[41.9160,12.4683],[41.9115,12.4739],[41.9082,12.4
 /* alternatives: n name, d description, pin = from the saved list, q = Maps query */
 function A(n,d,pin,q){ return {n:n,d:d,pin:pin,q:q||(n+", Roma")}; }
 /* where an alternative is, when its name isn't exactly a pin's name: a key in P, a pin name, or null for nowhere in particular */
-var ALT_AT={"Train and metro":"lepanto","An early night":"isa","Vatican Museums and Sistine Chapel":"vatmus","Basilica without the climb":"stp",
+var ALT_AT={"San Clemente instead":"clem","Train and metro":"lepanto","An early night":"isa","Vatican Museums and Sistine Chapel":"vatmus","Basilica without the climb":"stp",
   "Mercato Trionfale":"trionfale","A slow breakfast instead":"isa","Baroque churches loop":"Chiesa di Sant’Agnese in Agone","Castel Sant’Angelo":"csa",
   "Ponte Fabricio and Tiber Island":"Ponte Fabricio","Trapizzino":"Trapizzino Trastevere","Le Mani in Pasta":"manipasta","Back to Bar San Calisto":"calisto",
   "Taxi home":"isa","Standard ticket":"col","Outside only":"arco","La Taverna dei Fori Imperiali":"taverna","Santa Maria Maggiore":"Papal Basilica of Saint Mary Major",
@@ -1002,24 +1002,31 @@ var DAYS = [
           A("Taxi home","Saturday starts at 07:45.",0,"Hotel Isa, Via Cicerone 39, Roma")]}
   ]},
  {id:"sat",date:"2026-11-21",tab:"Sat 21",gist:"Your day",title:"Saturday: ancient Rome, the Aventine and Monti",
-  sum:"No work, and a slower start. Check out at 10:00 and drop your bags at Albergo Abruzzi, then the Forum, the Colosseum at 12:00, lunch in Monti and a walk to the Orange Garden for sunset.",
+  sum:"No work, and a slower start. Check out at 10:00 and drop your bags at Albergo Abruzzi. The Colosseum is fixed at 12:00; the Forum goes before it or after lunch, your choice. Then the Orange Garden for sunset.",
+  choice:{key:"sat",label:"Order of the day",opts:["Forum first","Colosseum first"],text:"Two ways round your 12:00 Colosseum slot. Forum first: the Forum at 10:45, then the full walk south in the afternoon. Colosseum first: a free morning, or San Clemente at 10:45, with the Forum after lunch and a taxi to the Orange Garden to make sunset."},
   note:"<b>Swap the whole day:</b> the Aqueduct Park from your draft, if you wake up wanting open country instead of ruins and crowds. <b>If it rains:</b> the Capitoline Museums cover two hours indoors, with a covered view over the Forum.",
   rain:"The Capitoline Museums cover two hours indoors, with a covered view over the Forum.",
   items:[
    {t:"08:30",c:"stay",p:"isa",title:"Breakfast at Hotel Isa",note:"No rush this morning. Check-out is at 10:00."},
    {t:"10:00",drv:["abr"],c:"travel",p:"abr",title:"Check out, then a taxi to Albergo Abruzzi",note:"City tax of €22.50 per room is paid at the Hotel Isa desk. About ten minutes to the Pantheon to leave your bags; check-in there is from 14:00."},
-   {t:"10:30",drv:["forum"],c:"travel",title:"Taxi on to the Forum entrance",note:"Ask for the Roman Forum entrance at Largo della Salara Vecchia, on Via dei Fori Imperiali. A local transport strike is reported for this Saturday, so a taxi is the safer way across."},
-   {t:"10:45",e:"11:40",out:1,c:"free",p:"forum",title:"Through the Roman Forum",note:"Your Colosseum ticket covers a single entry to the Forum and Palatine, so once you leave you can’t go back in. Walk the Via Sacra east and leave by the Arch of Titus end by about 11:40. The Colosseum is a few minutes on."},
-   {t:"12:00",e:"13:15",fix:1,lv:"11:45",lvl:"Be at the gate by",lvd:"Straight from the Forum’s Arch of Titus exit.",c:"free",p:"col",title:"Colosseum, Full Experience Arena ticket",note:"Have the ticket and your photo ID ready: tickets carry your name and it is checked at the gate. The arena floor is part of this ticket."},
-   {t:"13:30",e:"14:40",c:"free",p:"piazzetta",title:"Lunch in Monti at La Nuova Piazzetta",note:"Your pin, on a lane between the Colosseum and Via Cavour. Book a table.",
+   {v:"skip",t:"10:30",drv:["forum"],c:"travel",title:"Taxi on to the Forum entrance",note:"Ask for the Roman Forum entrance at Largo della Salara Vecchia, on Via dei Fori Imperiali. A local transport strike is reported for this Saturday, so a taxi is the safer way across."},
+   {v:"skip",t:"10:45",e:"11:40",out:1,c:"free",p:"forum",title:"Through the Roman Forum",note:"Your Colosseum ticket covers a single entry to the Forum and Palatine, so once you leave you can’t go back in. Walk the Via Sacra east and leave by the Arch of Titus end by about 11:40. The Colosseum is a few minutes on.",
+    alts:[A("San Clemente instead","Three churches stacked on one another, five minutes’ walk from the Colosseum. The excavations need a slot booked online, about €10. To see this and the Forum, switch to “Colosseum first” at the top of the day.",0,"Basilica di San Clemente al Laterano, Roma")]},
+   {v:"go",t:"10:30",drv:["clem","col"],c:"travel",title:"Taxi on to San Clemente, or later to the Colosseum",note:"Go now if you’re taking in San Clemente. If not, the morning is yours: leave Albergo Abruzzi by about 11:30 for the Colosseum. A local transport strike is reported for this Saturday, so a taxi is the safer way across."},
+   {v:"go",t:"10:45",e:"11:40",opt:1,c:"free",p:"clem",title:"San Clemente, the underground levels",note:"Optional. A twelfth-century basilica on top of a fourth-century church on top of a Roman house and a temple of Mithras. The excavations need a slot booked online, about €10, and the Saturday morning session ends at 12:30. The Colosseum is five minutes’ walk away."},
+   {t:"12:00",e:"13:15",fix:1,lv:"11:45",lvl:"Be at the gate by",c:"free",p:"col",title:"Colosseum, Full Experience Arena ticket",note:"Have the ticket and your photo ID ready: tickets carry your name and it is checked at the gate. The arena floor is part of this ticket."},
+   {t:"13:30",e:"14:30",c:"free",p:"piazzetta",title:"Lunch in Monti at La Nuova Piazzetta",note:"Your pin, on a lane between the Colosseum and Via Cavour. Book a table.",
     alts:[A("La Taverna dei Fori Imperiali","Family-run trattoria a few minutes away. Book.",0,"La Taverna dei Fori Imperiali, Via della Madonna dei Monti 9, Roma"),
           A("Santa Maria Maggiore","Not lunch, but ten minutes north if you want the fifth-century mosaics.",1,"Basilica Papale di Santa Maria Maggiore, Roma")]},
-   {t:"14:50",c:"free",p:"camp",title:"Capitoline Hill",note:"Michelangelo’s piazza, then walk round the back of the central palace for the classic view along the Forum you walked through this morning.",
+   {v:"go",t:"14:40",e:"15:30",out:1,sb:"15:30",sbl:"last entry to the Forum",c:"free",p:"forum",title:"Through the Roman Forum",note:"Your Colosseum ticket covers a single entry to the Forum and Palatine. Go in at the Arch of Titus end, beside the Colosseum, walk the Via Sacra west and leave by the exit under the Capitoline. Last entry in winter is 15:30."},
+   {v:"go",t:"15:35",c:"free",p:"camp",title:"Capitoline Hill, briefly",note:"You come out of the Forum just below it. Michelangelo’s piazza, and round the back of the central palace for the view along the Forum."},
+   {v:"go",t:"15:50",drv:["aranci"],c:"travel",title:"Taxi to the Orange Garden",note:"A short ride that skips the Theatre of Marcellus and the Circus Maximus so you make the sunset."},
+   {v:"skip",t:"14:50",c:"free",p:"camp",title:"Capitoline Hill",note:"Michelangelo’s piazza, then walk round the back of the central palace for the classic view along the Forum you walked through this morning.",
     alts:[A("Altar of the Fatherland","Next door. The terraces are free; the lift to the top is paid.",1,"Altare della Patria, Roma"),
           A("Pizza Florida","A slice at Largo Argentina, eight minutes north, if lunch was light.",1,"Pizza Florida, Via Florida, Roma")]},
-   {t:"15:15",c:"free",p:"marc",title:"Past the Theatre of Marcellus",note:"Down the steps and five minutes on: a Roman theatre with Renaissance apartments built on top. You pass it on the way south.",
+   {v:"skip",t:"15:15",c:"free",p:"marc",title:"Past the Theatre of Marcellus",note:"Down the steps and five minutes on: a Roman theatre with Renaissance apartments built on top. You pass it on the way south.",
     alts:[A("Ponte Fabricio","Three minutes further to the river and the bridge to Tiber Island.",1)]},
-   {t:"15:35",out:1,c:"free",p:"circo",title:"Along the Circus Maximus",note:"The chariot track is now a long grass valley under the Palatine. Walk its length to the foot of the Aventine."},
+   {v:"skip",t:"15:35",out:1,c:"free",p:"circo",title:"Along the Circus Maximus",note:"The chariot track is now a long grass valley under the Palatine. Walk its length to the foot of the Aventine."},
    {t:"16:00",e:"16:50",view:1,sb:"16:45",sbl:"sunset",c:"free",p:"aranci",title:"Aventine Hill and the Orange Garden",note:"Santa Sabina, a near-intact fifth-century basilica, is beside the garden, and the keyhole view of St Peter’s is two minutes further. Sunset from the garden terrace is around 16:45. It’s free and open until about 18:00.",
     alts:[A("Cut it short","Take a taxi from the Capitoline straight to the Orange Garden and skip the two stops between.",0,"Giardino degli Aranci, Roma")]},
    {t:"17:00",drv:["abr"],c:"travel",title:"Taxi to Albergo Abruzzi",note:"About ten minutes. On foot it’s 30, by way of the river and the Ghetto."},
@@ -1033,14 +1040,14 @@ var DAYS = [
           A("Stay by the hotel: Saltimbocca","Roman, just off Piazza Navona.",1,"Saltimbocca ristorante, Via di Tor Millina, Roma"),
           A("Stay by the hotel: Il Corallo","Pizza and Roman dishes near Navona.",1,"Il Corallo, Via del Corallo, Roma"),
           A("Armando al Pantheon","The classic next to your hotel. Books out early, so try now.",0,"Armando al Pantheon, Salita de' Crescenzi 31, Roma")]},
-   {t:"21:30",drv:["abr"],c:"free",p:"kong",opt:1,title:"Drink Kong",note:"Your cocktail bar pin, ten minutes’ walk from dinner. Book a table for a Saturday. Then a taxi back to the Pantheon.",
+   {t:"21:30",e:"23:30",drv:["abr"],c:"free",p:"kong",opt:1,title:"Drink Kong",note:"Your cocktail bar pin, ten minutes’ walk from dinner. Book a table for a Saturday. Then a taxi back to the Pantheon.",
     alts:[A("Gregory’s Jazz Club","Live jazz near the Spanish Steps.",1,"Gregory's Jazz Club, Via Gregoriana, Roma"),
           A("Jerry Thomas Speakeasy","Near Navona. You need a reservation and the password from their site.",1,"Jerry Thomas Speakeasy, Vicolo Cellini 30, Roma"),
           A("La Botticella","Small pub near Piazza Navona.",1,"La Botticella of Poggi Giovanni, Via di Tor Millina, Roma"),
           A("Trinity College Pub","Irish pub five minutes from the hotel.",1),
           A("Frigidarium","Gelato and a walk round Piazza Navona instead.",1,"Frigidarium, Via del Governo Vecchio 112, Roma"),
           A("Alcazar Live","Its listings showed a comedy night at 21:00 and a Maurice Fulton DJ set from 23:00 for this Saturday. About 25 minutes’ walk from Albergo Abruzzi, or a short taxi.",1,"Alcazar Live, Via Cardinale Merry del Val 14, Roma")]},
-   {t:"23:00",c:"free",p:"trevi",opt:1,title:"Late walk to the Trevi Fountain",note:"Eight minutes’ walk from Albergo Abruzzi. Late in the evening is when it is quietest."}
+   {t:"02:00",nd:1,c:"free",p:"trevi",opt:1,title:"The Trevi Fountain in the small hours",note:"Around two in the morning, after midnight on Saturday night. Eight minutes’ walk from Albergo Abruzzi. The airport taxi is at 08:00."}
   ]},
  {id:"sun",date:"2026-11-22",tab:"Sun 22",gist:"Home",title:"Sunday: home",
   sum:"An early start. There’s time for the empty piazza and a coffee, and that’s all.",
@@ -1247,6 +1254,7 @@ function lookHtml(t){ return t ? '<details class="look"><summary>What to look at
 var BOOK=[
  {k:"dome",opt:1,day:"thu",p:"stp",stay:1,c:"free",n:"St Peter’s dome",when:"Thursday morning",slot:"",note:"Only needed if you want a guaranteed slot. You can also pay at the kiosk on the day.",url:"https://www.basilicasanpietro.va/en/",site:"basilicasanpietro.va, the basilica’s official site"},
  {k:"col",day:"sat",p:"col",c:"free",s0:"done",n:"Colosseum, Full Experience Arena ticket",when:"Saturday 12:00",slot:"12:00",note:"Booked, €24. Add or check your name on the ticket before you download it: it is checked against your photo ID at the gate, so it should read as it does on your passport. Type the reservation number in here; it stays on this device.",url:"https://colosseo.it/en/",site:"colosseo.it, the park’s official site"},
+ {k:"clem",day:"sat",p:"clem",opt:1,c:"free",n:"San Clemente excavations",when:"Saturday 10:45",slot:"10:45",note:"Optional, and only if you take the “Colosseum first” order or swap it in for the Forum. The basilica’s site says the excavations need an online booking.",url:"https://basilicasanclemente.com/eng/opening-hours-and-info/",site:"basilicasanclemente.com, the basilica’s own site"},
  {k:"satlunch",day:"sat",p:"piazzetta",stay:1,c:"free",n:"Saturday lunch in Monti",when:"Saturday 13:30",slot:"13:30",note:"Two websites carry La Nuova Piazzetta’s name and disagree on whether it takes bookings, so ring or ask. La Taverna dei Fori Imperiali, a few minutes away, takes bookings through its site.",url:"https://www.latavernadeiforiimperiali.com",site:"latavernadeiforiimperiali.com, La Taverna’s own site"},
  {k:"pan",opt:1,day:"sat",p:"pan",c:"free",n:"Pantheon",when:"Saturday 18:00",slot:"18:00",note:"Tickets are also sold on site.",url:"https://www.museiitaliani.it/",site:"museiitaliani.it, the state museums’ ticket site"},
  {k:"fri",day:"fri",p:"gensola",c:"free",n:"Friday dinner in Trastevere",when:"Friday 19:45",slot:"19:45",note:"La Gensola takes bookings by phone or email; both are on its site. Le Mani in Pasta has no website of its own that I could find.",url:"https://www.osterialagensola.it/",site:"osterialagensola.it, La Gensola’s own site"},
@@ -1371,8 +1379,8 @@ function romeNow(){
   }catch(e){ return {date:"",min:0}; }
 }
 function mins(t){ var a=t.split(":"); return (+a[0])*60+(+a[1]); }
-function st(it){ return mins(it.t)+(it.ti?60:0); }                       // start, in Rome minutes
-function en(it,next){ return it.e ? mins(it.e)+(it.ei?60:0) : (next ? st(next) : st(it)+60); }
+function st(it){ return mins(it.t)+(it.ti?60:0)+(it.nd?1440:0); }                       // start, in Rome minutes
+function en(it,next){ return it.e ? mins(it.e)+(it.ei?60:0)+(it.nd?1440:0) : (next ? st(next) : st(it)+60); }
 function hm(m){ m=((m%1440)+1440)%1440; return ("0"+Math.floor(m/60)).slice(-2)+":"+("0"+(m%60)).slice(-2); }
 function inMin(m){ if(m<1) return "now"; var h=Math.floor(m/60), r=m%60; return "in "+(h?h+" h"+(r?" "+r+" min":""):r+" min"); }
 function dayDiff(a,b){ return Math.round((Date.parse(b+"T00:00:00Z")-Date.parse(a+"T00:00:00Z"))/86400000); }
@@ -1607,9 +1615,10 @@ function render(id){
   var ch=document.getElementById("choice");
   if(d.choice){
     var mode=load("visit:"+d.choice.key,"skip");
-    ch.innerHTML='<div class="choice"><p>'+esc(d.choice.text)+'</p><div class="seg" role="group" aria-label="Study visit">'+
-      '<button type="button" data-m="skip" aria-pressed="'+(mode==="skip")+'">Skip it</button>'+
-      '<button type="button" data-m="go" aria-pressed="'+(mode==="go")+'">Attend</button></div></div>';
+    var cl=d.choice.opts||["Skip it","Attend"];
+    ch.innerHTML='<div class="choice"><p>'+esc(d.choice.text)+'</p><div class="seg" role="group" aria-label="'+esc(d.choice.label||"Study visit")+'">'+
+      '<button type="button" data-m="skip" aria-pressed="'+(mode==="skip")+'">'+esc(cl[0])+'</button>'+
+      '<button type="button" data-m="go" aria-pressed="'+(mode==="go")+'">'+esc(cl[1])+'</button></div></div>';
   } else ch.innerHTML="";
 
   var items=visibleItems(d);
